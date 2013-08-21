@@ -44,7 +44,7 @@ echo Jtext::_('COM_GEOI_LOAD_INFO')."<br>";
 <br>
 <br>
 
-<b><?php echo Jtext::_('COM_GEOI_UPLOADFORM_CP');?></b><br>
+<b><?php echo Jtext::_('COM_GEOI_UPLOADFORM_CRP');?></b><br>
 <form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 <label for="file"><?php echo Jtext::_('COM_GEOI_UPLOADFORM_POLCRE');?></label>
 <input type="file" name="file" id="file"><br>
