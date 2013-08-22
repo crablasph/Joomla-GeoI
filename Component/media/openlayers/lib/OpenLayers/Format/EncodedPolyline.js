@@ -21,7 +21,7 @@ OpenLayers.Format.EncodedPolyline = OpenLayers.Class(OpenLayers.Format, {
     /**
      * APIProperty: geometryType
      * {String} Geometry type to output. One of: linestring (default),
-     *     linearring, point, multipoint or polygon. If the geometryType is
+     *     linearring, point, mulTYPEPnt or polygon. If the geometryType is
      *     point, only the first point of the string is returned.
      */
     geometryType: "linestring",
@@ -57,8 +57,8 @@ OpenLayers.Format.EncodedPolyline = OpenLayers.Class(OpenLayers.Format, {
             geomType = OpenLayers.Geometry.LineString;
         else if (this.geometryType == "linearring")
             geomType = OpenLayers.Geometry.LinearRing;
-        else if (this.geometryType == "multipoint")
-            geomType = OpenLayers.Geometry.MultiPoint;
+        else if (this.geometryType == "mulTYPEPnt")
+            geomType = OpenLayers.Geometry.MulTYPEPnt;
         else if (this.geometryType != "point" && this.geometryType != "polygon")
             return null;
 
@@ -147,7 +147,7 @@ OpenLayers.Format.EncodedPolyline = OpenLayers.Class(OpenLayers.Format, {
             pointGeometries = new Array(geometry);
         else if (type == "linestring" ||
                  type == "linearring" ||
-                 type == "multipoint")
+                 type == "mulTYPEPnt")
             pointGeometries = geometry.components;
         else if (type == "polygon")
             pointGeometries = geometry.components[0].components;

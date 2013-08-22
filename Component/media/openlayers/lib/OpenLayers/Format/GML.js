@@ -7,7 +7,7 @@
  * @requires OpenLayers/Format/XML.js
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Geometry/Point.js
- * @requires OpenLayers/Geometry/MultiPoint.js
+ * @requires OpenLayers/Geometry/MulTYPEPnt.js
  * @requires OpenLayers/Geometry/LineString.js
  * @requires OpenLayers/Geometry/MultiLineString.js
  * @requires OpenLayers/Geometry/Polygon.js
@@ -140,7 +140,7 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
         // only accept one geometry per feature - look for highest "order"
         var order = ["MultiPolygon", "Polygon",
                      "MultiLineString", "LineString",
-                     "MultiPoint", "Point", "Envelope"];
+                     "MulTYPEPnt", "Point", "Envelope"];
         // FIXME: In case we parse a feature with no geometry, but boundedBy an Envelope,
         // this code creates a geometry derived from the Envelope. This is not correct.
         var type, nodeList, geometry, parser;
@@ -290,17 +290,17 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
         },
         
         /**
-         * Method: parseGeometry.multipoint
-         * Given a GML node representing a multipoint geometry, create an
-         *     OpenLayers multipoint geometry.
+         * Method: parseGeometry.mulTYPEPnt
+         * Given a GML node representing a mulTYPEPnt geometry, create an
+         *     OpenLayers mulTYPEPnt geometry.
          *
          * Parameters:
          * node - {DOMElement} A GML node.
          *
          * Returns:
-         * {<OpenLayers.Geometry.MultiPoint>} A multipoint geometry.
+         * {<OpenLayers.Geometry.MulTYPEPnt>} A mulTYPEPnt geometry.
          */
-        multipoint: function(node) {
+        mulTYPEPnt: function(node) {
             var nodeList = this.getElementsByTagNameNS(node, this.gmlns,
                                                        "Point");
             var components = [];
@@ -313,7 +313,7 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
                     }
                 }
             }
-            return new OpenLayers.Geometry.MultiPoint(components);
+            return new OpenLayers.Geometry.MulTYPEPnt(components);
         },
         
         /**
@@ -728,17 +728,17 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
         },
         
         /**
-         * Method: buildGeometry.multipoint
-         * Given an OpenLayers multipoint geometry, create a GML multipoint.
+         * Method: buildGeometry.mulTYPEPnt
+         * Given an OpenLayers mulTYPEPnt geometry, create a GML mulTYPEPnt.
          *
          * Parameters:
-         * geometry - {<OpenLayers.Geometry.MultiPoint>} A multipoint geometry.
+         * geometry - {<OpenLayers.Geometry.MulTYPEPnt>} A mulTYPEPnt geometry.
          *
          * Returns:
-         * {DOMElement} A GML multipoint node.
+         * {DOMElement} A GML mulTYPEPnt node.
          */
-        multipoint: function(geometry) {
-            var gml = this.createElementNS(this.gmlns, "gml:MultiPoint");
+        mulTYPEPnt: function(geometry) {
+            var gml = this.createElementNS(this.gmlns, "gml:MulTYPEPnt");
             var points = geometry.components;
             var pointMember, pointGeom;
             for(var i=0; i<points.length; i++) { 

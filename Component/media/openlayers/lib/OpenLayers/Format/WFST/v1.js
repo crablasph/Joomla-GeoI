@@ -258,7 +258,7 @@ OpenLayers.Format.WFST.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
                     // temporarily re-assigning geometry types
                     if (options.multi === true) {
                         OpenLayers.Util.extend(this.geometryTypes, {
-                            "OpenLayers.Geometry.Point": "MultiPoint",
+                            "OpenLayers.Geometry.Point": "MulTYPEPnt",
                             "OpenLayers.Geometry.LineString": (this.multiCurve === true) ? "MultiCurve": "MultiLineString",
                             "OpenLayers.Geometry.Polygon": (this.multiSurface === true) ? "MultiSurface" : "MultiPolygon"
                         });

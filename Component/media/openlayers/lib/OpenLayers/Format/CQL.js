@@ -38,7 +38,7 @@ OpenLayers.Format.CQL = (function() {
         NOT: /^NOT/i,
         BETWEEN: /^BETWEEN/i,
         GEOMETRY: function(text) {
-            var type = /^(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)/.exec(text);
+            var type = /^(POINT|LINESTRING|POLYGON|MULTYPEPNT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)/.exec(text);
             if (type) {
                 var len = text.length;
                 var idx = text.indexOf("(", type[0].length);

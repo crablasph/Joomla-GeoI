@@ -168,7 +168,7 @@ class GeoiController extends JController
 												if($nompol==""){echo JText::_('COM_GEOI_ERRPOLN');break;}
 												$view->nompol=$nompol;
 												$view->cpol=1;
-												//$model->CrearPol($nompol);
+												//$model->CreatePol($nompol);
 												$tpl='default:pol';
 												$view->setLayout( $tpl );
 												$view->display($tpl);
@@ -235,7 +235,7 @@ class GeoiController extends JController
 				  $input = JFactory::getApplication()->input;
 				  
 					$post_array = $input->getArray($_POST);
-					if($post_array['cpol']==1){$model->CrearPol($post_array['nompol']);}
+					if($post_array['cpol']==1){$model->CreatePol($post_array['nompol']);}
 					$model->PolArray['nompol']=$post_array['nompol'];
 					$model->PolArray['idpol']=$post_array['idpol'];
 					$model->PolArray['nompolis']=$post_array['nompolis'];

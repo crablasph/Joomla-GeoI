@@ -562,7 +562,7 @@ OpenLayers.Renderer.Elements = OpenLayers.Class(OpenLayers.Renderer, {
         var className = geometry.CLASS_NAME;
         var rendered = true;
         if ((className == "OpenLayers.Geometry.Collection") ||
-            (className == "OpenLayers.Geometry.MultiPoint") ||
+            (className == "OpenLayers.Geometry.MulTYPEPnt") ||
             (className == "OpenLayers.Geometry.MultiLineString") ||
             (className == "OpenLayers.Geometry.MultiPolygon")) {
             for (var i = 0, len=geometry.components.length; i<len; i++) {
@@ -919,7 +919,7 @@ OpenLayers.Renderer.Elements = OpenLayers.Class(OpenLayers.Renderer, {
      * featureId - {String}
      */
     eraseGeometry: function(geometry, featureId) {
-        if ((geometry.CLASS_NAME == "OpenLayers.Geometry.MultiPoint") ||
+        if ((geometry.CLASS_NAME == "OpenLayers.Geometry.MulTYPEPnt") ||
             (geometry.CLASS_NAME == "OpenLayers.Geometry.MultiLineString") ||
             (geometry.CLASS_NAME == "OpenLayers.Geometry.MultiPolygon") ||
             (geometry.CLASS_NAME == "OpenLayers.Geometry.Collection")) {

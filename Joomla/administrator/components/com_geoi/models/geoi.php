@@ -13,8 +13,6 @@ require JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.D
 
 class GeoiModelGeoi extends JModel
 {
-		protected $msg;
-		protected $msg2;
 		public $ZippedShapefile;
 		public $ShapeFileSchemaArray;
 		public $BaseShapefileName;
@@ -364,7 +362,7 @@ class GeoiModelGeoi extends JModel
 			foreach ($results[0] as $res){return $res;}
         }
         
-        public function CrearPol($nom) 
+        public function CreatePol($nom) 
         {
 			$numpol=$this->GetParam('NUMPOL');
 			$numpola=$numpol+1;

@@ -1290,17 +1290,17 @@ OpenLayers.Format.KML = OpenLayers.Class(OpenLayers.Format.XML, {
         },
         
         /**
-         * Method: buildGeometry.multipoint
-         * Given an OpenLayers multipoint geometry, create a KML
+         * Method: buildGeometry.mulTYPEPnt
+         * Given an OpenLayers mulTYPEPnt geometry, create a KML
          *     GeometryCollection.
          *
          * Parameters:
-         * geometry - {<OpenLayers.Geometry.Point>} A multipoint geometry.
+         * geometry - {<OpenLayers.Geometry.Point>} A mulTYPEPnt geometry.
          *
          * Returns:
          * {DOMElement} A KML GeometryCollection node.
          */
-        multipoint: function(geometry) {
+        mulTYPEPnt: function(geometry) {
             return this.buildGeometry.collection.apply(this, [geometry]);
         },
 

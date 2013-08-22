@@ -203,7 +203,7 @@ OpenLayers.Renderer.Canvas = OpenLayers.Class(OpenLayers.Renderer, {
     drawGeometry: function(geometry, style, featureId) {
         var className = geometry.CLASS_NAME;
         if ((className == "OpenLayers.Geometry.Collection") ||
-            (className == "OpenLayers.Geometry.MultiPoint") ||
+            (className == "OpenLayers.Geometry.MulTYPEPnt") ||
             (className == "OpenLayers.Geometry.MultiLineString") ||
             (className == "OpenLayers.Geometry.MultiPolygon")) {
             for (var i = 0; i < geometry.components.length; i++) {

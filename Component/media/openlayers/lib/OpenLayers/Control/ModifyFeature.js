@@ -658,7 +658,7 @@ OpenLayers.Control.ModifyFeature = OpenLayers.Class(OpenLayers.Control, {
                 }
                 
                 // add virtual vertices in the middle of each edge
-                if (control.createVertices && geometry.CLASS_NAME != "OpenLayers.Geometry.MultiPoint") {
+                if (control.createVertices && geometry.CLASS_NAME != "OpenLayers.Geometry.MulTYPEPnt") {
                     for(i=0, len=geometry.components.length; i<len-1; ++i) {
                         var prevVertex = geometry.components[i];
                         var nextVertex = geometry.components[i + 1];

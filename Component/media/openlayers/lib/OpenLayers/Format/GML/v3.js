@@ -463,7 +463,7 @@ OpenLayers.Format.GML.v3 = OpenLayers.Class(OpenLayers.Format.GML.Base, {
     setGeometryTypes: function() {
         this.geometryTypes = {
             "OpenLayers.Geometry.Point": "Point",
-            "OpenLayers.Geometry.MultiPoint": "MultiPoint",
+            "OpenLayers.Geometry.MulTYPEPnt": "MulTYPEPnt",
             "OpenLayers.Geometry.LineString": (this.curve === true) ? "Curve": "LineString",
             "OpenLayers.Geometry.MultiLineString": (this.multiCurve === false) ? "MultiLineString" : "MultiCurve",
             "OpenLayers.Geometry.Polygon": (this.surface === true) ? "Surface" : "Polygon",

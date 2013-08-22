@@ -334,7 +334,7 @@ OpenLayers.Handler.Point = OpenLayers.Class(OpenLayers.Handler, {
     getGeometry: function() {
         var geometry = this.point && this.point.geometry;
         if(geometry && this.multi) {
-            geometry = new OpenLayers.Geometry.MultiPoint([geometry]);
+            geometry = new OpenLayers.Geometry.MulTYPEPnt([geometry]);
         }
         return geometry;
     },

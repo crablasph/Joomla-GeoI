@@ -247,7 +247,7 @@
                 "OpenLayers/Geometry.js",
                 "OpenLayers/Geometry/Collection.js",
                 "OpenLayers/Geometry/Point.js",
-                "OpenLayers/Geometry/MultiPoint.js",
+                "OpenLayers/Geometry/MulTYPEPnt.js",
                 "OpenLayers/Geometry/Curve.js",
                 "OpenLayers/Geometry/LineString.js",
                 "OpenLayers/Geometry/LinearRing.js",
