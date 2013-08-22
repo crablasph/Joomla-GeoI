@@ -53,7 +53,7 @@ class GeoiModelGeoi extends JModel
 			$colsi= array("AsText(geom)", "oid 'id sub'");
 			$cols=array_merge($colsi,$colo);
 			//print_r($cols);
-			//$st="SELECT AsText(geom),oid ,  TIPOI 'Tipo de Inmueble', TIPOO 'Tipo de Oferta', PRECIO 'Precio', AREA ''  FROM ".$tbl.";";
+			//$st="SELECT AsText(geom),oid ,  TYPEP 'Tipo de Inmueble', TYPEO 'Tipo de Oferta', VALUE 'VALUE', AREA ''  FROM ".$tbl.";";
 			//$st ="SELECT AsText(geom) geom, ".$cols." FROM ".$tbl.";";
 			//$st ="SELECT AsText(geom) geom, idpol , idint FROM GeoIPOL1";
 			//echo $st;

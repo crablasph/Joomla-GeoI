@@ -207,13 +207,13 @@ class GeoiController extends JController
 				  
 				  //echo "<br>********<br>";
 					$post_array = $input->getArray($_POST);
-					$model->SaveArray['tipoi']=$post_array['tipoi'];
-					$model->SaveArray['tipoo']=$post_array['tipoo'];
-					$model->SaveArray['precio']=$post_array['precio'];
+					$model->SaveArray['TYPEP']=$post_array['TYPEP'];
+					$model->SaveArray['TYPEO']=$post_array['TYPEO'];
+					$model->SaveArray['VALUE']=$post_array['VALUE'];
 					$model->SaveArray['area']=$post_array['area'];
-					$model->SaveArray['hab']=$post_array['hab'];
+					$model->SaveArray['ROOMS']=$post_array['ROOMS'];
 					$model->SaveArray['toilet']=$post_array['toilet'];
-					$model->SaveArray['edad']=$post_array['edad'];
+					$model->SaveArray['AGE']=$post_array['AGE'];
 					$model->SaveArray['tel1']=$post_array['tel1'];
 					$model->SaveArray['tel2']=$post_array['tel2'];
 					//$arrsave['Shapeloc']=$post_array['Shapeloc'];

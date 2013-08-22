@@ -15,12 +15,12 @@ DROP TABLE IF EXISTS GeoIPOL11;
 CREATE TABLE GeoIOfertas (
   oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   geom GEOMETRY NOT NULL,
-  TIPOI CHAR(15) NOT NULL,
-  TIPOO CHAR(15) NOT NULL,
-  PRECIO int(15) NOT NULL,
+  TYPEP CHAR(15) NOT NULL,
+  TYPEO CHAR(15) NOT NULL,
+  VALUE int(15) NOT NULL,
   AREA REAL(10,6),
-  HAB int(3),
-  EDAD int(3),
+  ROOMS int(3),
+  AGE int(3),
   TOILET int(11),
   TEL1 int(12),
   TEL2 int(12),
@@ -33,8 +33,6 @@ ALTER TABLE GeoIOfertas ADD INDEX ( oid );
 ALTER TABLE GeoIOfertas ADD INDEX ( USERID ); 
 ALTER TABLE GeoIOfertas ADD SPATIAL INDEX ( geom );
 
-DROP TABLE IF EXISTS GeoIConf;
- 
 CREATE TABLE GeoIConf (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   PARAM CHAR(15) NOT NULL,
@@ -44,12 +42,12 @@ CREATE TABLE GeoIConf (
 INSERT INTO GeoIConf (PARAM , VAL) 
 	VALUES 	('EPSG','3857') , 
 			('NUMPOL','0'),
-			('N_TIPOI','Tipo de Inmueble'),
-			('N_TIPOO','Tipo de Oferta'),
-			('N_PRECIO','Precio'),
+			('N_TYPEP','Tipo de Inmueble'),
+			('N_TYPEO','Tipo de Oferta'),
+			('N_VALUE','Precio'),
 			('N_AREA','Área'),
-			('N_HAB','Número de Habitaciones'),
-			('N_EDAD','Edad del Inmueble'),
+			('N_ROOMS','Número de Habitaciones'),
+			('N_AGE','Edad del Inmueble'),
 			('N_TOILET','Número de baños'),
 			('N_TEL1','Telefono 1'),
 			('N_TEL2','Telefono 2'),

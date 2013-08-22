@@ -148,13 +148,13 @@ class GeoiModelGeoi extends JModel
 					$colname = $cc['name'];
 					$fs = $rec->getString($colname);
 					//$coll =$coll. '"'.$fs.'"';
-					if($this->SaveArray['tipoi']==$cont1){$FeatureArray['tipoi']=$fs;}
-					if($this->SaveArray['tipoo']==$cont1){$FeatureArray['tipoo']=$fs;}
-					if($this->SaveArray['precio']==$cont1){$FeatureArray['precio']=$fs;}
+					if($this->SaveArray['TYPEP']==$cont1){$FeatureArray['TYPEP']=$fs;}
+					if($this->SaveArray['TYPEO']==$cont1){$FeatureArray['TYPEO']=$fs;}
+					if($this->SaveArray['VALUE']==$cont1){$FeatureArray['VALUE']=$fs;}
 					if($this->SaveArray['area']==$cont1){$FeatureArray['area']=$fs;}
-					if($this->SaveArray['hab']==$cont1){$FeatureArray['hab']=$fs;}
+					if($this->SaveArray['ROOMS']==$cont1){$FeatureArray['ROOMS']=$fs;}
 					if($this->SaveArray['toilet']==$cont1){$FeatureArray['toilet']=$fs;}
-					if($this->SaveArray['edad']==$cont1){$FeatureArray['edad']=$fs;}
+					if($this->SaveArray['AGE']==$cont1){$FeatureArray['AGE']=$fs;}
 					if($this->SaveArray['tel1']==$cont1){$FeatureArray['tel1']=$fs;}
 					if($this->SaveArray['tel2']==$cont1){$FeatureArray['tel2']=$fs;}
 					$cont1 ++;
@@ -216,16 +216,16 @@ class GeoiModelGeoi extends JModel
 			foreach($this->ShapefileArray as $shparr){
 					//print_r($shparr);echo '<br>';
 					$values=$values." (";
-					$insert="INSERT INTO GeoIOfertas ( geom , TIPOI , TIPOO , PRECIO , EMAIL , USERID , USERNAME ";
+					$insert="INSERT INTO GeoIOfertas ( geom , TYPEP , TYPEO , VALUE , EMAIL , USERID , USERNAME ";
 					$values=$values." PointFromText('".$shparr['geom']."') , ";
-					$values=$values."'".$shparr['tipoi']."' , ";
-					$values=$values."'".$shparr['tipoo']."' , ";
-					$values=$values.$shparr['precio']." , ";
+					$values=$values."'".$shparr['TYPEP']."' , ";
+					$values=$values."'".$shparr['TYPEO']."' , ";
+					$values=$values.$shparr['VALUE']." , ";
 					$values=$values."'".$shparr['email']."' , ";
 					$values=$values.$shparr['userid']." , ";
 					$values=$values."'".$shparr['username']."' ";
-					if(is_numeric($this->SaveArray['hab'])){$insert=$insert.", HAB ";if(is_numeric($shparr['hab'])){$values=$values.", ".$shparr['hab'];}else{$values=$values.", ''";}}
-					if(is_numeric($this->SaveArray['edad'])){$insert=$insert.", EDAD ";if(is_numeric($shparr['edad'])){$values=$values.", ".$shparr['edad'];}else{$values=$values.", ''";}}
+					if(is_numeric($this->SaveArray['ROOMS'])){$insert=$insert.", ROOMS ";if(is_numeric($shparr['ROOMS'])){$values=$values.", ".$shparr['ROOMS'];}else{$values=$values.", ''";}}
+					if(is_numeric($this->SaveArray['AGE'])){$insert=$insert.", AGE ";if(is_numeric($shparr['AGE'])){$values=$values.", ".$shparr['AGE'];}else{$values=$values.", ''";}}
 					if(is_numeric($this->SaveArray['toilet'])){$insert=$insert.", TOILET ";if(is_numeric($shparr['toilet'])){$values=$values.", ".$shparr['toilet'];}else{$values=$values.", ''";}}
 					if(is_numeric($this->SaveArray['area'])){$insert=$insert.", AREA ";if(is_numeric($shparr['area'])){$values=$values.", ".$shparr['area'];}else{$values=$values.", ''";}}
 					if(is_numeric($this->SaveArray['tel1'])){$insert=$insert.", TEL1 ";if(is_numeric($shparr['tel1'])){$values=$values.", ".$shparr['tel1'];}else{$values=$values.", ''";}}
@@ -468,22 +468,5 @@ class GeoiModelGeoi extends JModel
                 }
                 return $this->msg;
         }
-        
-        public function getMsg2()
-        {
-			if (!isset($this->msg2)) 
-                {
-			$db = JFactory::getDbo();
-			$db->setQuery("CREATE TABLE example666 (id INT,data VARCHAR(100));");
-			$db->execute();
-			$this->msg2 = "mondaaaaaaaaaaa";
-			}
-			return $this->msg2 ;
-		}
-		
-		public function testmessage()
-		{
-			echo "MENSAJE DE PRUEBA";
-		}
         
 }

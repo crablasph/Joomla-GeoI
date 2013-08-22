@@ -24,10 +24,10 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TIPOI')?></textarea>
+	<?php echo JText::_('COM_GEOI_FRMSAVE_TYPEP')?></textarea>
 </td>
 <td>
-	<select name="tipoi">
+	<select name="TYPEP">
 		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
 	</select>
 </td>
@@ -35,10 +35,10 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TIPOO')?></textarea>
+	<?php echo JText::_('COM_GEOI_FRMSAVE_TYPEO')?></textarea>
 </td>
 <td>
-	<select name="tipoo">
+	<select name="TYPEO">
 		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
 	</select>
 </td>
@@ -46,10 +46,10 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_PRECIO')?></textarea>
+	<?php echo JText::_('COM_GEOI_FRMSAVE_VALUE')?></textarea>
 </td>
 <td>
-	<select name="precio">
+	<select name="VALUE">
 		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
 	</select>
 </td>
@@ -69,10 +69,10 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_HAB')?></textarea>
+	<?php echo JText::_('COM_GEOI_FRMSAVE_ROOMS')?></textarea>
 </td>
 <td>
-	<select name="hab">
+	<select name="ROOMS">
 		<option value=""></option>
 		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
 	</select>
@@ -95,10 +95,10 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_EDAD')?></textarea>
+	<?php echo JText::_('COM_GEOI_FRMSAVE_AGE')?></textarea>
 </td>
 <td>
-	<select name="edad">
+	<select name="AGE">
 		<option value=""></option>
 		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
 	</select>

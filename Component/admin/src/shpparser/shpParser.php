@@ -38,15 +38,15 @@ class shpParser {
       1  => 'Point',
       3  => 'PolyLine',
       5  => 'Polygon',
-      8  => 'MultiPoint',
+      8  => 'MulTYPEPnt',
       11 => 'PointZ',
       13 => 'PolyLineZ',
       15 => 'PolygonZ',
-      18 => 'MultiPointZ',
+      18 => 'MulTYPEPntZ',
       21 => 'PointM',
       23 => 'PolyLineM',
       25 => 'PolygonM',
-      28 => 'MultiPointM',
+      28 => 'MulTYPEPntM',
       31 => 'MultiPatch',
     );
   }
@@ -145,7 +145,7 @@ class shpParser {
         return $this->loadPolygonRecord();
         break;
       case 8:
-        return $this->loadMultiPointRecord();
+        return $this->loadMulTYPEPntRecord();
         break;
       default:
         // $setError(sprintf("The Shape Type '%s' is not supported.", $shapeType));
@@ -254,7 +254,7 @@ class shpParser {
     );
   }
   
-  private function loadMultiPointRecord() {
+  private function loadMulTYPEPntRecord() {
     $return = array(
       'bbox' => array(
         'xmin' => $this->loadData("d"),
@@ -273,7 +273,7 @@ class shpParser {
       $geometries[] = sprintf('(%f %f)', $point['x'], $point['y']);
     }
     
-    $return['wkt'] = 'MULTIPOINT(' . implode(', ', $geometries) . ')';
+    $return['wkt'] = 'MULTYPEPNT(' . implode(', ', $geometries) . ')';
     return $return;
   }
   
