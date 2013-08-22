@@ -310,12 +310,12 @@ OpenLayers.Format.GML.Base = OpenLayers.Class(OpenLayers.Format.XML, {
             "Z": function(node, coord) {
                 coord.z = this.getChildValue(node);
             },
-            "MulTYPEPnt": function(node, container) {
+            "MultiPoint": function(node, container) {
                 var obj = {components: []};
                 this.readers.gml._inherit.apply(this, [node, obj, container]);
                 this.readChildNodes(node, obj);
                 container.components = [
-                    new OpenLayers.Geometry.MulTYPEPnt(obj.components)
+                    new OpenLayers.Geometry.MultiPoint(obj.components)
                 ];
             },
             "pointMember": function(node, obj) {
@@ -510,8 +510,8 @@ OpenLayers.Format.GML.Base = OpenLayers.Class(OpenLayers.Format.XML, {
                 this.writeNode("feature:_typeName", feature, node);
                 return node;
             },
-            "MulTYPEPnt": function(geometry) {
-                var node = this.createElementNSPlus("gml:MulTYPEPnt");
+            "MultiPoint": function(geometry) {
+                var node = this.createElementNSPlus("gml:MultiPoint");
                 var components = geometry.components || [geometry];
                 for(var i=0, ii=components.length; i<ii; ++i) {
                     this.writeNode("pointMember", components[i], node);
@@ -631,7 +631,7 @@ OpenLayers.Format.GML.Base = OpenLayers.Class(OpenLayers.Format.XML, {
     setGeometryTypes: function() {
         this.geometryTypes = {
             "OpenLayers.Geometry.Point": "Point",
-            "OpenLayers.Geometry.MulTYPEPnt": "MulTYPEPnt",
+            "OpenLayers.Geometry.MultiPoint": "MultiPoint",
             "OpenLayers.Geometry.LineString": "LineString",
             "OpenLayers.Geometry.MultiLineString": "MultiLineString",
             "OpenLayers.Geometry.Polygon": "Polygon",

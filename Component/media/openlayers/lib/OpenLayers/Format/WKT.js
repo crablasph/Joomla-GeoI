@@ -7,7 +7,7 @@
  * @requires OpenLayers/Format.js
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Geometry/Point.js
- * @requires OpenLayers/Geometry/MulTYPEPnt.js
+ * @requires OpenLayers/Geometry/MultiPoint.js
  * @requires OpenLayers/Geometry/LineString.js
  * @requires OpenLayers/Geometry/MultiLineString.js
  * @requires OpenLayers/Geometry/Polygon.js
@@ -49,7 +49,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
     /**
      * APIMethod: read
      * Deserialize a WKT string and return a vector feature or an
-     * array of vector features.  Supports WKT for POINT, MULTYPEPNT,
+     * array of vector features.  Supports WKT for POINT, MULTIPOINT,
      * LINESTRING, MULTILINESTRING, POLYGON, MULTIPOLYGON, and
      * GEOMETRYCOLLECTION.
      *
@@ -165,16 +165,16 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         },
 
         /**
-         * Return a comma delimited string of point coordinates from a mulTYPEPnt.
-         * @param {OpenLayers.Geometry.MulTYPEPnt} mulTYPEPnt
+         * Return a comma delimited string of point coordinates from a multipoint.
+         * @param {OpenLayers.Geometry.MultiPoint} multipoint
          * @returns {String} A string of point coordinate strings representing
-         *                  the mulTYPEPnt
+         *                  the multipoint
          */
-        'mulTYPEPnt': function(mulTYPEPnt) {
+        'multipoint': function(multipoint) {
             var array = [];
-            for(var i=0, len=mulTYPEPnt.components.length; i<len; ++i) {
+            for(var i=0, len=multipoint.components.length; i<len; ++i) {
                 array.push('(' +
-                           this.extract.point.apply(this, [mulTYPEPnt.components[i]]) +
+                           this.extract.point.apply(this, [multipoint.components[i]]) +
                            ')');
             }
             return array.join(',');
@@ -275,12 +275,12 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         },
 
         /**
-         * Return a mulTYPEPnt feature given a mulTYPEPnt WKT fragment.
-         * @param {String} str A WKT fragment representing the mulTYPEPnt
-         * @returns {OpenLayers.Feature.Vector} A mulTYPEPnt feature
+         * Return a multipoint feature given a multipoint WKT fragment.
+         * @param {String} str A WKT fragment representing the multipoint
+         * @returns {OpenLayers.Feature.Vector} A multipoint feature
          * @private
          */
-        'mulTYPEPnt': function(str) {
+        'multipoint': function(str) {
             var point;
             var points = OpenLayers.String.trim(str).split(',');
             var components = [];
@@ -289,7 +289,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
                 components.push(this.parse.point.apply(this, [point]).geometry);
             }
             return new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.MulTYPEPnt(components)
+                new OpenLayers.Geometry.MultiPoint(components)
             );
         },
         

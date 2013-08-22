@@ -9,15 +9,15 @@
  */
 
 /**
- * Class: OpenLayers.Geometry.MulTYPEPnt
- * MulTYPEPnt is a collection of Points.  Create a new instance with the
- * <OpenLayers.Geometry.MulTYPEPnt> constructor.
+ * Class: OpenLayers.Geometry.MultiPoint
+ * MultiPoint is a collection of Points.  Create a new instance with the
+ * <OpenLayers.Geometry.MultiPoint> constructor.
  *
  * Inherits from:
  *  - <OpenLayers.Geometry.Collection>
  *  - <OpenLayers.Geometry>
  */
-OpenLayers.Geometry.MulTYPEPnt = OpenLayers.Class(
+OpenLayers.Geometry.MultiPoint = OpenLayers.Class(
   OpenLayers.Geometry.Collection, {
 
     /**
@@ -29,14 +29,14 @@ OpenLayers.Geometry.MulTYPEPnt = OpenLayers.Class(
     componentTypes: ["OpenLayers.Geometry.Point"],
 
     /**
-     * Constructor: OpenLayers.Geometry.MulTYPEPnt
-     * Create a new MulTYPEPnt Geometry
+     * Constructor: OpenLayers.Geometry.MultiPoint
+     * Create a new MultiPoint Geometry
      *
      * Parameters:
      * components - {Array(<OpenLayers.Geometry.Point>)} 
      *
      * Returns:
-     * {<OpenLayers.Geometry.MulTYPEPnt>}
+     * {<OpenLayers.Geometry.MultiPoint>}
      */
 
     /**
@@ -62,5 +62,5 @@ OpenLayers.Geometry.MulTYPEPnt = OpenLayers.Class(
         this.removeComponent(point);
     },
 
-    CLASS_NAME: "OpenLayers.Geometry.MulTYPEPnt"
+    CLASS_NAME: "OpenLayers.Geometry.MultiPoint"
 });

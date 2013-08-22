@@ -4,19 +4,19 @@
  * full text of the license. */
 
 /**
- * @requires OpenLayers/Geometry/MulTYPEPnt.js
+ * @requires OpenLayers/Geometry/MultiPoint.js
  */
 
 /**
  * Class: OpenLayers.Geometry.Curve
- * A Curve is a MulTYPEPnt, whose points are assumed to be connected. To 
+ * A Curve is a MultiPoint, whose points are assumed to be connected. To 
  * this end, we provide a "getLength()" function, which iterates through 
  * the points, summing the distances between them. 
  * 
  * Inherits: 
- *  - <OpenLayers.Geometry.MulTYPEPnt>
+ *  - <OpenLayers.Geometry.MultiPoint>
  */
-OpenLayers.Geometry.Curve = OpenLayers.Class(OpenLayers.Geometry.MulTYPEPnt, {
+OpenLayers.Geometry.Curve = OpenLayers.Class(OpenLayers.Geometry.MultiPoint, {
 
     /**
      * Property: componentTypes

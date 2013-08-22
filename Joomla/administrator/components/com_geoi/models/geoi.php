@@ -389,7 +389,8 @@ class GeoiModelGeoi extends JModel
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$addcol ="ALTER TABLE GeoIOfertas ADD IDPOL".$numpola." int(11);";
+			//$addcol ="ALTER TABLE GeoIOfertas ADD IDPOL".$numpola." int(11);";
+			$addcol="CREATE TABLE GEOIOPOL".$numpola." (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, idpol int(11) NOT NULL, idofe int(11) NOT NULL)ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
 			$db = JFactory::getDbo();
 			$db->setQuery($addcol);
 			$ex=$db->execute();

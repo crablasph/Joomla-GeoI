@@ -7,7 +7,7 @@
  * @requires OpenLayers/Format/JSON.js
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Geometry/Point.js
- * @requires OpenLayers/Geometry/MulTYPEPnt.js
+ * @requires OpenLayers/Geometry/MultiPoint.js
  * @requires OpenLayers/Geometry/LineString.js
  * @requires OpenLayers/Geometry/MultiLineString.js
  * @requires OpenLayers/Geometry/Polygon.js
@@ -146,7 +146,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
         switch(type) {
             case "Geometry":
                 if(OpenLayers.Util.indexOf(
-                    ["Point", "MulTYPEPnt", "LineString", "MultiLineString",
+                    ["Point", "MultiPoint", "LineString", "MultiLineString",
                      "Polygon", "MultiPolygon", "Box", "GeometryCollection"],
                     obj.type) == -1) {
                     // unsupported geometry type
@@ -282,7 +282,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
         },
         
         /**
-         * Method: parseCoords.mulTYPEPnt
+         * Method: parseCoords.multipoint
          * Convert a coordinate array from GeoJSON into an
          *     <OpenLayers.Geometry>.
          *
@@ -292,7 +292,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
          */
-        "mulTYPEPnt": function(array) {
+        "multipoint": function(array) {
             var points = [];
             var p = null;
             for(var i=0, len=array.length; i<len; ++i) {
@@ -303,7 +303,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
                 }
                 points.push(p);
             }
-            return new OpenLayers.Geometry.MulTYPEPnt(points);
+            return new OpenLayers.Geometry.MultiPoint(points);
         },
 
         /**
@@ -593,20 +593,20 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
         },
 
         /**
-         * Method: extract.mulTYPEPnt
-         * Return an array of point coordinates from a mulTYPEPnt.
+         * Method: extract.multipoint
+         * Return an array of point coordinates from a multipoint.
          *
          * Parameters:
-         * mulTYPEPnt - {<OpenLayers.Geometry.MulTYPEPnt>}
+         * multipoint - {<OpenLayers.Geometry.MultiPoint>}
          *
          * Returns:
          * {Array} An array of point coordinate arrays representing
-         *     the mulTYPEPnt.
+         *     the multipoint.
          */
-        'mulTYPEPnt': function(mulTYPEPnt) {
+        'multipoint': function(multipoint) {
             var array = [];
-            for(var i=0, len=mulTYPEPnt.components.length; i<len; ++i) {
-                array.push(this.extract.point.apply(this, [mulTYPEPnt.components[i]]));
+            for(var i=0, len=multipoint.components.length; i<len; ++i) {
+                array.push(this.extract.point.apply(this, [multipoint.components[i]]));
             }
             return array;
         },
