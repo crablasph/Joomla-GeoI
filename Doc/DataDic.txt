@@ -1,0 +1,55 @@
+					DICCIONARIO DE DATOS
+					====================
+
+
+GEOICONF
+========
+Tabla que almacena las configuraciones y estados del componente.
+
+
+GEOICONF.id: (PK) Identificador único de registro.
+GEOICONF.PARAM: Almacena el nombre del parametro
+GEOICONF.VAL: el macena el valor del parametro.
+
+
+GEOIOFERTAS
+===========
+
+Tabla que almacena las Ofertas Inmobiliarias a mostrar.
+
+GEOIOFERTAS.oid: (PK) Identificador único de registro.
+GEOIOFERTAS.geom: Almacena la geometria de los elementos
+GEOIOFERTAS.TYPEP: Tipo de Inmueble
+GEOIOFERTAS.TYPEO: Tipo Ofertas
+GEOIOFERTAS.VALUE: Precio Valor del Inmueble
+GEOIOFERTAS.AREA: Area del Inmueble
+GEOIOFERTAS.ROOMS: Número de Habitaciones
+GEOIOFERTAS.AGE: Edad de la Construccion
+GEOIOFERTAS.TOILET: Número de baños
+GEOIOFERTAS.TEL1: Número de telefono #1
+GEOIOFERTAS.TEL2: Número de telefono #2
+GEOIOFERTAS.EMAIL: Email usuario
+GEOIOFERTAS.USERNAME: Nombre de usuario que cargo Oferta
+GEOIOFERTAS.USERID: (FK) ID Usuario que cargo Oferta
+
+
+GEOIPOLX
+========
+
+X es el nimero de poligono de 1 hasta n. Tabla que almacena Poligonos.
+
+GEOIPOLX.idint: Identficador único Poligono.
+GEOIPOLX.geom:Almacena la geometria de los elementos
+GEOIPOLX.idpol: ID usuario poligono.
+GEOIPOLX.NOMBRE: Nombre del poligono.
+
+
+GEOIOPOLX
+=========
+
+X es el nimero de poligono de 1 hasta n. Almacena las intersecciones entre 
+las ofertas y cada taba de poligono.
+
+GEOIOPOLX.id: (PK) Identificador único de registro.
+GEOIOPOLX.idpol: (FK) ID GEOIPOLX.
+GEOIOPOLX.idofe: (FK) ID GEOIOFERTAS.
