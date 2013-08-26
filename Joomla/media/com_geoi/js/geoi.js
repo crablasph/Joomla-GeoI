@@ -29,41 +29,75 @@
 		
                 
         //GEOJSON
-        var featurecollection = GetGeojson();
+        //var featurecollection = GetGeojson();
 		//alert(featurecollection);
        
         
-        var defaultStyle = new OpenLayers.Style({'pointRadius': 10,'externalGraphic': 'media/com_geoi/images/home.png'});
-	    var selectStyle = new OpenLayers.Style({'pointRadius': 20});
-		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
+        //var defaultStyle = new OpenLayers.Style({'pointRadius': 10,'externalGraphic': 'media/com_geoi/images/home.png'});
+	    //var selectStyle = new OpenLayers.Style({'pointRadius': 20});
+        //var defaultStyle = new OpenLayers.Style({'pointRadius': "${radius}",'externalGraphic': 'media/com_geoi/images/home.png'});
+	    //var selectStyle = new OpenLayers.Style({'pointRadius': "${radius2}"});
+		//var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
 		
-		vector_layer = new OpenLayers.Layer.Vector("Geojson",{styleMap: stylegeojson}); 
+		//vector_layer = new OpenLayers.Layer.Vector("Geojson",{styleMap: stylegeojson}); 
+		strategy = new OpenLayers.Strategy.Cluster();
+		strategy.distance=20;
+		strategy.threshold = null;
 		var url =document.URL + '&task=geojson&extent='+map.getExtent();
-		//var vector_layer = new OpenLayers.Layer.Vector("Ofertas",
-			//{styleMap: stylegeojson}, {
-			//protocol: new OpenLayers.Protocol.HTTP({
-				//url: url,
-				//format: new OpenLayers.Format.GeoJSON()
-			//}),
-			//strategies: [
-				//new OpenLayers.Strategy.Fixed(),
-				//new OpenLayers.Strategy.Cluster()
-			//]
-		//});
+		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 100000});
+		//, maxScale: 10000, minScale: 50000
+		var defaultStyle = new OpenLayers.Style({
+            pointRadius: "${radius}",
+            label: "${type}",
+            externalGraphic: 'media/com_geoi/images/home.png'
+        }, {
+            context: {
+                radius: function(vector_layer) {
+                    var pix = 2;
+                    if(vector_layer.cluster) {
+                        pix = Math.min(vector_layer.attributes.count, 7) + 8;
+                    }
+                    return pix;
+                },
+                type: function(vector_layer) {return vector_layer.attributes.count;}
+            }
+        });
 		
+		var selectStyle = new OpenLayers.Style({
+            pointRadius: "${radius}",
+            label: "${type}",
+            externalGraphic: 'media/com_geoi/images/home.png'
+        }, {
+            context: {
+                radius: function(vector_layer) {
+                    var pix = 2;
+                    if(vector_layer.cluster) {
+                        pix = Math.min(vector_layer.attributes.count, 7) + 12;
+                    }
+                    return pix;
+                },
+                type: function(vector_layer) {return vector_layer.attributes.count;}
+            }
+        });
 		
+		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
+
+		vector_layer.styleMap= stylegeojson;
 		var geojson_format = new OpenLayers.Format.GeoJSON();
-        vector_layer.addFeatures(geojson_format.read(featurecollection));
-		
-		map.addLayers([vector_layer]);
-		
+        //vector_layer.addFeatures(geojson_format.read(featurecollection));
+       	map.addLayers([vector_layer]);
+		reDrawGeojson();
+		//vector_layer.drawFeature();
+		//vector_layer.refresh();
 		//var proj=map.getProjection();
 		//OpenLayers.Util.getElement("prj").innerHTML = proj;
 		
-				select = new OpenLayers.Control.SelectFeature(vector_layer);
+		select = new OpenLayers.Control.SelectFeature(vector_layer, {hover: true});
         vector_layer.events.on({
+        		//"loadstart":reDrawGeojson,
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
+                //"movestart":onFeatureUnselect,
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
