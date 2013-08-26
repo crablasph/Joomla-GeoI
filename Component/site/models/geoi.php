@@ -46,7 +46,7 @@ class GeoiModelGeoi extends JModel
 			
 		}
 			
-        public function STtoGeoJson($tbl) 
+        public function STtoGeoJson($tbl,$bbox) 
         {
 			//echo JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';;
 			$colo=$this->getColArray();
@@ -62,8 +62,8 @@ class GeoiModelGeoi extends JModel
 			$st= $db->getQuery(true);
 			$st
 				->select($cols)
-				->from($tbl);
-			
+				->from($tbl)
+				->where("Intersects(geom, GeomFromText('".$bbox."'))");
 			$db->setQuery($st);
 			$ex=$db->execute();
 			$results = $db->loadObjectList();
