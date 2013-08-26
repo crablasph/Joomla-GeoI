@@ -259,7 +259,7 @@ class GeoiModelGeoi extends JModel
 					$values=" VALUES ";
 					$insert="";
 					$values=$values." (";
-					$insert="INSERT INTO GeoI".$tbln." ( geom , idpol , NOMBRE )";
+					$insert="INSERT INTO GeoI".$tbln." ( geom , idpol , NAME )";
 					$geomf = (string)$shparr['geom'];
 					$npar=substr_count($geomf, '(');
 					if($npar==1){
@@ -382,7 +382,7 @@ class GeoiModelGeoi extends JModel
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$crea ="CREATE TABLE GeoIPOL".$numpola."( idint int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NOMBRE CHAR(15) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
+			$crea ="CREATE TABLE GeoIPOL".$numpola."( idint int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(15) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
 			$db = JFactory::getDbo();
 			$db->setQuery($crea);
 			$ex=$db->execute();
