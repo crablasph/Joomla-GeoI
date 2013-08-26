@@ -1,5 +1,5 @@
  
- var map, vector_layer
+ var map, vector_layer,strategy
  function init(){ 
  
  //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
@@ -47,38 +47,16 @@
 		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 100000});
 		//, maxScale: 10000, minScale: 50000
 		var defaultStyle = new OpenLayers.Style({
-            pointRadius: "${radius}",
+            pointRadius: 10,
             label: "${type}",
             externalGraphic: 'media/com_geoi/images/home.png'
         }, {
-            context: {
-                radius: function(vector_layer) {
-                    var pix = 2;
-                    if(vector_layer.cluster) {
-                        pix = Math.min(vector_layer.attributes.count, 7) + 8;
-                    }
-                    return pix;
-                },
-                type: function(vector_layer) {return vector_layer.attributes.count;}
+        	context: 
+        	{ type: function(vector_layer) {return vector_layer.attributes.count;}
             }
         });
 		
-		var selectStyle = new OpenLayers.Style({
-            pointRadius: "${radius}",
-            label: "${type}",
-            externalGraphic: 'media/com_geoi/images/home.png'
-        }, {
-            context: {
-                radius: function(vector_layer) {
-                    var pix = 2;
-                    if(vector_layer.cluster) {
-                        pix = Math.min(vector_layer.attributes.count, 7) + 12;
-                    }
-                    return pix;
-                },
-                type: function(vector_layer) {return vector_layer.attributes.count;}
-            }
-        });
+		var selectStyle = new OpenLayers.Style({pointRadius: "20"});
 		
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
 
@@ -86,13 +64,13 @@
 		var geojson_format = new OpenLayers.Format.GeoJSON();
         //vector_layer.addFeatures(geojson_format.read(featurecollection));
        	map.addLayers([vector_layer]);
-		reDrawGeojson();
+		//reDrawGeojson();
 		//vector_layer.drawFeature();
 		//vector_layer.refresh();
 		//var proj=map.getProjection();
 		//OpenLayers.Util.getElement("prj").innerHTML = proj;
 		
-		select = new OpenLayers.Control.SelectFeature(vector_layer, {hover: true});
+		select = new OpenLayers.Control.SelectFeature(vector_layer);
         vector_layer.events.on({
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
@@ -113,10 +91,12 @@ function onFeatureSelect(event) {
             // Since KML is user-generated, do naive protection against
             // Javascript.
             //var content = "<h2>"+feature.attributes.iesu + "</h2>";
+            if(feature.attributes.count==1){vector_layer.strategies.deactivate;};
+            //map.clearCache();
 			var content = "";
 			var pjson = feature.attributes;
 			for (var key in pjson) { 
-			content = content + "<h2>" +key+": " + pjson[key] + " <h2>";
+			content = content + "<b>" +key+": </b>" + pjson[key];
 			}
 			
             if (content.search("<script") != -1) {
@@ -144,8 +124,10 @@ function onFeatureUnselect(event) {
 			}
 	
 function GetGeojson(){
-	
-	 var url =document.URL + '&task=geojson&extent='+map.getExtent();
+		
+	 var extent = map.getExtent();
+		
+	 var url =document.URL + '&task=geojson&bbox='+extent.toGeometry();
 	 return $.parseJSON($.ajax({
 									url:  url,
 									dataType: "json", 

@@ -51,12 +51,16 @@ class GeoiController extends JController
 			$input=$app->input;
 			$input->set('view', $input->getCmd('view', 'Geojson'));
             $document = JFactory::getDocument();
-            $document->setMimeEncoding('application/json; charset=ISO-8859-1');
+            $document->setMimeEncoding('application/json; charset=UTF8');
             $document->setType('raw');
             $view = $this->getView( 'Geojson', 'raw' );
             $model=$this->getModel();
             //echo "montaxxxxxxxxxxxxxx";
-            echo $model->STtoGeoJson('GeoIOfertas') ;
+            //print_r( $input);
+            $get_array = $input->getArray($_GET);
+            $bbox=$get_array['bbox'];
+            //echo $bbox."\n\n";
+            echo $model->STtoGeoJson('GeoIOfertas', $bbox) ;
             
             //echo $geojson;
             parent::display($cachable = false);
