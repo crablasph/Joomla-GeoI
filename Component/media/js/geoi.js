@@ -94,10 +94,8 @@
 		
 		select = new OpenLayers.Control.SelectFeature(vector_layer, {hover: true});
         vector_layer.events.on({
-        		//"loadstart":reDrawGeojson,
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
-                //"movestart":onFeatureUnselect,
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
