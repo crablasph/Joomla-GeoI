@@ -41,10 +41,10 @@
 		
 		//vector_layer = new OpenLayers.Layer.Vector("Geojson",{styleMap: stylegeojson}); 
 		strategy = new OpenLayers.Strategy.Cluster();
-		strategy.distance=20;
+		strategy.distance=50;
 		strategy.threshold = null;
-		var url =document.URL + '&task=geojson&extent='+map.getExtent();
-		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 100000});
+		//var url =document.URL + '&task=geojson&extent='+map.getExtent();
+		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 50000});
 		//, maxScale: 10000, minScale: 50000
 		var defaultStyle = new OpenLayers.Style({
             pointRadius: 10,
@@ -91,7 +91,7 @@ function onFeatureSelect(event) {
             // Since KML is user-generated, do naive protection against
             // Javascript.
             //var content = "<h2>"+feature.attributes.iesu + "</h2>";
-            if(feature.attributes.count==1){vector_layer.strategies.deactivate;};
+            //if(feature.attributes.count==1){vector_layer.strategies.deactivate;};
             //map.clearCache();
 			var content = "";
 			var pjson = feature.attributes;
@@ -137,10 +137,25 @@ function GetGeojson(){
 	}
 	
 function reDrawGeojson(event) {
+	 				//vector_layer.getFeaturesByAttribute("id sub",)
                     vector_layer.removeAllFeatures();
+					//var pjson = vector_layer.features.attributes;
+					//vector_layer.eraseFeatures();
 					var featurecollection = GetGeojson();
 					var geojson_format = new OpenLayers.Format.GeoJSON();
-					vector_layer.addFeatures(geojson_format.read(featurecollection));
+					var read = geojson_format.parseFeature(featurecollection);
+					
+					var pjson = read.attributes;
+					//alert (pjson);
+					for (var key in pjson) { 
+						var feature = vector_layer.getFeaturesByAttribute("id sub",pjson[key]);
+						console.log(feature.fid);
+					}
+					//alert ("XXXXXXXXXX");
+					//alert(geojson_read.properties.);
+					var geojson_read=geojson_format.read(featurecollection);
+					//alert(geojson_read);
+					vector_layer.addFeatures(geojson_read);
 					//alert(map.getExtent())
 					
                 }
