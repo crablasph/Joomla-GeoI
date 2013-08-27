@@ -1,5 +1,5 @@
  
- var map, vector_layer,strategy
+ var map, vector_layer, select, popup
  function init(){ 
  
  //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
@@ -26,15 +26,15 @@
 		map.addLayers([osm, gmap]);
 		var bounds = new OpenLayers.Bounds(-8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381); 
         map.zoomToExtent(bounds);
-		
-                
+		        
 
 		strategy = new OpenLayers.Strategy.Cluster();
 		strategy.distance=50;
 		strategy.threshold = 3;
-		//var url =document.URL + '&task=geojson&extent='+map.getExtent();
+
 		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 50000});
 		//, maxScale: 10000, minScale: 50000
+		
 		var defaultStyle = new OpenLayers.Style({
             pointRadius: 10,
             label: "${type}",
@@ -68,6 +68,7 @@
         vector_layer.events.on({
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
+                //"movestart":map.removePopup(popup),
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
@@ -76,7 +77,7 @@
 }
 
 function onPopupClose(evt) {
-            select.unselectAll();
+	select.unselectAll();
 
         }
 
@@ -103,6 +104,7 @@ function onFeatureSelect(event) {
 		    {           
 		    	for (i=0;i<cfeatures.length; i++ ) { 
 		    		var pjson2=cfeatures[i].attributes;
+		    		content = content +"<b>"+(i+1)+"</b><br>";
 		    		for (var key in pjson2) { 
 						content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
 						}
