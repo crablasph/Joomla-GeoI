@@ -28,21 +28,10 @@
         map.zoomToExtent(bounds);
 		
                 
-        //GEOJSON
-        //var featurecollection = GetGeojson();
-		//alert(featurecollection);
-       
-        
-        //var defaultStyle = new OpenLayers.Style({'pointRadius': 10,'externalGraphic': 'media/com_geoi/images/home.png'});
-	    //var selectStyle = new OpenLayers.Style({'pointRadius': 20});
-        //var defaultStyle = new OpenLayers.Style({'pointRadius': "${radius}",'externalGraphic': 'media/com_geoi/images/home.png'});
-	    //var selectStyle = new OpenLayers.Style({'pointRadius': "${radius2}"});
-		//var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
-		
-		//vector_layer = new OpenLayers.Layer.Vector("Geojson",{styleMap: stylegeojson}); 
+
 		strategy = new OpenLayers.Strategy.Cluster();
 		strategy.distance=50;
-		strategy.threshold = null;
+		strategy.threshold = 3;
 		//var url =document.URL + '&task=geojson&extent='+map.getExtent();
 		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 50000});
 		//, maxScale: 10000, minScale: 50000
@@ -52,7 +41,12 @@
             externalGraphic: 'media/com_geoi/images/home.png'
         }, {
         	context: 
-        	{ type: function(vector_layer) {return vector_layer.attributes.count;}
+        	{ type: function(vector_layer) {
+        		if (isNaN(vector_layer.attributes.count)){
+        		return "";}
+        		else
+        			return vector_layer.attributes.count;
+        		}
             }
         });
 		
@@ -87,20 +81,84 @@ function onPopupClose(evt) {
         }
 
 function onFeatureSelect(event) {
+	
+	/*var Style = new OpenLayers.Style({
+        pointRadius: 10,
+        externalGraphic: 'media/com_geoi/images/home.png'
+    });
+	var selectStyle = new OpenLayers.Style({pointRadius: "20"});
+	
+	var stylegeojson = new OpenLayers.StyleMap({'default': Style,'select': selectStyle});
+	
+	decluster_layer = new OpenLayers.Layer.Vector("Decluster", {minScale: 50000});
+	decluster_layer.styleMap= stylegeojson;*/
+	
+			//vector_layer.strategies[0].deactivate();
+            //vector_layer.refresh({force: true});
+			//vector_layer.redraw();
+			//alert (act);
+			/// PRIMERO TENGO QUE HACER UN RECLUSTER
             var feature = event.feature;
+            //feature.layer.strategies[0].deactivate();
+            //feature.layer.strategies[0].clearCache();
+            //feature.layer.drawFeature(feature);
+            //alert (feature.fid);
+            //cfeatures = feature.layer.strategies[0].features;
+            cfeatures = feature.cluster;
+            //alert (cfeatures[0].id);
+            //feature.layer.strategies[0].deactivate();
+			//feature.layer.drawFeature(cfeatures, stylegeojson);
+            var selected=[];
+
+            //alert(cfeatures[0].renderIntent);
+            //alert(feature.fid);
+            //alert(cfeatures.length);
+			//decluster_layer.addFeatures(cfeatures);
+			//map.addLayers([decluster_layer]);
+			//map.removeLayer(vector_layer);
+            //feature.layer.redraw();
+            //feature.layer.refresh({force: true});
             // Since KML is user-generated, do naive protection against
             // Javascript.
             //var content = "<h2>"+feature.attributes.iesu + "</h2>";
             //if(feature.attributes.count==1){vector_layer.strategies.deactivate;};
             //map.clearCache();
+            var cluster = event.feature.cluster;
+            //alert (cluster.length);
 			var content = "";
 			var pjson = feature.attributes;
-			for (var key in pjson) { 
-			content = content + "<b>" +key+": </b>" + pjson[key];
-			}
-			
-            if (content.search("<script") != -1) {
-                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
+			if(!feature.cluster) // if not cluster
+		    {
+				for (var key in pjson) { 
+					content = content + "<b>" +key+": </b>" + pjson[key]+"<br>";
+					}
+					
+		            if (content.search("<script") != -1) {
+		                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
+		            }
+		            
+
+		    } 
+		    else
+		    {           
+		    	for (i=0;i<cfeatures.length; i++ ) { 
+		    		//selected.push(cfeatures[i].id);
+		    		pjson2=cfeatures[i].attributes;
+		    		for (var key in pjson2) { 
+						content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
+						}
+						
+			            if (content.search("<script") != -1) {
+			                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
+			            }
+			            
+				}
+		    	//for (i=0;i<selected.length; i++ ) { 
+		    	//	alert(selected[i]);
+				//}
+	            //alert(selected[1]);
+		    	//alert (cfeatures.features.toString);
+		    	
             }
 			vector_layer.events.un({"moveend":reDrawGeojson});
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
@@ -108,8 +166,14 @@ function onFeatureSelect(event) {
                                      new OpenLayers.Size(50,50),
                                      content,
                                      null, true, onPopupClose);
+
             feature.popup = popup;
             map.addPopup(popup);
+			
+			
+            
+			//vector_layer.strategies[0].activate();
+            //vector_layer.refresh({force: true});
 
         }
         
@@ -149,7 +213,9 @@ function reDrawGeojson(event) {
 					//alert (pjson);
 					for (var key in pjson) { 
 						var feature = vector_layer.getFeaturesByAttribute("id sub",pjson[key]);
-						console.log(feature.fid);
+						//console.log(feature.fid);
+						 if(isNaN(feature.fid)){alert ("XXXXXXX");}
+						 exit;
 					}
 					//alert ("XXXXXXXXXX");
 					//alert(geojson_read.properties.);
