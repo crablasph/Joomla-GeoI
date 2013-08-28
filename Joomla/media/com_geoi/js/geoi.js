@@ -37,7 +37,7 @@
 
 		strategy = new OpenLayers.Strategy.Cluster();
 		strategy.distance=50;
-		strategy.threshold = 3;
+		strategy.threshold = 2;
 
 		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 50000});
 		//, maxScale: 10000, minScale: 50000
@@ -166,51 +166,64 @@ function GetGeojson(){
 	
 function reDrawGeojson(event) {
 	 				//vector_layer.getFeaturesByAttribute("id sub",)
-                    vector_layer.removeAllFeatures();
+                    
 					//var pjson = vector_layer.features.attributes;
 					//vector_layer.eraseFeatures();
 					var featurecollection = GetGeojson();
 					var geojson_format = new OpenLayers.Format.GeoJSON();
 					//var read = geojson_format.parseFeature(featurecollection);
 					//alert (typeof(featurecollection));
-					var oldreq = [];
+					//alert(vector_layer.strategies[0].features.length);
+/*					var oldreq = [];
 					var oldgeoson=request[request.length-2];
 					var newreq=[];
 					for(i=0;i<featurecollection.features.length;i++){
 						newreq[i]=featurecollection.features[1].properties.oid;
 					}
 					if(typeof(oldgeoson)!="undefined"){
-
 						for(i=0;i<oldgeoson.features.length;i++){
 							 oldreq[i]=oldgeoson.features[1].properties.oid;
 						}
 					}
 					//alert ("old:"+oldreq.length);
 					//alert ("new:"+newreq.length);
-					///FEATURE IDS A GREGAR
+					///FEATURE IGUALES
 					var add = [];
 					var same = [];
 					var del = [];
 					var cont = 0;
-					for(i=0;i<oldreq.length;i++){
-						for(j=0;j<newreq.length;j++){
-						if (oldreq[i]==newreq[j]){
+					for(i=0;i<newreq.length;i++){
+						for(j=0;j<oldreq.length;j++){
+						if (oldreq[j]==newreq[i]){
 							//alert(oldreq[i]);
-							same[cont]=newreq[j];
+							same[cont]=newreq[i];
 							cont ++;
 							break;
 						
 						}
 						}
 					}
-					//alert("nuevos:"+newreq.length+" viejos:"+oldreq.length+" iguales:"+same.length);
+					cont = 0;
+					for (i=0;i<oldreq.length;i++){
+						for(j=0;j<same.length;j++){
+							if (oldreq[i]!=same[j]){
+								del[cont]=oldreq[i];
+								cont ++;
+								break;
+							}
+						}						
+					}
+*/
+					//alert ("borrar:"+del.length);
+					//alert("nuevos:"+newreq.length+" viejos:"+oldreq.length+" iguales:"+same.length+" borrar:"+del.length);
 					//alert(featurecollection.type);
-					var pjson = vector_layer.features.attributes;
+					//var pjson = vector_layer.features.attributes;
 
 					//alert ("XXXXXXXXXX");
 					//alert(geojson_read.properties.);
 					var geojson_read=geojson_format.read(featurecollection);
 					//alert(geojson_read);
+					vector_layer.removeAllFeatures();
 					vector_layer.addFeatures(geojson_read);
 					//alert(map.getExtent())
 					
