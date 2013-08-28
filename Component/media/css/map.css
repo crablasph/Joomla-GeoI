@@ -3,3 +3,31 @@
                 width: 100%;
                 height: 100%;
             }
+
+.accordion > li:hover > a,
+.accordion > li:target > a,
+.accordion > li > a.active {
+    color: #3e5706;
+   
+ 
+    /*background: url(../img/active.png) repeat-x;*/
+
+}
+
+.accordion > li:hover > a span,
+.accordion > li:target > a span,
+.accordion > li > a.active span {
+    color: #3e5706;
+
+
+}
+
+
+
+.accordion li > .sub-menu {
+    display: none;
+}
+ 
+.accordion li:target > .sub-menu {
+    display: block;
+}

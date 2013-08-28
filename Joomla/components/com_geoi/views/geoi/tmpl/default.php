@@ -9,10 +9,10 @@ defined('_JEXEC') or die('Restricted Access');
 <html >
     <head>
 	<base href="<?php echo JURI::root()?>" >
-    <script src="<?php echo JURI::root()."media/com_geoi/openlayers/OpenLayers.js" ?>"></script>
-    <script src="<?php echo JURI::root()."media/com_geoi/js/geoi.js" ?>"></script>
 	<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="<?php echo JURI::root()."media/com_geoi/openlayers/OpenLayers.js" ?>"></script>
+    <script src="<?php echo JURI::root()."media/com_geoi/js/geoi.js" ?>"></script>
 	<link rel="stylesheet" href="<?php echo JURI::root()."media/com_geoi/css/map.css" ?>" type="text/css">
     </head>
 	<body onload="init()">

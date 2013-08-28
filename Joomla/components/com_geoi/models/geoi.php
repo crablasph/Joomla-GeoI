@@ -49,6 +49,10 @@ class GeoiModelGeoi extends JModel
         public function STtoGeoJson($tbl,$bbox) 
         {
 			//echo JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';;
+        	//$fecha = new DateTime();
+        	//echo $fecha->format('c')."\n";
+        	//$fecha1= $fecha->getTimestamp();
+			//echo "1.".$fecha1."\n";
 			$colo=$this->getColArray();
 			$colsi= array("AsText(geom)", "oid ");
 			$cols=array_merge($colsi,$colo);
@@ -71,7 +75,9 @@ class GeoiModelGeoi extends JModel
 			//echo "montaxxxxxzzzzzxxxxxx";
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
-			//print_r($results );	
+			//print_r($results );
+			//$fecha2 = new DateTime();
+			//echo $fecha2->format('c')."\n";
 			$cont=0;	
 			$coll = '{'."\n";
 			$coll =$coll. "	".'"type":"FeatureCollection",'."\n";
@@ -123,7 +129,7 @@ class GeoiModelGeoi extends JModel
 							}
 						$cont2++;
 						}
-						
+					
 					$cont++;
 					$coll =$coll. '			}'."\n";
 					$coll =$coll. "		}";
@@ -131,6 +137,8 @@ class GeoiModelGeoi extends JModel
 							$coll =$coll. ',';}
 					$coll =$coll. "\n";
 					}
+					//$fecha3 = new DateTime();
+					//echo $fecha3->format('c')."\n";
 					$coll =$coll. ']'."\n".'}';
 					//$coll=json_encode($coll);
 					return $coll;

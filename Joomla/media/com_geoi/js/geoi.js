@@ -1,4 +1,36 @@
- 
+$(document).ready(function() {
+
+// Store variables
+
+var accordion_head = $('.accordion > li > a'),
+    accordion_body = $('.accordion li > .sub-menu');
+
+// Open the first tab on load
+
+accordion_head.first().addClass('active').next().slideDown('normal');
+
+// Click function
+
+accordion_head.on('click', function(event) {
+
+    // Disable header links
+
+    event.preventDefault();
+
+    // Show and hide the tabs on click
+
+    if ($(this).attr('class') != 'active'){
+        accordion_body.slideUp('normal');
+        $(this).next().stop(true,true).slideToggle('normal');
+        accordion_head.removeClass('active');
+        $(this).addClass('active');
+    }
+
+});
+
+}); 
+
+
  var map, vector_layer, select, popup;
  var request=[];
  function init(){ 
@@ -93,7 +125,7 @@ function onFeatureSelect(event) {
             var cfeatures = feature.cluster;
             var cluster = event.feature.cluster;
             //alert (cluster.length);
-			var content = "";
+			var content = '';
 			var pjson = feature.attributes;
 			if(!feature.cluster) // if not cluster
 		    {
@@ -102,31 +134,28 @@ function onFeatureSelect(event) {
 							content = content + "<b>" +key+": </b>" + pjson[key]+"<br>";
 					}
 					}
-					
-		            if (content.search("<script") != -1) {
-		                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
-		            }
-		            
-
 		    } 
 		    else
-		    {           
+		    {        
+		    	content = content + '<ul class="accordion">';
 		    	for (i=0;i<cfeatures.length; i++ ) { 
 		    		var pjson2=cfeatures[i].attributes;
-		    		content = content +"<b>"+(i+1)+"</b><br>";
+		    		content = content +'<li><b><a>'+(i+1)+'</a></b><br><ul class="sub-menu">';
 		    		for (var key in pjson2) { 
 		    			if(key!="oid"){
-							content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
+							content = content + "<a ><b>" +key+": </b>" + pjson2[key]+"</a><br>";
 		    			}
 						}
-		    		content = content + "<br>";
-			            if (content.search("<script") != -1) {
-			                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
-			            }
-			            
+		    		content = content +"</ul></li>";
+
 				}
+		    	content = content + '</ul>';
             }
-			
+    		content = content + "<br>";
+            if (content.search("<script") != -1) {
+                content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
+            }
+            
 			vector_layer.events.un({"moveend":reDrawGeojson});
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),
@@ -235,3 +264,7 @@ function popupClear() {
          map.removePopup(map.popups[0]);
     }
 }
+
+
+
+
