@@ -50,7 +50,7 @@ class GeoiModelGeoi extends JModel
         {
 			//echo JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';;
 			$colo=$this->getColArray();
-			$colsi= array("AsText(geom)", "oid 'id sub'");
+			$colsi= array("AsText(geom)", "oid ");
 			$cols=array_merge($colsi,$colo);
 			//print_r($cols);
 			//$st="SELECT AsText(geom),oid ,  TYPEP 'Tipo de Inmueble', TYPEO 'Tipo de Oferta', VALUE 'VALUE', AREA ''  FROM ".$tbl.";";

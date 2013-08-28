@@ -1,5 +1,6 @@
  
- var map, vector_layer, select, popup
+ var map, vector_layer, select, popup;
+ var request=[];
  function init(){ 
  
  //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
@@ -18,7 +19,13 @@
                     ],
                     numZoomLevels: 10,
                     projection: new OpenLayers.Projection("EPSG:3857"),
-					displayProjection: new OpenLayers.Projection("EPSG:4326")
+					displayProjection: new OpenLayers.Projection("EPSG:4326"), 
+	                    eventListeners: {
+	                    	"zoomend":popupClear
+	                        //"zoomend": mapEvent,
+	                        //"changelayer": mapLayerChanged,
+	                        //"changebaselayer": mapBaseLayerChanged
+	                    }
                     
                 });
 		var osm = new OpenLayers.Layer.OSM();
@@ -68,7 +75,7 @@
         vector_layer.events.on({
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
-                //"movestart":map.removePopup(popup),
+                //"zoomstart":popupClear,
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
@@ -91,7 +98,9 @@ function onFeatureSelect(event) {
 			if(!feature.cluster) // if not cluster
 		    {
 				for (var key in pjson) { 
-					content = content + "<b>" +key+": </b>" + pjson[key]+"<br>";
+					if(key!="oid"){
+							content = content + "<b>" +key+": </b>" + pjson[key]+"<br>";
+					}
 					}
 					
 		            if (content.search("<script") != -1) {
@@ -106,7 +115,9 @@ function onFeatureSelect(event) {
 		    		var pjson2=cfeatures[i].attributes;
 		    		content = content +"<b>"+(i+1)+"</b><br>";
 		    		for (var key in pjson2) { 
-						content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
+		    			if(key!="oid"){
+							content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
+		    			}
 						}
 		    		content = content + "<br>";
 			            if (content.search("<script") != -1) {
@@ -129,11 +140,13 @@ function onFeatureSelect(event) {
         
 function onFeatureUnselect(event) {
             var feature = event.feature;
-            if(feature.popup) {
-                map.removePopup(feature.popup);
-                feature.popup.destroy();
-                delete feature.popup;
-				vector_layer.events.on({"moveend":reDrawGeojson	});
+            if (typeof feature != 'undefined'){
+	            if(feature.popup) {
+	                map.removePopup(feature.popup);
+	                feature.popup.destroy();
+	                delete feature.popup;
+					vector_layer.events.on({"moveend":reDrawGeojson	});
+	            }
             }
 			}
 	
@@ -142,11 +155,12 @@ function GetGeojson(){
 	 var extent = map.getExtent();
 		
 	 var url =document.URL + '&task=geojson&bbox='+extent.toGeometry();
-	 return $.parseJSON($.ajax({
-									url:  url,
-									dataType: "json", 
-									async: false
-								}).responseText);
+	 request.push($.parseJSON($.ajax({
+			url:  url,
+			dataType: "json", 
+			async: false
+		}).responseText));
+	 return  request[request.length-1];
 	
 	}
 	
@@ -157,16 +171,42 @@ function reDrawGeojson(event) {
 					//vector_layer.eraseFeatures();
 					var featurecollection = GetGeojson();
 					var geojson_format = new OpenLayers.Format.GeoJSON();
-					var read = geojson_format.parseFeature(featurecollection);
-					
-					var pjson = read.attributes;
-					//alert (pjson);
-					for (var key in pjson) { 
-						var feature = vector_layer.getFeaturesByAttribute("id sub",pjson[key]);
-						//console.log(feature.fid);
-						 if(isNaN(feature.fid)){alert ("XXXXXXX");}
-						 exit;
+					//var read = geojson_format.parseFeature(featurecollection);
+					//alert (typeof(featurecollection));
+					var oldreq = [];
+					var oldgeoson=request[request.length-2];
+					var newreq=[];
+					for(i=0;i<featurecollection.features.length;i++){
+						newreq[i]=featurecollection.features[1].properties.oid;
 					}
+					if(typeof(oldgeoson)!="undefined"){
+
+						for(i=0;i<oldgeoson.features.length;i++){
+							 oldreq[i]=oldgeoson.features[1].properties.oid;
+						}
+					}
+					//alert ("old:"+oldreq.length);
+					//alert ("new:"+newreq.length);
+					///FEATURE IDS A GREGAR
+					var add = [];
+					var same = [];
+					var del = [];
+					var cont = 0;
+					for(i=0;i<oldreq.length;i++){
+						for(j=0;j<newreq.length;j++){
+						if (oldreq[i]==newreq[j]){
+							//alert(oldreq[i]);
+							same[cont]=newreq[j];
+							cont ++;
+							break;
+						
+						}
+						}
+					}
+					//alert("nuevos:"+newreq.length+" viejos:"+oldreq.length+" iguales:"+same.length);
+					//alert(featurecollection.type);
+					var pjson = vector_layer.features.attributes;
+
 					//alert ("XXXXXXXXXX");
 					//alert(geojson_read.properties.);
 					var geojson_read=geojson_format.read(featurecollection);
@@ -175,3 +215,10 @@ function reDrawGeojson(event) {
 					//alert(map.getExtent())
 					
                 }
+
+function popupClear() {
+    //alert('number of popups '+map.popups.length);
+    while( map.popups.length ) {
+         map.removePopup(map.popups[0]);
+    }
+}
