@@ -1,37 +1,4 @@
-$(document).ready(function() {
-
-// Store variables
-
-var accordion_head = $('.accordion > li > a'),
-    accordion_body = $('.accordion li > .sub-menu');
-
-// Open the first tab on load
-
-accordion_head.first().addClass('active').next().slideDown('normal');
-
-// Click function
-
-accordion_head.on('click', function(event) {
-
-    // Disable header links
-
-    event.preventDefault();
-
-    // Show and hide the tabs on click
-
-    if ($(this).attr('class') != 'active'){
-        accordion_body.slideUp('normal');
-        $(this).next().stop(true,true).slideToggle('normal');
-        accordion_head.removeClass('active');
-        $(this).addClass('active');
-    }
-
-});
-
-}); 
-
-
- var map, vector_layer, select, popup;
+var map, vector_layer, select, popup;
  var request=[];
  function init(){ 
  
@@ -77,6 +44,11 @@ accordion_head.on('click', function(event) {
 		var defaultStyle = new OpenLayers.Style({
             pointRadius: 10,
             label: "${type}",
+            fontColor:"blue",
+            fontSize:"12",
+            fontWeight: "bold",
+            labelOutlineColor: "white",
+            labelOutlineWidth: 3,
             externalGraphic: 'media/com_geoi/images/home.png'
         }, {
         	context: 
@@ -125,7 +97,7 @@ function onFeatureSelect(event) {
             var cfeatures = feature.cluster;
             var cluster = event.feature.cluster;
             //alert (cluster.length);
-			var content = '';
+			var content = "";
 			var pjson = feature.attributes;
 			if(!feature.cluster) // if not cluster
 		    {
@@ -137,19 +109,19 @@ function onFeatureSelect(event) {
 		    } 
 		    else
 		    {        
-		    	content = content + '<ul class="accordion">';
+		    	content = content + '<dl class="accordion">';
 		    	for (i=0;i<cfeatures.length; i++ ) { 
 		    		var pjson2=cfeatures[i].attributes;
-		    		content = content +'<li><b><a>'+(i+1)+'</a></b><br><ul class="sub-menu">';
+		    		content = content +'<dt><b>'+(i+1)+'</b></dt><dd>';
 		    		for (var key in pjson2) { 
 		    			if(key!="oid"){
-							content = content + "<a ><b>" +key+": </b>" + pjson2[key]+"</a><br>";
+							content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
 		    			}
 						}
-		    		content = content +"</ul></li>";
+		    		content = content +"</dd>";
 
 				}
-		    	content = content + '</ul>';
+		    	content = content + '</dl>';
             }
     		content = content + "<br>";
             if (content.search("<script") != -1) {
@@ -162,7 +134,7 @@ function onFeatureSelect(event) {
                                      new OpenLayers.Size(50,50),
                                      content,
                                      null, true, onPopupClose);
-
+           
             feature.popup = popup;
             map.addPopup(popup);
         }
@@ -266,5 +238,17 @@ function popupClear() {
 }
 
 
+/*<script type="text/javascript">
+$(document).ready(function($) {
+    
+	  var allPanels = $('.accordion > dd').hide();
+	    
+	  $('.accordion > dt > a').click(function() {
+	    allPanels.slideUp();
+	    $(this).parent().next().slideDown();
+	    return false;
+	  });
 
-
+	})(jQuery); 
+//</script> 
+*/

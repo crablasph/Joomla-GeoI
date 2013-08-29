@@ -4,30 +4,29 @@
                 height: 100%;
             }
 
-.accordion > li:hover > a,
-.accordion > li:target > a,
-.accordion > li > a.active {
-    color: #3e5706;
-   
- 
-    /*background: url(../img/active.png) repeat-x;*/
 
-}
-
-.accordion > li:hover > a span,
-.accordion > li:target > a span,
-.accordion > li > a.active span {
-    color: #3e5706;
-
-
-}
-
-
-
-.accordion li > .sub-menu {
-    display: none;
-}
- 
-.accordion li:target > .sub-menu {
-    display: block;
+.accordion {
+   margin: 50px;   
+   dt, dd {
+      padding: 10px;
+      border: 1px solid black;
+      border-bottom: 0; 
+      &:last-of-type {
+        border-bottom: 1px solid black; 
+      }
+      a {
+        display: block;
+        color: black;
+        font-weight: bold;
+      }
+   }
+  dd {
+     border-top: 0; 
+     font-size: 12px;
+     &:last-of-type {
+       border-top: 1px solid white;
+       position: relative;
+       top: -1px;
+     }
+  }
 }
