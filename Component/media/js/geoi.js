@@ -83,7 +83,9 @@ var map, vector_layer, select, popup;
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
-		select.activate();   
+		select.activate(); 
+ 		//map.events.register('zoomstart', {center:map.center,zoom:map.zoom}, onZoomStart);
+		//alert(map.controls[7].id.toString());
 		
 }
 
@@ -128,7 +130,7 @@ function onFeatureSelect(event) {
                 content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
             }
             
-			vector_layer.events.un({"moveend":reDrawGeojson});
+			
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),
                                      new OpenLayers.Size(50,50),
@@ -136,7 +138,9 @@ function onFeatureSelect(event) {
                                      null, true, onPopupClose);
            
             feature.popup = popup;
+            vector_layer.events.un({"moveend":reDrawGeojson});
             map.addPopup(popup);
+            //vector_layer.events.on({"moveend":reDrawGeojson	});
         }
         
 function onFeatureUnselect(event) {
@@ -234,6 +238,26 @@ function popupClear() {
     //alert('number of popups '+map.popups.length);
     while( map.popups.length ) {
          map.removePopup(map.popups[0]);
+    }
+    //var x="";
+    //for(i=0;i<map.controls.length;i++){
+    //	x=x+" , "+map.controls[i].id.toString();
+    //}
+    //alert(x);
+
+    
+}
+
+function UnselectAllFeatures(){
+	alert ("XXXXX");
+    if(typeof(vector_layer)!="undefined"){
+    	//alert ("xx"+vector_layer.selectedFeatures.length);
+	    if (vector_layer.selectedFeatures.length>0){
+			    if(typeof(map.controls[7])!="undefined"){
+			    	map.controls[7].unselectAll();
+			    	vector_layer.events.on({"moveend":reDrawGeojson	});
+			    }
+	    }
     }
 }
 
