@@ -75,11 +75,11 @@ var map, vector_layer, select, popup;
 		//var proj=map.getProjection();
 		//OpenLayers.Util.getElement("prj").innerHTML = proj;
 		
-		select = new OpenLayers.Control.SelectFeature(vector_layer);
+		//select = new OpenLayers.Control.SelectFeature(vector_layer,{hover:true});
+       	select = new OpenLayers.Control.SelectFeature(vector_layer);
         vector_layer.events.on({
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
-                //"zoomstart":popupClear,
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
@@ -89,9 +89,9 @@ var map, vector_layer, select, popup;
 		
 }
 
-function onPopupClose(evt) {
+function onPopupClose() {
 	select.unselectAll();
-
+	
         }
 
 function onFeatureSelect(event) {
@@ -140,6 +140,7 @@ function onFeatureSelect(event) {
             feature.popup = popup;
             vector_layer.events.un({"moveend":reDrawGeojson});
             map.addPopup(popup);
+            map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
         }
         
@@ -150,8 +151,12 @@ function onFeatureUnselect(event) {
 	                map.removePopup(feature.popup);
 	                feature.popup.destroy();
 	                delete feature.popup;
-					vector_layer.events.on({"moveend":reDrawGeojson	});
+					//vector_layer.events.on({"moveend":reDrawGeojson	});
 	            }
+	            select.unselectAll();
+	            map.controls[0].activate();
+	            vector_layer.events.on({"moveend":reDrawGeojson	});
+	            
             }
 			}
 	
@@ -249,7 +254,7 @@ function popupClear() {
 }
 
 function UnselectAllFeatures(){
-	alert ("XXXXX");
+	//alert ("XXXXX");
     if(typeof(vector_layer)!="undefined"){
     	//alert ("xx"+vector_layer.selectedFeatures.length);
 	    if (vector_layer.selectedFeatures.length>0){
