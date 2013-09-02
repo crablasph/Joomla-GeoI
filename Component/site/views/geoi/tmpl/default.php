@@ -17,7 +17,9 @@ defined('_JEXEC') or die('Restricted Access');
 	<link rel="stylesheet" href="<?php echo JURI::root()."media/com_geoi/css/map.css" ?>" type="text/css">
     </head>
 	<body onload="init()">
-        <div id="map-id" ></div>
+        <div id="map-id" >
+        	<a class="search" href="#"></a>
+        </div>
 	</body>
 </html>
 

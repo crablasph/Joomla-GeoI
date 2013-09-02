@@ -60,11 +60,29 @@ class GeoiController extends JController
             $get_array = $input->getArray($_GET);
             $bbox=$get_array['bbox'];
             //echo $bbox."\n\n";
-            echo $model->STtoGeoJson('GeoIOfertas', $bbox) ;
+            echo $model->STtoGeoJson('GeoIOfertas', $bbox, TRUE) ;
             
             //echo $geojson;
             parent::display($cachable = false);
             $app->close();
+		}
+		
+		function GetAttributes(){
+			$app = JFactory::getApplication();
+			$input=$app->input;
+			$input->set('view', $input->getCmd('view', 'Geojson'));
+			$document = JFactory::getDocument();
+			$document->setMimeEncoding('application/json; charset=UTF8');
+			$document->setType('raw');
+			$view = $this->getView( 'Geojson', 'raw' );
+			$model=$this->getModel();
+			$get_array = $input->getArray($_GET);
+			//Lista de IDS separadas por comas
+			$idlist=$get_array['idlist'];
+			echo $model->GetAttributesbyID($idlist);
+			
+			parent::display($cachable = false);
+			$app->close();
 		}
 		
 		function config()

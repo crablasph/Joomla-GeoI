@@ -4,7 +4,7 @@ var map, vector_layer, select, popup;
  
  //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
 
-	//var gjson = GetGeojson();
+	//var gjson = getGeojson();
  
  map = new OpenLayers.Map('map-id',{
                     controls: [
@@ -75,11 +75,11 @@ var map, vector_layer, select, popup;
 		//var proj=map.getProjection();
 		//OpenLayers.Util.getElement("prj").innerHTML = proj;
 		
-		select = new OpenLayers.Control.SelectFeature(vector_layer);
+		//select = new OpenLayers.Control.SelectFeature(vector_layer,{hover:true});
+       	select = new OpenLayers.Control.SelectFeature(vector_layer);
         vector_layer.events.on({
                 "featureselected": onFeatureSelect,
                 "featureunselected": onFeatureUnselect,
-                //"zoomstart":popupClear,
 				"moveend":reDrawGeojson
             });
 		map.addControl(select);
@@ -89,9 +89,9 @@ var map, vector_layer, select, popup;
 		
 }
 
-function onPopupClose(evt) {
+function onPopupClose() {
 	select.unselectAll();
-
+	
         }
 
 function onFeatureSelect(event) {
@@ -100,37 +100,64 @@ function onFeatureSelect(event) {
             var cluster = event.feature.cluster;
             //alert (cluster.length);
 			var content = "";
+			//alert (getAttributesbyID("1,2,3"));
 			var pjson = feature.attributes;
+			var oids="";
 			if(!feature.cluster) // if not cluster
 		    {
 				for (var key in pjson) { 
-					if(key!="oid"){
-							content = content + "<b>" +key+": </b>" + pjson[key]+"<br>";
+					if(key=="oid"){
+						oids=oids+pjson[key];
 					}
-					}
+				}
 		    } 
 		    else
 		    {        
 		    	content = content + '<dl class="accordion">';
 		    	for (i=0;i<cfeatures.length; i++ ) { 
 		    		var pjson2=cfeatures[i].attributes;
-		    		content = content +'<dt><b>'+(i+1)+'</b></dt><dd>';
+		    		//content = content +'<dt><b>'+(i+1)+'</b></dt><dd>';
 		    		for (var key in pjson2) { 
-		    			if(key!="oid"){
-							content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";
-		    			}
+		    			if(key=="oid"){
+		    				if(cfeatures[i]==cfeatures[cfeatures.length-1]){oids=oids+pjson2[key];}
+		    				else{	oids=oids+pjson2[key]+",";	}
+		    				
+		    				}
 						}
-		    		content = content +"</dd>";
+		    		//content = content +"</dd>";
 
 				}
-		    	content = content + '</dl>';
+		    	//content = content + '</dl>';
             }
-    		content = content + "<br>";
+    		
+            var attr=getAttributesbyID(oids);
+            //alert (JSON.stringify(getAttributesbyID(oids)));
+            var conta=0;
+            for (var key in attr) { 
+            	//content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";	
+            	if (attr.length>1){
+            		content = content +'<dt><b>'+(conta+1)+'</b></dt><dd>';
+            		//content = content + "<b>" +key+": </b>" + attr2[key]+"<br>";
+            		$.each( attr[key], function(k, v){
+	            		content=content+ "<b>" + k + "</b>: " + v +"<br>";
+	            		});
+            		//content=content+"<br>"
+            		content = content +"</dd>";
+            	}
+            	else{
+            		$.each( attr[key], function(k, v){
+            			content=content+ "<b>" + k + "</b>: " + v +"<br>";
+	            		});
+            	}
+            	conta++;
+            	
+            }
+            //alert (attr[0].Precio);
+			//alert(oids);
+            content = content + "<br>";
             if (content.search("<script") != -1) {
                 content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
             }
-            
-			
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
                                      feature.geometry.getBounds().getCenterLonLat(),
                                      new OpenLayers.Size(50,50),
@@ -140,6 +167,7 @@ function onFeatureSelect(event) {
             feature.popup = popup;
             vector_layer.events.un({"moveend":reDrawGeojson});
             map.addPopup(popup);
+            map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
         }
         
@@ -150,12 +178,16 @@ function onFeatureUnselect(event) {
 	                map.removePopup(feature.popup);
 	                feature.popup.destroy();
 	                delete feature.popup;
-					vector_layer.events.on({"moveend":reDrawGeojson	});
+					//vector_layer.events.on({"moveend":reDrawGeojson	});
 	            }
+	            select.unselectAll();
+	            map.controls[0].activate();
+	            vector_layer.events.on({"moveend":reDrawGeojson	});
+	            
             }
 			}
 	
-function GetGeojson(){
+function getGeojson(){
 		
 	 var extent = map.getExtent();
 		
@@ -168,13 +200,27 @@ function GetGeojson(){
 	 return  request[request.length-1];
 	
 	}
+
+function getAttributesbyID(idList){
+	
+	 var extent = map.getExtent();
+		
+	 var url =document.URL + '&task=geojson&task=GetAttributes&idlist='+idList;
+	 req=($.parseJSON($.ajax({
+			url:  url,
+			dataType: "json", 
+			async: false
+		}).responseText));
+	 return  req;
+	
+	}
 	
 function reDrawGeojson(event) {
 	 				//vector_layer.getFeaturesByAttribute("id sub",)
                     
 					//var pjson = vector_layer.features.attributes;
 					//vector_layer.eraseFeatures();
-					var featurecollection = GetGeojson();
+					var featurecollection = getGeojson();
 					var geojson_format = new OpenLayers.Format.GeoJSON();
 					//var read = geojson_format.parseFeature(featurecollection);
 					//alert (typeof(featurecollection));
@@ -249,7 +295,7 @@ function popupClear() {
 }
 
 function UnselectAllFeatures(){
-	alert ("XXXXX");
+	//alert ("XXXXX");
     if(typeof(vector_layer)!="undefined"){
     	//alert ("xx"+vector_layer.selectedFeatures.length);
 	    if (vector_layer.selectedFeatures.length>0){

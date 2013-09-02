@@ -46,16 +46,24 @@ class GeoiModelGeoi extends JModel
 			
 		}
 			
-        public function STtoGeoJson($tbl,$bbox) 
+        public function STtoGeoJson($tbl,$bbox,$colums) 
         {
 			//echo JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';;
         	//$fecha = new DateTime();
         	//echo $fecha->format('c')."\n";
         	//$fecha1= $fecha->getTimestamp();
 			//echo "1.".$fecha1."\n";
-			$colo=$this->getColArray();
+			
 			$colsi= array("AsText(geom)", "oid ");
-			$cols=array_merge($colsi,$colo);
+			$where= "Intersects(geom, GeomFromText('".$bbox."'))";
+			if ($colums!=TRUE){
+				$colo=$this->getColArray();
+				$cols=array_merge($colsi,$colo);
+				
+			}
+			else {
+				$cols=$colsi;
+			}
 			//print_r($cols);
 			//$st="SELECT AsText(geom),oid ,  TYPEP 'Tipo de Inmueble', TYPEO 'Tipo de Oferta', VALUE 'VALUE', AREA ''  FROM ".$tbl.";";
 			//$st ="SELECT AsText(geom) geom, ".$cols." FROM ".$tbl.";";
@@ -67,7 +75,7 @@ class GeoiModelGeoi extends JModel
 			$st
 				->select($cols)
 				->from($tbl)
-				->where("Intersects(geom, GeomFromText('".$bbox."'))");
+				->where($where);
 			$db->setQuery($st);
 			$ex=$db->execute();
 			$results = $db->loadObjectList();
@@ -172,5 +180,26 @@ class GeoiModelGeoi extends JModel
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			foreach ($results[0] as $res){return $res;}
         }
-
+        
+        public function GetAttributesbyID($idlist){
+         	$where="oid IN ( ".$idlist.")";
+        	//$where=$where.")";
+        	$colo=$this->getColArray();
+        	$db = JFactory::getDbo();
+        	$st= $db->getQuery(true);
+        	$st
+        	->select($colo)
+        	->from('GeoIOfertas')
+        	->where($where);
+        	$db->setQuery($st);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
+        	//$results=json_encode($results);
+        	//$results=json_decode($results);
+        	return json_encode($results);
+        	
+        	
+        }
 }
