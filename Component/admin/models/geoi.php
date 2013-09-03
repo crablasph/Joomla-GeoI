@@ -382,7 +382,7 @@ class GeoiModelGeoi extends JModel
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$crea ="CREATE TABLE GeoIPOL".$numpola."( oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(15) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
+			$crea ="CREATE TABLE GeoIPOL".$numpola."( oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(20) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
 			$db = JFactory::getDbo();
 			$db->setQuery($crea);
 			$ex=$db->execute();
@@ -411,8 +411,10 @@ class GeoiModelGeoi extends JModel
 		}
 		
 		public function Intersects($pol){
+			$nampol=strrev ($this->GetParamName($pol));
+			$polArray=$this->getPolArray($nampol{0});
 			$ofe="SELECT oid FROM GeoIOfertas WHERE Intersects(geom, GeomFromText(";
-			$ofe=$ofe."));";
+			$ofe=$ofe."));";			
 			$db = JFactory::getDbo();
 			$db->setQuery($ofe);
 			$ex=$db->execute();
@@ -420,9 +422,8 @@ class GeoiModelGeoi extends JModel
 			$points = $db->loadObjectList();
 			if (!$ex) {	echo $msg; echo "<br>";}
 			//$numpol=$this->GetParam('NUMPOL');
-			$nampol=strrev ($this->GetParamName($pol));
-			$polArray=$this->getPolArray($nampol{0});
-			print_r($polArray);
+			
+			//print_r($polArray);
 			//for ($i=1;i<$npol+1;$i++){
 				//print_r($this->getPolArray(1));
 				//print_r($this->getPolArray(2));

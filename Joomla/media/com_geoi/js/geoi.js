@@ -5,7 +5,13 @@ var map, vector_layer, select, popup;
  //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
 
 	//var gjson = getGeojson();
- 
+ ////A PARMETRIZAR
+	 //1. EPSG  = 3857
+	 //2. Bounds = -8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381
+	 //3. minscale = 50000
+	 //4. externalGraphic= 'media/com_geoi/images/home.png'
+	 //5. Campo Simbologia= 
+	 
  map = new OpenLayers.Map('map-id',{
                     controls: [
                         new OpenLayers.Control.Navigation(),
@@ -18,12 +24,9 @@ var map, vector_layer, select, popup;
                     ],
                     numZoomLevels: 10,
                     projection: new OpenLayers.Projection("EPSG:3857"),
-					displayProjection: new OpenLayers.Projection("EPSG:4326"), 
+					displayProjection: new OpenLayers.Projection("EPSG:3857"), 
 	                    eventListeners: {
 	                    	"zoomend":popupClear
-	                        //"zoomend": mapEvent,
-	                        //"changelayer": mapLayerChanged,
-	                        //"changebaselayer": mapBaseLayerChanged
 	                    }
                     
                 });
