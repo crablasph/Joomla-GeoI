@@ -74,8 +74,8 @@ class GeoiModelGeoi extends JModel
 			$st= $db->getQuery(true);
 			$st
 				->select($cols)
-				->from($tbl)
-				->where($where);
+				->from($tbl);
+			if(is_string($bbox)){ $st->where($where);}
 			$db->setQuery($st);
 			$ex=$db->execute();
 			$results = $db->loadObjectList();
@@ -181,23 +181,23 @@ class GeoiModelGeoi extends JModel
 			foreach ($results[0] as $res){return $res;}
         }
         
-        public function GetAttributesbyID($idlist){
-         	$where="oid IN ( ".$idlist.")";
-        	//$where=$where.")";
-        	$colo=$this->getColArray();
+        public function GetAttributesbyID($table,$idlist){
+        	$where="oid IN ( ".$idlist.")";
+        	if(strtolower($table)=='geoiofertas'){$colo=$this->getColArray();}
+        	else{$colo='*';}
         	$db = JFactory::getDbo();
         	$st= $db->getQuery(true);
         	$st
         	->select($colo)
-        	->from('GeoIOfertas')
-        	->where($where);
+        	->from($table);
+        	if($idlist!=FALSE){
+        		$st->where($where);
+        	}
         	$db->setQuery($st);
         	$ex=$db->execute();
         	$results = $db->loadObjectList();
         	$msg=$db->getErrorMsg();
         	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
-        	//$results=json_encode($results);
-        	//$results=json_decode($results);
         	return json_encode($results);
         	
         	

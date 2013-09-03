@@ -28,7 +28,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedatapol";
 </td>
 <td>
 	<select name="idpol">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -39,7 +39,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedatapol";
 </td>
 <td>
 	<select name="nompolis">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>

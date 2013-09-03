@@ -28,7 +28,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 </td>
 <td>
 	<select name="TYPEP">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -39,7 +39,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 </td>
 <td>
 	<select name="TYPEO">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -50,7 +50,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 </td>
 <td>
 	<select name="VALUE">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -62,7 +62,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <td>
 	<select name="area">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -74,7 +74,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <td>
 	<select name="ROOMS">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -87,7 +87,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <td>
 	<select name="toilet">
 		<option value="0"></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -100,7 +100,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <td>
 	<select name="AGE">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -111,7 +111,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 </td>
 <td>
 	<select name="tel1">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -123,7 +123,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <td>
 	<select name="tel2">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .'</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>

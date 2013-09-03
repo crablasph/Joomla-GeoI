@@ -58,9 +58,16 @@ class GeoiController extends JController
             //echo "montaxxxxxxxxxxxxxx";
             //print_r( $input);
             $get_array = $input->getArray($_GET);
-            $bbox=$get_array['bbox'];
+            //echo "XXXXXXXXXXXXXX".$get_array['bbox']."XXXXXXXXXXXXXXXXXXXXXX";
+            $properties=TRUE;
+            if( isset ($get_array['bbox'])){$bbox=$get_array['bbox'];}else {$bbox=FALSE;}
+            if( isset ($get_array['layer'])){$layer=$get_array['layer'];}else {$layer='GeoIOfertas';}
+            if( isset ($get_array['properties'])){
+            	if(strtolower($get_array['properties'])=='true'){$properties=FALSE;}
+            }
+            
             //echo $bbox."\n\n";
-            echo $model->STtoGeoJson('GeoIOfertas', $bbox, TRUE) ;
+            echo $model->STtoGeoJson($layer, $bbox, $properties) ;
             
             //echo $geojson;
             parent::display($cachable = false);
@@ -78,8 +85,10 @@ class GeoiController extends JController
 			$model=$this->getModel();
 			$get_array = $input->getArray($_GET);
 			//Lista de IDS separadas por comas
-			$idlist=$get_array['idlist'];
-			echo $model->GetAttributesbyID($idlist);
+			if( isset ($get_array['layer'])){$layer=$get_array['layer'];}else {$layer='GeoIOfertas';}
+			if( isset ($get_array['idlist'])){$idlist=$get_array['idlist'];}else {$idlist=FALSE;}
+			//$idlist=$get_array['idlist'];
+			echo $model->GetAttributesbyID($layer,$idlist);
 			
 			parent::display($cachable = false);
 			$app->close();

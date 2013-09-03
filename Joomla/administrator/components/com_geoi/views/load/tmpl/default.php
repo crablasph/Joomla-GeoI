@@ -8,6 +8,7 @@ defined('_JEXEC') or die('Restricted Access');
 JHtml::_('behavior.tooltip');
 $uploadurl= JURI::current(); 
 //$uploadurl= $uploadurl."?option=com_geoi&task=load&layout=upload";
+$intersecturl=$uploadurl."?option=com_geoi&task=intersect";
 $uploadurl= $uploadurl."?option=com_geoi&task=uploadfile";
 echo "<b>".Jtext::_('COM_GEOI_WELCOME')."</b><br><br>";
 echo Jtext::_('COM_GEOI_LOADMESSAGE').$this->epsg."<br>";
@@ -51,6 +52,20 @@ echo Jtext::_('COM_GEOI_LOAD_INFO')."<br>";
 <?php echo Jtext::_('COM_GEOI_UPLOADFORM_NOMPOL');?> <input type="text" name="nompol"><br>
 <input type="hidden" name="opt" value="policre">
 <input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
+</form>
+
+
+<br>
+<br>
+
+<b><?php echo Jtext::_('COM_GEOI_UPLOADFORM_INTER');?></b><br>
+<form action=<?php echo $intersecturl; ?> method="post"enctype="multipart/form-data">
+<?php echo Jtext::_('COM_GEOI_UPLOADFORM_NOMPOL');?>
+<select name="nompol">
+	<option value=""></option>
+	<?php foreach($this->polnom as $sch){echo '<option value="'.$sch.'">'.$sch .'</option>';}?>
+</select><br>
+<input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_INTEBTN');?>">
 </form>
 
 

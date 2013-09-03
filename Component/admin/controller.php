@@ -164,6 +164,7 @@ class GeoiController extends JController
 												$view->Schema = $model->getShapeFileSchemaArray();
 												$view->ShapeLoc=$model->BaseShapefileName;
 												$pnom=$model->GetParamName($nompol);
+												//$pnom=strtolower($pnom);
 												if($pnom!=""){echo JText::_('COM_GEOI_ERRPOLN');break;}
 												if($nompol==""){echo JText::_('COM_GEOI_ERRPOLN');break;}
 												$view->nompol=$nompol;
@@ -245,9 +246,13 @@ class GeoiController extends JController
 					//echo "<br>********<br>";
 		}
 		
-		function testPolIntersectsArray(){
-			$model=$this->getModel();
-			echo $model->PolIntersectsArray('upz');
+		function intersect(){
+				  JToolBarHelper::Title(Jtext::_('COM_GEOI_INTERSECT'));
+				  GeoiHelper::addSubmenu('task');
+				  $model=$this->getModel();
+				  $input = JFactory::getApplication()->input;
+				  $post_array = $input->getArray($_POST);
+				  $model->Intersects($post_array['nompol']);
 			
 			}
 		

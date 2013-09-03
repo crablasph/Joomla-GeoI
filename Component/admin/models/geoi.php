@@ -382,7 +382,7 @@ class GeoiModelGeoi extends JModel
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$crea ="CREATE TABLE GeoIPOL".$numpola."( idint int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(15) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
+			$crea ="CREATE TABLE GeoIPOL".$numpola."( oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(15) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
 			$db = JFactory::getDbo();
 			$db->setQuery($crea);
 			$ex=$db->execute();
@@ -398,65 +398,36 @@ class GeoiModelGeoi extends JModel
 			if (!$ex) {	echo $msg; echo "<br>";} 	
         }
 		
-		private function getIDArray($tbl , $idcol){
-		
-			$addcol ="SELECT ". $idcol." FROM ".$tbl.";";
+		protected function getPolArray($idpol){
+			$pol="SELECT AsText(geom) geom, oid FROM GeoIPOL".$idpol.";";
+			//$ofe="SELECT AsText(geom), oid FROM GeoIOfertas";
 			$db = JFactory::getDbo();
-			$db->setQuery($addcol);
+			$db->setQuery($pol);
 			$ex=$db->execute();
-			$results = $db->loadObjectList();
 			$msg=$db->getErrorMsg();
-			if (!$ex) {	echo $msg; echo "<br>";} 	
-			//print_r ($results);
-			$ret=Array();
-			$num=0;
-			foreach($results as $res){
-				foreach($res as $r){
-					$ret[$num]=$r;
-				}
-				$num++;
-			}
-			return $ret;
-			
+			$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";} 
+			return $results;
 		}
 		
-		public function PolIntersectsArray($poltbl){
-			//$numpols=$this->GetParam('NUMPOLS');
-			$polt=$this->GetParamName($poltbl);
-			$polt="GeoI".$polt;
-			$idofer=$this->getIDArray('GeoIOfertas' , 'oid');
-			$idpol=$this->getIDArray($polt , 'idint');
+		public function Intersects($pol){
+			$ofe="SELECT oid FROM GeoIOfertas WHERE Intersects(geom, GeomFromText(";
+			$ofe=$ofe."));";
 			$db = JFactory::getDbo();
-			//$db->setQuery($addcol);
-			//$ex=$db->execute();
-			//$results = $db->loadObjectList();
-			//if (!$ex) {	echo $msg; echo "<br>";} 
-			foreach($idpol as $idp){
-				echo "";
-				$pol= "SET @pol = (SELECT geom FROM ".$polt." WHERE idint='".$idp."');";
-				$db->setQuery($pol);
-				$ex=$db->execute();
-				if (!$ex) {	echo $msg; echo "<br>";} 
-				echo $pol;
-				echo "<br>";
-				foreach($idofer as $ido){
-					$pun = "SET @pun = (SELECT geom FROM GeoIOfertas WHERE oid='".$ido."');";
-					$db->setQuery($pun);
-					$ex=$db->execute();
-					if (!$ex) {	echo $msg; echo "<br>";} 
-					echo $pun;
-					echo "<br>";
-					$inter = "SELECT Intersects( @pun , @pol );";
-					$db->setQuery($inter);
-					$ex=$db->execute();
-					$results = $db->loadObjectList();
-					echo $inter;
-					echo "<br>";
-					print_r($results);
-					echo "<br>";
-				}
-				echo "<br>";
-			}
+			$db->setQuery($ofe);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			$points = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			//$numpol=$this->GetParam('NUMPOL');
+			$nampol=strrev ($this->GetParamName($pol));
+			$polArray=$this->getPolArray($nampol{0});
+			print_r($polArray);
+			//for ($i=1;i<$npol+1;$i++){
+				//print_r($this->getPolArray(1));
+				//print_r($this->getPolArray(2));
+			//}
+			
 		}
         
         public function getMsg() 
