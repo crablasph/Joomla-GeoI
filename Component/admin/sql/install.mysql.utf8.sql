@@ -35,12 +35,23 @@ ALTER TABLE GeoIOfertas ADD SPATIAL INDEX ( geom );
 
 CREATE TABLE GeoIConf (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  PARAM CHAR(15) NOT NULL,
-  VAL CHAR(30) NOT NULL 
+  PARAM CHAR(20) NOT NULL,
+  VAL CHAR(80) NOT NULL 
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 INSERT INTO GeoIConf (PARAM , VAL) 
-	VALUES 	('EPSG','3857') , 
+	VALUES 	('EPSG_DATA','3857') , 
+			('EPSG_DISP','3857') , 
+			('BOUNDS','-8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381'),
+			('MINSCALE','50000'),
+			('ICON_1','media/com_geoi/images/home.png'),
+			('ICON_2','media/com_geoi/images/building.png'),
+			('ICON_3','media/com_geoi/images/shop.png'),
+			('ICON_4','media/com_geoi/images/land.png'),
+			('SYMBOLOGY_FIELD','NULL'),
+			('LYR_NAME','Ofertas'),
+			('CLUSTER_DISTANCE','50'),
+			('CLUSTER_THRESHOLD','2'),
 			('NUMPOL','0'),
 			('N_TYPEP','Tipo de Inmueble'),
 			('N_TYPEO','Tipo de Oferta'),

@@ -57,16 +57,16 @@ echo Jtext::_('COM_GEOI_LOAD_INFO')."<br>";
 
 <br>
 <br>
-
+<!--
 <b><?php echo Jtext::_('COM_GEOI_UPLOADFORM_INTER');?></b><br>
 <form action=<?php echo $intersecturl; ?> method="post"enctype="multipart/form-data">
 <?php echo Jtext::_('COM_GEOI_UPLOADFORM_NOMPOL');?>
-<select name="nompol">
-	<option value=""></option>
-	<?php foreach($this->polnom as $sch){echo '<option value="'.$sch.'">'.$sch .'</option>';}?>
-</select><br>
+ <select name="nompol"> 
+<option value=""></option>
+<?php foreach($this->polnom as $sch){echo '<option value="'.$sch.'">'.$sch .'</option>';}?>
+</select><br> 
 <input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_INTEBTN');?>">
-</form>
+ </form> -->
 
 
 </body>

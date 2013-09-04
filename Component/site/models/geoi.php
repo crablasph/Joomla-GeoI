@@ -12,7 +12,7 @@ require JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.D
  */
 class GeoiModelGeoi extends JModel
 {
-		public function wkt_to_json($wkt) {
+		private function WKT_to_GeoJson($wkt) {
 			$wktr = new WKT();
 			$geometry = $wktr ->read($wkt,true);
 			//print_r( $geometry);
@@ -21,7 +21,7 @@ class GeoiModelGeoi extends JModel
 			return $geojson;
 		}
 		
-		public function getColArray(){
+		private function GetColArray(){
 			
 			$selconf ="SELECT CONCAT( SUBSTRING( PARAM, 3 ) , ' \'', VAL, '\'' ) FROM GeoIConf WHERE PARAM LIKE 'N\_%';";
 			$db = JFactory::getDbo();
@@ -46,18 +46,18 @@ class GeoiModelGeoi extends JModel
 			
 		}
 			
-        public function STtoGeoJson($tbl,$bbox,$colums) 
+        public function STtoGeoJson($tbl,$bbox,$colums,$type) 
         {
 			//echo JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';;
         	//$fecha = new DateTime();
         	//echo $fecha->format('c')."\n";
         	//$fecha1= $fecha->getTimestamp();
 			//echo "1.".$fecha1."\n";
-			
-			$colsi= array("AsText(geom)", "oid ");
+			if ($type!=''){$colsi= array("AsText(geom)", "oid , LOWER(".$type.") 'type'");}
+			else{$colsi= array("AsText(geom)", "oid ");}
 			$where= "Intersects(geom, GeomFromText('".$bbox."'))";
 			if ($colums!=TRUE){
-				$colo=$this->getColArray();
+				$colo=$this->GetColArray();
 				$cols=array_merge($colsi,$colo);
 				
 			}
@@ -116,8 +116,8 @@ class GeoiModelGeoi extends JModel
 								//$geom = geoPHP::load($r,'wkt');
 								//$geojson = $geom->out('json');;
 								//print_r($geom);
-								//echo $this->wkt_to_json($r);
-								$geojson =  $this->wkt_to_json($r);
+								//echo $this->WKT_to_GeoJson($r);
+								$geojson =  $this->WKT_to_GeoJson($r);
 								
 								$coll =$coll. "		{"."\n";
 								$coll =$coll. '		"type":"Feature",'."\n";
@@ -157,7 +157,7 @@ class GeoiModelGeoi extends JModel
 			//return $results;
         }
 		
-		public function GetParam($param) 
+		private function GetParam($param) 
         {
 			$selconf ="SELECT VAL FROM GeoIConf WHERE PARAM ='".$param."' ";
 			$db = JFactory::getDbo();
@@ -169,7 +169,7 @@ class GeoiModelGeoi extends JModel
 			foreach ($results[0] as $res){return $res;}
         }
         
-         public function GetParamName($param) 
+         private function GetParamName($param) 
         {
 			$selconf ="SELECT PARAM FROM GeoIConf WHERE VAL ='".$param."' ";
 			$db = JFactory::getDbo();
@@ -183,7 +183,7 @@ class GeoiModelGeoi extends JModel
         
         public function GetAttributesbyID($table,$idlist){
         	$where="oid IN ( ".$idlist.")";
-        	if(strtolower($table)=='geoiofertas'){$colo=$this->getColArray();}
+        	if(strtolower($table)=='geoiofertas'){$colo=$this->GetColArray();}
         	else{$colo='*';}
         	$db = JFactory::getDbo();
         	$st= $db->getQuery(true);
@@ -199,7 +199,55 @@ class GeoiModelGeoi extends JModel
         	$msg=$db->getErrorMsg();
         	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
         	return json_encode($results);
+        }
+        
+        public function GetMapParameters(){
+        	$parameters = Array();
+        	$parameters['EPSG_DATA']=$this->GetParam('EPSG_DATA');
+        	$parameters['EPSG_DISP']=$this->GetParam('EPSG_DISP');
+        	$parameters['BOUNDS']=$this->GetParam('BOUNDS');
+        	$parameters['MINSCALE']=$this->GetParam('MINSCALE');
+        	
+        	$parameters['SYMBOLOGY_FIELD']=$this->GetParam('SYMBOLOGY_FIELD');
+        	
+        	$parameters['SYMBOLOGY_VALUES']=Array();
+        	//SELECT DISTINCT LOWER(TYPEO) FROM GEOIOFERTAS;
+        	$st='SELECT DISTINCT LOWER('.$parameters['SYMBOLOGY_FIELD'].' ) SYMBOLOGY_VALUES FROM GEOIOFERTAS';
+        	$db = JFactory::getDbo();
+        	$db->setQuery($st);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
+        	$cont=0;
+        	foreach($results as $res){
+        		foreach ($res as $r){
+        		$parameters['SYMBOLOGY_VALUES'][$cont]=$r;
+        		}
+        		$cont++;
+        	}
+        	$parameters['ICON']=Array();
+        	$ts="SELECT VAL FROM GEOICONF WHERE PARAM LIKE 'ICON%'";
+        	$db->setQuery($ts);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
+        	$cont=0;
+        	
+        	foreach($results as $res){
+        		foreach ($res as $r){
+        			$parameters['ICON'][$cont]=$r;
+        		}
+        		$cont++;
+        	}
         	
         	
+        	
+        	$parameters['LYR_NAME']=$this->GetParam('LYR_NAME');
+        	$parameters['CLUSTER_DISTANCE']=$this->GetParam('CLUSTER_DISTANCE');
+        	$parameters['CLUSTER_THRESHOLD']=$this->GetParam('CLUSTER_THRESHOLD');
+        	//$parameters['']=$this->GetParam('');
+        	return json_encode($parameters);
         }
 }

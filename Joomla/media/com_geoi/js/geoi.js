@@ -1,18 +1,24 @@
 var map, vector_layer, select, popup;
  var request=[];
+ var parameters=getMapParameters();
  function init(){ 
  
  //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
 
 	//var gjson = getGeojson();
- ////A PARMETRIZAR
-	 //1. EPSG  = 3857
-	 //2. Bounds = -8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381
-	 //3. minscale = 50000
-	 //4. externalGraphic= 'media/com_geoi/images/home.png'
-	 //5. Campo Simbologia= 
+ ////A PARAMETRIZAR
+	 //1. EPSG  = 3857 ó EPSG_DATA y EPSG_DISP
+	 //2. BOUNDS = -8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381
+	 //3. MINSCALE = 50000
+	 //4. ICON_1 = 'media/com_geoi/images/home.png'
+	 //5. SYMBOLOGY_FIELD = 
+	 //6. LYR_NAME = Ofertas
+	 //7. CLUSTER_DISTANCE = 50 
+	 //8. CLUSTER_THRESHOLD = 2
+
 	 
- map = new OpenLayers.Map('map-id',{
+	 //alert (parameters.EPSG_DATA);
+	 map = new OpenLayers.Map('map-id',{
                     controls: [
                         new OpenLayers.Control.Navigation(),
                         new OpenLayers.Control.PanZoomBar(),
@@ -23,40 +29,68 @@ var map, vector_layer, select, popup;
                         new OpenLayers.Control.KeyboardDefaults()
                     ],
                     numZoomLevels: 10,
-                    projection: new OpenLayers.Projection("EPSG:3857"),
-					displayProjection: new OpenLayers.Projection("EPSG:3857"), 
+                    projection: new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA),
+					displayProjection: new OpenLayers.Projection("EPSG:"+parameters.EPSG_DISP), 
 	                    eventListeners: {
 	                    	"zoomend":popupClear
 	                    }
                     
                 });
 		var osm = new OpenLayers.Layer.OSM();
-		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
-		map.addLayers([osm, gmap]);
-		var bounds = new OpenLayers.Bounds(-8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381); 
+		//var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+		//map.addLayers([osm, gmap]);
+		map.addLayers([osm]);
+		//alert(parameters.BOUNDS);
+		var str = parameters.BOUNDS;
+		str=str.split(",");
+		var bounds = new OpenLayers.Bounds(str[0],str[1],str[2],str[3]); 
         map.zoomToExtent(bounds);
 		        
-
 		strategy = new OpenLayers.Strategy.Cluster();
-		strategy.distance=50;
-		strategy.threshold = 2;
+		//strategy.distance=parameters.CLUSTER_DISTANCE;
+		strategy.distance=10000;
+		strategy.threshold =parameters.CLUSTER_THRESHOLD;
+		///vector_layer.strategies=strategy;
+		
 
-		vector_layer = new OpenLayers.Layer.Vector("Ofertas", {	strategies: [strategy]	, minScale: 50000});
+		vector_layer = new OpenLayers.Layer.Vector(parameters.LYR_NAME, {strategies:strategy,minScale: parameters.MINSCALE});
 		//, maxScale: 10000, minScale: 50000
 		
+		var lookup = {};
+			lookup['']={externalGraphic:parameters.ICON[0]}
+		//var lookup = {
+		//		  "small": {pointRadius: 10},
+		//		  "large": {pointRadius: 30}
+		//		}
+
+		///styleMap.addUniqueValueRules("default", "size", lookup);
+		//alert(parameters.ICON[0]);
+		//alert(parameters.ICON[1]);
+		//alert(parameters.ICON[2]);
+		//alert(parameters.ICON[3]);
+		//alert(parameters.SYMBOLOGY_VALUES[0]);
+		for(i=0;i<parameters.SYMBOLOGY_VALUES.length;i++){
+			var atn=parameters.SYMBOLOGY_VALUES[i];
+			//alert (parameters.ICON_+i);
+			var ico=parameters.ICON[i];
+			lookup[atn]={externalGraphic:ico, label: labelCluster()	}
+			//alert(JSON.stringify(lookup[atn])+"--"+ico);
+		}
+		
 		var defaultStyle = new OpenLayers.Style({
-            pointRadius: 10,
-            label: "${type}",
+            pointRadius: 20,
+            label: "${label}",
             fontColor:"blue",
             fontSize:"12",
             fontWeight: "bold",
             labelOutlineColor: "white",
-            labelOutlineWidth: 3,
-            externalGraphic: 'media/com_geoi/images/home.png'
+            labelOutlineWidth: 3
+            //externalGraphic: lookup
+            //externalGraphic: ${icon}
         }, {
         	context: 
-        	{ type: function(vector_layer) {
-        		if (isNaN(vector_layer.attributes.count)){
+        	{ label: function() {
+        		if (typeof(vector_layer.attributes)=='undefined'){
         		return "";}
         		else
         			return vector_layer.attributes.count;
@@ -64,11 +98,13 @@ var map, vector_layer, select, popup;
             }
         });
 		
-		var selectStyle = new OpenLayers.Style({pointRadius: "20"});
+		var selectStyle = new OpenLayers.Style({pointRadius: "30"});
 		
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
-
+		stylegeojson.addUniqueValueRules("default", "type", lookup);
 		vector_layer.styleMap= stylegeojson;
+		
+
 		var geojson_format = new OpenLayers.Format.GeoJSON();
         //vector_layer.addFeatures(geojson_format.read(featurecollection));
        	map.addLayers([vector_layer]);
@@ -91,6 +127,13 @@ var map, vector_layer, select, popup;
 		//alert(map.controls[7].id.toString());
 		
 }
+ function labelCluster() {
+		if (typeof(vector_layer.attributes)=='undefined'){
+		return "";}
+		else
+			return vector_layer.attributes.count;
+		}
+ 
 
 function onPopupClose() {
 	select.unselectAll();
@@ -193,8 +236,8 @@ function onFeatureUnselect(event) {
 function getGeojson(){
 		
 	 var extent = map.getExtent();
-		
-	 var url =document.URL + '&task=geojson&bbox='+extent.toGeometry();
+	 var type =parameters.SYMBOLOGY_FIELD;
+	 var url =document.URL + '&task=geojson&type='+type+'&bbox='+extent.toGeometry();
 	 request.push($.parseJSON($.ajax({
 			url:  url,
 			dataType: "json", 
@@ -209,6 +252,7 @@ function getAttributesbyID(idList){
 	 var extent = map.getExtent();
 		
 	 var url =document.URL + '&task=geojson&task=GetAttributes&idlist='+idList;
+	 var req;
 	 req=($.parseJSON($.ajax({
 			url:  url,
 			dataType: "json", 
@@ -217,6 +261,17 @@ function getAttributesbyID(idList){
 	 return  req;
 	
 	}
+
+function getMapParameters(){
+	var url =document.URL + '&task=GetMapParameters';
+	var req;
+	 req=($.parseJSON($.ajax({
+			url:  url,
+			dataType: "json", 
+			async: false
+		}).responseText));
+	 return  req;
+}
 	
 function reDrawGeojson(event) {
 	 				//vector_layer.getFeaturesByAttribute("id sub",)
@@ -297,6 +352,7 @@ function popupClear() {
     
 }
 
+////CREO QUE SE PUEDE ELIMINAR
 function UnselectAllFeatures(){
 	//alert ("XXXXX");
     if(typeof(vector_layer)!="undefined"){

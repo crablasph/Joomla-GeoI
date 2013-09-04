@@ -42,7 +42,7 @@ class GeoiController extends JController
 			//$input = JFactory::getApplication()->input;
 			
 			$view = $this->getView('Load','html');
-			$view->epsg=$model->GetParam('EPSG');
+			$view->epsg=$model->GetParam('EPSG_DATA');
             $view->numpol=$model->GetParam('NUMPOL');
             $view->polnom=Array();
             if($view->numpol > 0) {

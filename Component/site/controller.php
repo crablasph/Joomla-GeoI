@@ -62,12 +62,13 @@ class GeoiController extends JController
             $properties=TRUE;
             if( isset ($get_array['bbox'])){$bbox=$get_array['bbox'];}else {$bbox=FALSE;}
             if( isset ($get_array['layer'])){$layer=$get_array['layer'];}else {$layer='GeoIOfertas';}
+            if( isset ($get_array['type'])){$type=$get_array['type'];}else {$type='';}
             if( isset ($get_array['properties'])){
             	if(strtolower($get_array['properties'])=='true'){$properties=FALSE;}
             }
             
             //echo $bbox."\n\n";
-            echo $model->STtoGeoJson($layer, $bbox, $properties) ;
+            echo $model->STtoGeoJson($layer, $bbox, $properties,$type) ;
             
             //echo $geojson;
             parent::display($cachable = false);
@@ -94,9 +95,18 @@ class GeoiController extends JController
 			$app->close();
 		}
 		
-		function config()
-		        {
-			echo "CONFIGURACION";
+		function GetMapParameters(){
+			$app = JFactory::getApplication();
+			$input=$app->input;
+			$input->set('view', $input->getCmd('view', 'Geojson'));
+			$document = JFactory::getDocument();
+			$document->setMimeEncoding('application/json; charset=UTF8');
+			$document->setType('raw');
+			$view = $this->getView( 'Geojson', 'raw' );
+			$model=$this->getModel();
+			echo $model->GetMapParameters();
+			parent::display($cachable = false);
+			$app->close();
 		}
 		
 		
