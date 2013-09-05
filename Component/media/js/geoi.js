@@ -17,9 +17,7 @@ var map, vector_layer, select, popup;
  var parameters=getMapParameters();
  function init(){ 
  
- //var gjson =$.load("http://localhost:8599/Joomla25sp/index.php?option=com_geoi&task=geojson");
-
-	//var gjson = getGeojson();
+ //var gjson = getGeojson();
  ////A PARAMETRIZAR
 	 //1. EPSG  = 3857 ó EPSG_DATA y EPSG_DISP
 	 //2. BOUNDS = -8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381
@@ -29,9 +27,6 @@ var map, vector_layer, select, popup;
 	 //6. LYR_NAME = Ofertas
 	 //7. CLUSTER_DISTANCE = 50 
 	 //8. CLUSTER_THRESHOLD = 2
-
-	 
-	 //alert (parameters.EPSG_DATA);
 	 map = new OpenLayers.Map('map-id',{
                     controls: [
                         new OpenLayers.Control.Navigation(),
@@ -48,47 +43,20 @@ var map, vector_layer, select, popup;
 	                    eventListeners: {
 	                    	"zoomend":popupClear
 	                    }
-                    
                 });
 		var osm = new OpenLayers.Layer.OSM();
 		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
 		map.addLayers([osm, gmap]);
-		//map.addLayers([osm]);
-		//alert(parameters.BOUNDS);
 		var str = parameters.BOUNDS;
 		str=str.split(",");
 		var bounds = new OpenLayers.Bounds(str[0],str[1],str[2],str[3]); 
         map.zoomToExtent(bounds);
-		        
-		//strategy = new OpenLayers.Strategy.Cluster();
+        
         strategy =new OpenLayers.Strategy.AttributeCluster({  attribute:'type' });
 		strategy.distance=parameters.CLUSTER_DISTANCE;
 		//strategy.distance=10000;
 		strategy.threshold =parameters.CLUSTER_THRESHOLD;
-		///vector_layer.strategies=strategy;
-		//, maxScale: 10000, minScale: 50000
-		//vector_layer.strategies.activate();
-		var lookup = {};
-			lookup['']={externalGraphic:parameters.ICON[0]}
-		//var lookup = {
-		//		  "small": {pointRadius: 10},
-		//		  "large": {pointRadius: 30}
-		//		}
 
-		///styleMap.addUniqueValueRules("default", "size", lookup);
-		//alert(parameters.ICON[0]);
-		//alert(parameters.ICON[1]);
-		//alert(parameters.ICON[2]);
-		//alert(parameters.ICON[3]);
-		//alert(parameters.SYMBOLOGY_VALUES[0]);
-		for(i=0;i<parameters.SYMBOLOGY_VALUES.length;i++){
-			var atn=parameters.SYMBOLOGY_VALUES[i];
-			//alert (parameters.ICON_+i);
-			var ico=parameters.ICON[i];
-			lookup[atn]={externalGraphic:ico}
-			//alert(JSON.stringify(lookup[atn])+"--"+ico);
-		}
-		
 		var defaultStyle = new OpenLayers.Style({
             pointRadius: "12",
             label: "${label}",
@@ -130,24 +98,11 @@ var map, vector_layer, select, popup;
 		var selectStyle = new OpenLayers.Style({pointRadius: "20"});
 		
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
-		//stylegeojson.addUniqueValueRules("default", "type", lookup);
-		//vector_layer.styleMap= stylegeojson;
-		//vector_layer.strategies=[strategy];
-		//vector_layer.strategies.activate;
-		//strategy.activate;
 		vector_layer = new OpenLayers.Layer.Vector(parameters.LYR_NAME, {
 			strategies: [strategy] ,
 			styleMap:stylegeojson,
 			minScale: parameters.MINSCALE});
-		//var geojson_format = new OpenLayers.Format.GeoJSON();
-        //vector_layer.addFeatures(geojson_format.read(featurecollection));
        	map.addLayers([vector_layer]);
-		//reDrawGeojson();
-		//vector_layer.drawFeature();
-		//vector_layer.refresh();
-		//var proj=map.getProjection();
-		//OpenLayers.Util.getElement("prj").innerHTML = proj;
-		
 		//select = new OpenLayers.Control.SelectFeature(vector_layer,{hover:true});
        	select = new OpenLayers.Control.SelectFeature(vector_layer);
         vector_layer.events.on({
@@ -157,18 +112,9 @@ var map, vector_layer, select, popup;
             });
 		map.addControl(select);
 		select.activate(); 
- 		//map.events.register('zoomstart', {center:map.center,zoom:map.zoom}, onZoomStart);
-		//alert(map.controls[7].id.toString());
-		
-}
- function labelCluster() {
-		if (typeof(vector_layer.attributes)=='undefined'){
-		return "";}
-		else
-			return vector_layer.attributes.count;
-		}
- 
 
+}
+ 
 function onPopupClose() {
 	select.unselectAll();
 	
@@ -310,115 +256,16 @@ function getMapParameters(){
 }
 	
 function reDrawGeojson(event) {
-	 				//vector_layer.getFeaturesByAttribute("id sub",)
-                    
-					//var pjson = vector_layer.features.attributes;
-					//vector_layer.eraseFeatures();
 					var featurecollection = getGeojson();
 					var geojson_format = new OpenLayers.Format.GeoJSON();
-					//var read = geojson_format.parseFeature(featurecollection);
-					//alert (typeof(featurecollection));
-					//alert(vector_layer.strategies[0].features.length);
-/*					var oldreq = [];
-					var oldgeoson=request[request.length-2];
-					var newreq=[];
-					for(i=0;i<featurecollection.features.length;i++){
-						newreq[i]=featurecollection.features[1].properties.oid;
-					}
-					if(typeof(oldgeoson)!="undefined"){
-						for(i=0;i<oldgeoson.features.length;i++){
-							 oldreq[i]=oldgeoson.features[1].properties.oid;
-						}
-					}
-					//alert ("old:"+oldreq.length);
-					//alert ("new:"+newreq.length);
-					///FEATURE IGUALES
-					var add = [];
-					var same = [];
-					var del = [];
-					var cont = 0;
-					for(i=0;i<newreq.length;i++){
-						for(j=0;j<oldreq.length;j++){
-						if (oldreq[j]==newreq[i]){
-							//alert(oldreq[i]);
-							same[cont]=newreq[i];
-							cont ++;
-							break;
-						
-						}
-						}
-					}
-					cont = 0;
-					for (i=0;i<oldreq.length;i++){
-						for(j=0;j<same.length;j++){
-							if (oldreq[i]!=same[j]){
-								del[cont]=oldreq[i];
-								cont ++;
-								break;
-							}
-						}						
-					}
-*/
-					//alert ("borrar:"+del.length);
-					//alert("nuevos:"+newreq.length+" viejos:"+oldreq.length+" iguales:"+same.length+" borrar:"+del.length);
-					//alert(featurecollection.type);
-					//var pjson = vector_layer.features.attributes;
-
-					//alert ("XXXXXXXXXX");
-					//alert(geojson_read.properties.);
 					var geojson_read=geojson_format.read(featurecollection);
-					//alert(geojson_read);
 					vector_layer.removeAllFeatures();
-					
-					//vector_layer.strategies.createCluster(geojson_read);
-					//vector_layer.strategies.clearCache();
-					//vector_layer.strategies.activate;
-					//vector_layer.strategies.addToCluster(geojson_read);
 					vector_layer.addFeatures(geojson_read);
-					//alert(map.getExtent())
-					
                 }
 
 function popupClear() {
-    //alert('number of popups '+map.popups.length);
     while( map.popups.length ) {
          map.removePopup(map.popups[0]);
     }
-    //var x="";
-    //for(i=0;i<map.controls.length;i++){
-    //	x=x+" , "+map.controls[i].id.toString();
-    //}
-    //alert(x);
-
-    
 }
 
-////CREO QUE SE PUEDE ELIMINAR
-function UnselectAllFeatures(){
-	//alert ("XXXXX");
-    if(typeof(vector_layer)!="undefined"){
-    	//alert ("xx"+vector_layer.selectedFeatures.length);
-	    if (vector_layer.selectedFeatures.length>0){
-			    if(typeof(map.controls[7])!="undefined"){
-			    	map.controls[7].unselectAll();
-			    	vector_layer.events.on({"moveend":reDrawGeojson	});
-			    }
-	    }
-    }
-}
-
-
-/*<script type="text/javascript">
-$(document).ready(function($) {
-    
-	  var allPanels = $('.accordion > dd').hide();
-	    
-	  $('.accordion > dt > a').click(function() {
-	    allPanels.slideUp();
-	    $(this).parent().next().slideDown();
-	    return false;
-	  });
-
-	})(jQuery); 
-//</script> 
-*/
