@@ -1,3 +1,17 @@
+///CREAR CLASE DE CLUSTER POR ATRIBUTOS
+
+OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
+    attribute: null,
+    shouldCluster: function(cluster, feature) {
+        var cc_attrval = cluster.cluster[0].attributes[this.attribute];
+        var fc_attrval = feature.attributes[this.attribute];
+        var superProto = OpenLayers.Strategy.Cluster.prototype;
+        return cc_attrval === fc_attrval && 
+               superProto.shouldCluster.apply(this, arguments);
+    },
+    CLASS_NAME: "OpenLayers.Strategy.AttributeCluster"
+});
+
 var map, vector_layer, select, popup;
  var request=[];
  var parameters=getMapParameters();
@@ -15,9 +29,6 @@ var map, vector_layer, select, popup;
 	 //6. LYR_NAME = Ofertas
 	 //7. CLUSTER_DISTANCE = 50 
 	 //8. CLUSTER_THRESHOLD = 2
-
-	 
-	 //alert (parameters.EPSG_DATA);
 	 map = new OpenLayers.Map('map-id',{
                     controls: [
                         new OpenLayers.Control.Navigation(),
@@ -34,28 +45,25 @@ var map, vector_layer, select, popup;
 	                    eventListeners: {
 	                    	"zoomend":popupClear
 	                    }
-                    
                 });
 		var osm = new OpenLayers.Layer.OSM();
-		//var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
-		//map.addLayers([osm, gmap]);
-		map.addLayers([osm]);
+		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+		map.addLayers([osm, gmap]);
+		//map.addLayers([osm]);
 		//alert(parameters.BOUNDS);
 		var str = parameters.BOUNDS;
 		str=str.split(",");
 		var bounds = new OpenLayers.Bounds(str[0],str[1],str[2],str[3]); 
         map.zoomToExtent(bounds);
 		        
-		strategy = new OpenLayers.Strategy.Cluster();
-		//strategy.distance=parameters.CLUSTER_DISTANCE;
-		strategy.distance=10000;
+		//strategy = new OpenLayers.Strategy.Cluster();
+        strategy =new OpenLayers.Strategy.AttributeCluster({  attribute:'type' });
+		strategy.distance=parameters.CLUSTER_DISTANCE;
+		//strategy.distance=10000;
 		strategy.threshold =parameters.CLUSTER_THRESHOLD;
 		///vector_layer.strategies=strategy;
-		
-
-		vector_layer = new OpenLayers.Layer.Vector(parameters.LYR_NAME, {strategies:strategy,minScale: parameters.MINSCALE});
 		//, maxScale: 10000, minScale: 50000
-		
+		//vector_layer.strategies.activate();
 		var lookup = {};
 			lookup['']={externalGraphic:parameters.ICON[0]}
 		//var lookup = {
@@ -73,39 +81,61 @@ var map, vector_layer, select, popup;
 			var atn=parameters.SYMBOLOGY_VALUES[i];
 			//alert (parameters.ICON_+i);
 			var ico=parameters.ICON[i];
-			lookup[atn]={externalGraphic:ico, label: labelCluster()	}
+			lookup[atn]={externalGraphic:ico}
 			//alert(JSON.stringify(lookup[atn])+"--"+ico);
 		}
 		
 		var defaultStyle = new OpenLayers.Style({
-            pointRadius: 20,
+            pointRadius: "12",
             label: "${label}",
             fontColor:"blue",
             fontSize:"12",
             fontWeight: "bold",
             labelOutlineColor: "white",
-            labelOutlineWidth: 3
+            labelOutlineWidth: 3,
+            externalGraphic:"${getIco}"
             //externalGraphic: lookup
-            //externalGraphic: ${icon}
+            //externalGraphic: parameters.ICON[0]
         }, {
         	context: 
-        	{ label: function() {
-        		if (typeof(vector_layer.attributes)=='undefined'){
+        	{ label: function(vector_layer) {
+        		if (typeof(vector_layer.attributes.count)=='undefined'){
         		return "";}
         		else
         			return vector_layer.attributes.count;
-        		}
+        		},
+        	getIco: function(feature){
+                //var color = '#aaaaaa';
+                if (feature.attributes.type ) {
+                	for(i=0;i<parameters.SYMBOLOGY_VALUES.length;i++){
+            			var atn=parameters.SYMBOLOGY_VALUES[i];
+            			var ico=parameters.ICON[i];
+            			if(feature.attributes.type==atn){return ico;}
+            		}
+                } else if(feature.cluster) {
+                    for (var i = 0; i < feature.cluster.length; i++) {
+                    	var atn=parameters.SYMBOLOGY_VALUES[i];
+            			var ico=parameters.ICON[i];
+                        if (feature.cluster[i].attributes.type == atn) {return ico;}
+                    }
+                 }
+               }
             }
         });
 		
-		var selectStyle = new OpenLayers.Style({pointRadius: "30"});
+		var selectStyle = new OpenLayers.Style({pointRadius: "20"});
 		
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
-		stylegeojson.addUniqueValueRules("default", "type", lookup);
-		vector_layer.styleMap= stylegeojson;
-		
-
-		var geojson_format = new OpenLayers.Format.GeoJSON();
+		//stylegeojson.addUniqueValueRules("default", "type", lookup);
+		//vector_layer.styleMap= stylegeojson;
+		//vector_layer.strategies=[strategy];
+		//vector_layer.strategies.activate;
+		//strategy.activate;
+		vector_layer = new OpenLayers.Layer.Vector(parameters.LYR_NAME, {
+			strategies: [strategy] ,
+			styleMap:stylegeojson,
+			minScale: parameters.MINSCALE});
+		//var geojson_format = new OpenLayers.Format.GeoJSON();
         //vector_layer.addFeatures(geojson_format.read(featurecollection));
        	map.addLayers([vector_layer]);
 		//reDrawGeojson();
@@ -141,6 +171,8 @@ function onPopupClose() {
         }
 
 function onFeatureSelect(event) {
+	//vector_layer.strategies.activate();
+	//alert(vector_layer.strategies.clustering);
 	        var feature = event.feature;
             var cfeatures = feature.cluster;
             var cluster = event.feature.cluster;
@@ -333,6 +365,11 @@ function reDrawGeojson(event) {
 					var geojson_read=geojson_format.read(featurecollection);
 					//alert(geojson_read);
 					vector_layer.removeAllFeatures();
+					
+					//vector_layer.strategies.createCluster(geojson_read);
+					//vector_layer.strategies.clearCache();
+					//vector_layer.strategies.activate;
+					//vector_layer.strategies.addToCluster(geojson_read);
 					vector_layer.addFeatures(geojson_read);
 					//alert(map.getExtent())
 					

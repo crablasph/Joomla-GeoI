@@ -212,7 +212,7 @@ class GeoiModelGeoi extends JModel
         	
         	$parameters['SYMBOLOGY_VALUES']=Array();
         	//SELECT DISTINCT LOWER(TYPEO) FROM GEOIOFERTAS;
-        	$st='SELECT DISTINCT LOWER('.$parameters['SYMBOLOGY_FIELD'].' ) SYMBOLOGY_VALUES FROM GEOIOFERTAS';
+        	$st='SELECT DISTINCT LOWER('.$parameters['SYMBOLOGY_FIELD'].' ) SYMBOLOGY_VALUES FROM GEOIOFERTAS ORDER BY 1 ASC';
         	$db = JFactory::getDbo();
         	$db->setQuery($st);
         	$ex=$db->execute();
@@ -227,7 +227,7 @@ class GeoiModelGeoi extends JModel
         		$cont++;
         	}
         	$parameters['ICON']=Array();
-        	$ts="SELECT VAL FROM GEOICONF WHERE PARAM LIKE 'ICON%'";
+        	$ts="SELECT VAL FROM GEOICONF WHERE PARAM LIKE 'ICON_%' ORDER BY PARAM ASC";
         	$db->setQuery($ts);
         	$ex=$db->execute();
         	$results = $db->loadObjectList();

@@ -48,6 +48,7 @@ INSERT INTO GeoIConf (PARAM , VAL)
 			('ICON_2','media/com_geoi/images/building.png'),
 			('ICON_3','media/com_geoi/images/shop.png'),
 			('ICON_4','media/com_geoi/images/land.png'),
+			('ICON_5','media/com_geoi/images/home2.png'),
 			('SYMBOLOGY_FIELD','NULL'),
 			('LYR_NAME','Ofertas'),
 			('CLUSTER_DISTANCE','50'),
