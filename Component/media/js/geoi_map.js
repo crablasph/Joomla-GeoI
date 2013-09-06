@@ -1,5 +1,9 @@
 ///CREAR CLASE DE CLUSTER POR ATRIBUTOS
 
+$( "#SearchTask" ).click(function() {
+alert( "Handler for .click() called." );
+});
+
 OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
     attribute: null,
     shouldCluster: function(cluster, feature) {
@@ -58,10 +62,10 @@ var map, vector_layer, select, popup;
 		strategy.threshold =parameters.CLUSTER_THRESHOLD;
 
 		var defaultStyle = new OpenLayers.Style({
-            pointRadius: "12",
+            pointRadius: "15",
             label: "${label}",
             fontColor:"blue",
-            fontSize:"12",
+            fontSize:"8",
             fontWeight: "bold",
             labelOutlineColor: "white",
             labelOutlineWidth: 3,

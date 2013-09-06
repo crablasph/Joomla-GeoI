@@ -13,3 +13,66 @@ a.button {
     width: 512px;
     padding: 0 0.5em 0.5em 0.5em;
 }
+
+
+.SearchButton2 {
+    position: absolute;
+    top: 150px;
+    left: 0px;
+    width: 20em;
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    font-size: smaller;
+    color: white;
+    background-color: transparent;
+}
+
+
+#TaskButtons {
+                position: absolute;
+                top: 18em;
+                left: 0.5em;
+                width: 25px;
+                z-index: 20000;
+                background-color: transparent;
+                padding: 0 0.5em 0.5em 0.5em;
+                }
+ 
+.ImageTask{
+	width: 25px;
+    heigth: 25px;
+    cursor: pointer;
+	
+}
+
+.ImageTask:hover
+{
+	width: 28px;
+    heigth: 28px;
+}
+
+#BasicWindow {
+				opacity:0.7;
+                position: absolute;
+                top: 18em;
+                left: 2.8em;
+                width: 100px;
+                z-index: 20000;
+                background-color: #94a1a8;
+                padding: 0 0.5em 0.5em 0.5em;
+                border-radius: 15px;
+                }
+
+
+.CloseWindow{
+	float:right;
+	top: 0.2em;
+	right: 0.2px;
+	width: 15px;
+    heigth: 15px;
+    cursor: pointer;
+}
+
