@@ -22,8 +22,13 @@ defined('_JEXEC') or die('Restricted Access');
 		              <img id="SearchTask" class="ImageTask" style="position: relative;" src="media/com_geoi/images/chart_search.png"></img>
 		              <img id="AuthTask" class="ImageTask" style="position: relative;" src="media/com_geoi/images/Lock.png"></img>
 	        	</div>
-	        	<div id="BasicWindow">
+	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
+	        		BUSQUEDA
+	        	</div>
+	        	<div id="LoginWindow" class="BasicWindow" style="display: none;">
+	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
+	        		LOGIN
 	        	</div>
         </div>
         <script src="<?php echo JURI::root()."media/com_geoi/js/geoi_windows.js" ?>"></script>

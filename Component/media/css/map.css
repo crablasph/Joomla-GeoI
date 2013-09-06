@@ -5,16 +5,6 @@
             }
 
 
-a.button {
-	background-image:;
-	position: absolute;
-    bottom: 1em;
-    left: 1em;
-    width: 512px;
-    padding: 0 0.5em 0.5em 0.5em;
-}
-
-
 .SearchButton2 {
     position: absolute;
     top: 150px;
@@ -54,7 +44,7 @@ a.button {
     heigth: 28px;
 }
 
-#BasicWindow {
+.BasicWindow {
 				opacity:0.7;
                 position: absolute;
                 top: 18em;
@@ -64,6 +54,7 @@ a.button {
                 background-color: #94a1a8;
                 padding: 0 0.5em 0.5em 0.5em;
                 border-radius: 15px;
+                
                 }
 
 
