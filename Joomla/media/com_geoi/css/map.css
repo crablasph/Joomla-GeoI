@@ -78,7 +78,7 @@
 	font-family: sans-serif;
     font-weight: bold;
     color: gray;
-    font-size: x-small;
+    font-size: 12px;
 }
 .InputLogin{
 		width:75px;
@@ -86,5 +86,12 @@
 		border: 1px solid #999;
 		border-radius: 10px;
 		overflow:auto;
+}
+
+.SelectList{
+	float:rigth;
+	rigth: 0em;
+	border-radius: 10px;
+	overflow:auto;
 }
 

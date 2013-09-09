@@ -8,6 +8,7 @@ defined('_JEXEC') or die('Restricted Access');
 <!DOCTYPE html>
 <html >
     <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<base href="<?php echo JURI::root()?>" >
 	<title><?php echo JTEXT::_('COM_GEOI')?></title>
 	<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script> 
@@ -23,9 +24,20 @@ defined('_JEXEC') or die('Restricted Access');
 	        	</div>
 	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
-						<label for="login" class="TitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_TITLE')?></b></label><br>
-						<label id="typep" class="LabelWindow"><b>ATRIBUTO:</b>
+						<label for="loginTitle" class="TitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_TITLE')?></b></label><br>
+						<?php foreach ($this->search_array as $search){
+							echo '<label class="LabelWindow"><b>'.$search[2].':</b>';
+							if ($search[1]=="CAT") {
+								echo '<select class="SelectList" name="'.$search[0].'">';
+								echo '<option value=""> </option>';
+								foreach ($search[3] as $se){echo '<option value="'.$se.'">'.$se .'</option>';}
+								echo "</select>";
+							}
+							echo '</label><br>';
+						}
+						?>
 						<input type="text" name="atributo" id="username" class="InputLogin"></label>
+						<label for="PolTitle" class="TitleWindow"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br>
 						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;"><br>
 	        	</div>
 	        	<div id="LoginWindow" class="BasicWindow" style="display: none;">

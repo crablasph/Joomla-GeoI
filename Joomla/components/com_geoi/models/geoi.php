@@ -250,4 +250,93 @@ class GeoiModelGeoi extends JModel
         	//$parameters['']=$this->GetParam('');
         	return json_encode($parameters);
         }
+        
+        public function GetSearchParameters(){
+        	////SELECT VAL FROM geoi.GeoIConf WHERE PARAM = 'SEARCH_FIELDS' 
+        	$search_fields=$this-> GetParam('SEARCH_FIELDS'); 	
+        	$search_fields=explode(",",$search_fields);
+        	///$cont=count($search_fields);
+        	$i=0;
+        	foreach ($search_fields as $search){
+        		$arrexploded=explode(":",$search_fields[$i]);
+        		$search_fields[$i]=Array();
+        		array_push($arrexploded,$this->GetColString($arrexploded[0]));
+        		if($arrexploded[1]=="CAT"){
+        			$category=$this->GetCategoryField($arrexploded[0]);
+        			array_push($arrexploded,$category);
+        		}else if($arrexploded[1]=="INT"){
+        			$interval=$this->GetIntervalField($arrexploded[0]);
+        			array_push($arrexploded,$interval);
+        		}
+        		$search_fields[$i]=$arrexploded;
+        		$i++;
+        		
+        	}
+        	return $search_fields;
+        }
+        
+        private function GetCategoryField($field){
+        	//$selconf ="SELECT VAL FROM GeoIConf WHERE PARAM ='".$param."' ";
+        	$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM GeoIOfertas WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	//return results;
+        	//foreach ($results[0] as $res){return $res;}
+        	$array_res=Array();
+        	$cont=0;
+        	foreach ($results as $res){
+        		foreach ($res as $r){
+        			$array_res[$cont]=$r;
+        		}
+        		$cont++;
+        	}
+        	return $array_res;
+        }
+        
+        private function GetIntervalField($field){
+        	//return Array();
+        	$query="SELECT MIN( ".$field .") FROM GeoIOfertas UNION  SELECT MAX(".$field .")  FROM GeoIOfertas;";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	//return results;
+        	//foreach ($results[0] as $res){return $res;}
+        	$array_res=Array();
+        	$cont=0;
+        	foreach ($results as $res){
+        		foreach ($res as $r){
+        			$array_res[$cont]=$r;
+        		}
+        		$cont++;
+        	}
+        	return $array_res;
+        }
+        
+        private function GetColString($field){
+        	$query="SELECT VAL FROM GeoIConf WHERE SUBSTRING( PARAM, 3 )='".$field."';";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	//return results;
+        	//foreach ($results[0] as $res){return $res;}
+        	//$array_res=Array();
+        	//$cont=0;
+        	foreach ($results as $res){
+        		foreach ($res as $r){
+        			return $r;
+        		}
+        		//$cont++;
+        	}
+        	///return $array_res;
+        }
 }

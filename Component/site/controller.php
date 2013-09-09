@@ -22,16 +22,13 @@ class GeoiController extends JController
                 //$model = $this->getModel('geoi');
                 //////
 				$app= JFactory::getApplication();
-                $input = $app->input;
-                $input->set('view', $input->getCmd('view', 'Geoi'));
+                //$input = $app->input;
+                //$input->set('view', $input->getCmd('view', 'Geoi'));
+				$view = $this->getView('Geoi','html');
 				$doc = JFactory::getDocument();
-				//$doc->addScript(JURI::root()."media/com_geoi/openlayers/OpenLayers.js");
-				//$doc->addScript(JURI::root()."media/com_geoi/js/geoi.js");
-				//$doc->addScript('http://maps.google.com/maps/api/js?v=3&amp;sensor=false',"text/javascript");
-				//$doc->addStyleSheet(JURI::root()."media/com_geoi/css/style.css");
-				//$doc->addStyleSheet(JURI::root()."media/com_geoi/css/map.css");
-                // call parent behavior
-                parent::display($cachable);
+				$model=$this->getModel();
+				$view->search_array=$model->GetSearchParameters();
+				$view->display();
 				$app->close();
                 
         }
@@ -105,6 +102,20 @@ class GeoiController extends JController
 			$view = $this->getView( 'Geojson', 'raw' );
 			$model=$this->getModel();
 			echo $model->GetMapParameters();
+			parent::display($cachable = false);
+			$app->close();
+		}
+		////FUNCION DE PRUBA, BORRAR
+		function GetSearchParameters(){
+			$app = JFactory::getApplication();
+			$input=$app->input;
+			$input->set('view', $input->getCmd('view', 'Geojson'));
+			$document = JFactory::getDocument();
+			$document->setMimeEncoding('application/json; charset=UTF8');
+			$document->setType('raw');
+			$view = $this->getView( 'Geojson', 'raw' );
+			$model=$this->getModel();
+			print_r($model->GetSearchParameters());
 			parent::display($cachable = false);
 			$app->close();
 		}
