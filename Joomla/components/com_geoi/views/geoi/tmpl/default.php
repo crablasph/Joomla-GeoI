@@ -32,6 +32,11 @@ defined('_JEXEC') or die('Restricted Access');
 								echo '<option value=""> </option>';
 								foreach ($search[3] as $se){echo '<option value="'.$se.'">'.$se .'</option>';}
 								echo "</select>";
+							}elseif($search[1]=="INT"){
+								echo '<div class="Slider" name="'.$search[0].'" id="SliderValues">';
+									echo '<input type="hidden" name="MIN" value="'.$search[3][0].'">';
+									echo '<input type="hidden" name="MAX" value="'.$search[3][1].'">';
+								echo '</div>';
 							}
 							echo '</label><br>';
 						}
