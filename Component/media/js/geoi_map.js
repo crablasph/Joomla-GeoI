@@ -86,15 +86,18 @@ var map, vector_layer, select, popup;
                 	for(i=0;i<parameters.SYMBOLOGY_VALUES.length;i++){
             			var atn=parameters.SYMBOLOGY_VALUES[i];
             			var ico=parameters.ICON[i];
-            			if(feature.attributes.type==atn){return ico;}
+            			if(feature.attributes.type.toLowerCase()==atn){return ico;}
             		}
                 } else if(feature.cluster) {
                     for (var i = 0; i < feature.cluster.length; i++) {
-                    	var atn=parameters.SYMBOLOGY_VALUES[i];
-            			var ico=parameters.ICON[i];
-                        if (feature.cluster[i].attributes.type == atn) {return ico;}
+                    	for(j=0;j<parameters.SYMBOLOGY_VALUES.length;j++){
+	                    	var atn=parameters.SYMBOLOGY_VALUES[j];
+	            			var ico=parameters.ICON[j];
+	                        if (feature.cluster[i].attributes.type.toLowerCase() == atn) {return ico;}
+                    	}
                     }
                  }
+                else {return parameters.ICON[parameters.ICON.length - 1];}
                }
             }
         });
