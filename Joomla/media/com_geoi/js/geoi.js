@@ -34,17 +34,6 @@ var map, vector_layer, select, popup;
  var request=[];
  var parameters=getMapParameters();
  function init(){ 
- 
- //var gjson = getGeojson();
- ////A PARAMETRIZAR
-	 //1. EPSG  = 3857 ó EPSG_DATA y EPSG_DISP
-	 //2. BOUNDS = -8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381
-	 //3. MINSCALE = 50000
-	 //4. ICON_1 = 'media/com_geoi/images/home.png'
-	 //5. SYMBOLOGY_FIELD = 
-	 //6. LYR_NAME = Ofertas
-	 //7. CLUSTER_DISTANCE = 50 
-	 //8. CLUSTER_THRESHOLD = 2
 	 map = new OpenLayers.Map('map-id',{
                     controls: [
                         new OpenLayers.Control.Navigation(),
@@ -84,8 +73,6 @@ var map, vector_layer, select, popup;
             labelOutlineColor: "white",
             labelOutlineWidth: 3,
             externalGraphic:"${getIco}"
-            //externalGraphic: lookup
-            //externalGraphic: parameters.ICON[0]
         }, {
         	context: 
         	{ label: function(vector_layer) {
@@ -95,7 +82,6 @@ var map, vector_layer, select, popup;
         			return vector_layer.attributes.count;
         		},
         	getIco: function(feature){
-                //var color = '#aaaaaa';
                 if (feature.attributes.type ) {
                 	for(i=0;i<parameters.SYMBOLOGY_VALUES.length;i++){
             			var atn=parameters.SYMBOLOGY_VALUES[i];
@@ -143,14 +129,10 @@ function onPopupClose() {
         }
 
 function onFeatureSelect(event) {
-	//vector_layer.strategies.activate();
-	//alert(vector_layer.strategies.clustering);
 	        var feature = event.feature;
             var cfeatures = feature.cluster;
             var cluster = event.feature.cluster;
-            //alert (cluster.length);
 			var content = "";
-			//alert (getAttributesbyID("1,2,3"));
 			var pjson = feature.attributes;
 			var oids="";
 			if(!feature.cluster) // if not cluster
@@ -163,7 +145,7 @@ function onFeatureSelect(event) {
 		    } 
 		    else
 		    {        
-		    	content = content + '<dl class="accordion">';
+		    	content = content + '<dl id="IndentifyAccordion" class="accordion">';
 		    	for (i=0;i<cfeatures.length; i++ ) { 
 		    		var pjson2=cfeatures[i].attributes;
 		    		//content = content +'<dt><b>'+(i+1)+'</b></dt><dd>';

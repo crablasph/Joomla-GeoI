@@ -184,7 +184,7 @@ class GeoiModelGeoi extends JModel
         	$where="oid IN ( ".$idlist.")";
         	if(strtolower($table)=='geoiofertas'){$colo=$this->GetColArray();}
         	else{$colo='*';}
-        	array_push($colo,'oid');
+        	//array_push($colo,'oid');
         	$db = JFactory::getDbo();
         	$st= $db->getQuery(true);
         	$st

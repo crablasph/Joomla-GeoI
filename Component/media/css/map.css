@@ -49,12 +49,13 @@
                 position: absolute;
                 top: 18em;
                 left: 2.8em;
-                width: 100px;
+                min-width: 100px;
+                min-height:100px;
                 z-index: 20000;
                 background-color: #94a1a8;
                 padding: 0 0.5em 0.5em 0.5em;
                 border-radius: 15px;
-                
+
                 }
 
 
@@ -65,5 +66,25 @@
 	width: 15px;
     heigth: 15px;
     cursor: pointer;
+}
+
+.TitleWindow{
+	font-family: sans-serif;
+    font-weight: bold;
+    color: white;
+    font-size: medium;
+}
+.LabelWindow{
+	font-family: sans-serif;
+    font-weight: bold;
+    color: gray;
+    font-size: x-small;
+}
+.InputLogin{
+		width:75px;
+		display:block;
+		border: 1px solid #999;
+		border-radius: 10px;
+		overflow:auto;
 }
 
