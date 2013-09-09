@@ -13,7 +13,6 @@ defined('_JEXEC') or die('Restricted Access');
 	<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script> 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="<?php echo JURI::root()."media/com_geoi/openlayers/OpenLayers.js" ?>"></script>
-    <script src="<?php echo JURI::root()."media/com_geoi/js/geoi_map.js" ?>"></script>
 	<link rel="stylesheet" href="<?php echo JURI::root()."media/com_geoi/css/map.css" ?>" type="text/css">
     </head>
 	<body onload="init()">
@@ -31,7 +30,7 @@ defined('_JEXEC') or die('Restricted Access');
 	        		LOGIN
 	        	</div>
         </div>
-        <script src="<?php echo JURI::root()."media/com_geoi/js/geoi_windows.js" ?>"></script>
+        <script src="<?php echo JURI::root()."media/com_geoi/js/geoi.js" ?>"></script>
 	</body>
 </html>
 

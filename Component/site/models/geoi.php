@@ -7,9 +7,8 @@ defined('_JEXEC') or die('Restricted access');
 // import Joomla modelitem library
 jimport('joomla.application.component.model');
 require JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';
-/**
- * HelloWorld Model
- */
+
+
 class GeoiModelGeoi extends JModel
 {
 		private function WKT_to_GeoJson($wkt) {
@@ -213,7 +212,7 @@ class GeoiModelGeoi extends JModel
         	
         	$parameters['SYMBOLOGY_VALUES']=Array();
         	//SELECT DISTINCT LOWER(TYPEO) FROM GeoIOfertas;
-        	$st='SELECT DISTINCT LOWER('.$parameters['SYMBOLOGY_FIELD'].' ) SYMBOLOGY_VALUES FROM GeoIOfertas ORDER BY 1 ASC';
+        	$st="SELECT DISTINCT LOWER(".$parameters['SYMBOLOGY_FIELD']." ) SYMBOLOGY_VALUES FROM GeoIOfertas WHERE CHAR_LENGTH(TRIM(".$parameters['SYMBOLOGY_FIELD']."))>0 ORDER BY 1 ASC";
         	$db = JFactory::getDbo();
         	$db->setQuery($st);
         	$ex=$db->execute();

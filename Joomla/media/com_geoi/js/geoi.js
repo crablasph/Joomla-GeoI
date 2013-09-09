@@ -1,8 +1,22 @@
-///CREAR CLASE DE CLUSTER POR ATRIBUTOS
-
 $( "#SearchTask" ).click(function() {
-alert( "Handler for .click() called." );
-});
+		$( "#SearchWindow" ).slideToggle();
+		$( "#LoginWindow" ).hide();
+	//$( "#SearchWindow" ).toggle();
+			});
+
+$( "#AuthTask" ).click(function() {
+	$( "#LoginWindow" ).slideToggle();
+	$( "#SearchWindow" ).hide();
+		});
+
+
+$( ".CloseWindow" ).click(function() {
+	$(this).parent().hide();
+	});
+
+
+
+///CREAR CLASE DE CLUSTER POR ATRIBUTOS
 
 OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
     attribute: null,
@@ -93,7 +107,8 @@ var map, vector_layer, select, popup;
                     	for(j=0;j<parameters.SYMBOLOGY_VALUES.length;j++){
 	                    	var atn=parameters.SYMBOLOGY_VALUES[j];
 	            			var ico=parameters.ICON[j];
-	                        if (feature.cluster[i].attributes.type.toLowerCase() == atn) {return ico;}
+	            			if (feature.cluster[i].attributes.type == ""){return parameters.ICON[parameters.ICON.length - 1];}
+	            			else if (feature.cluster[i].attributes.type.toLowerCase() == atn) {return ico;}
                     	}
                     }
                  }
