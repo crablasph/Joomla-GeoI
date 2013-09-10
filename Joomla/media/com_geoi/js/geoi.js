@@ -16,6 +16,7 @@ $( ".CloseWindow" ).click(function() {
 
 
 
+
 ///CREAR CLASE DE CLUSTER POR ATRIBUTOS
 
 OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {

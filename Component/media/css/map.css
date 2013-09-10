@@ -44,10 +44,45 @@
     heigth: 28px;
 }
 
+.SliderContainer{
+	            min-width: 80px;
+                min-height:15px;
+                padding:0px;
+               
+}
+/* Comment here 
+*/
+.SliderContainer input:nth-child(1){ 
+    position: absolute;
+}
+
+input{
+	z-index:0; 
+}
+/*
+.SliderContainer input:first-child { 
+    z-index:;   
+}
+
+.MinSlider:hover{
+	z-index:0; 
+}
+
+.MaxSlider:hover{
+	z-index:0; 
+}
+
+.MaxSlider{
+	z-index:-1; 
+}
+.MinSlider{
+	z-index:0; 
+}*/
+
 .BasicWindow {
 				opacity:0.7;
                 position: absolute;
-                top: 18em;
+                top: 10em;
                 left: 2.8em;
                 min-width: 100px;
                 min-height:100px;
@@ -58,6 +93,10 @@
 
                 }
 
+
+.BasicWindow:hover{
+	opacity:0.9;
+}
 
 .CloseWindow{
 	float:right;
@@ -86,12 +125,42 @@
 		border: 1px solid #999;
 		border-radius: 10px;
 		overflow:auto;
+		padding:2px 2x 2px;
 }
 
 .SelectList{
 	float:rigth;
 	rigth: 0em;
-	border-radius: 10px;
+	border-radius: 5px;
 	overflow:auto;
+	background-color: #94a1a8;
+	border-style:solid;
+	border-color:#FEFDFD;
+	padding:3px;
 }
+
+.RangeText{
+	font-family: sans-serif;
+    font-weight: bold;
+    color: white;
+    font-size: 8px;
+    padding:3px;
+}
+.MinBox ,.MaxBox{
+		width:60px;
+		border-radius: 5px;
+		background-color: #94a1a8;
+		border-style:solid;
+		border-color:#FEFDFD;
+		padding:3px;
+		font-size: 10px;
+}
+
+
+.MinSlider {
+	display: none;
+}
+
+
+
 
