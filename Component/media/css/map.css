@@ -5,19 +5,31 @@
             }
 
 
-#TaskButtons {
+select[multiple]{
+        width: 200px;
+        height: 200px;
+    }
+
+#TaskBar {		opacity:0.5;
                 position: absolute;
                 top: 18em;
                 left: 0.5em;
                 width: 25px;
                 z-index: 20000;
-                background-color: transparent;
+                background-color: #94a1a8;
                 padding: 0 0.5em 0.5em 0.5em;
+                border-radius: 15px;
+               	border-style:solid;
+				border-color:#3D3C3C;
                 }
+
+#TaskBar:hover{
+	opacity:0.9;
+}
  
 .ImageTask{
 	width: 25px;
-    heigth: 25px;
+    height: 25px;
     cursor: pointer;
 	
 }
@@ -25,7 +37,7 @@
 .ImageTask:hover
 {
 	width: 28px;
-    heigth: 28px;
+    height: 28px;
 }
 
 .SliderContainer{
@@ -43,31 +55,12 @@
 input{
 	z-index:0; 
 }
-/*
-.SliderContainer input:first-child { 
-    z-index:;   
-}
-
-.MinSlider:hover{
-	z-index:0; 
-}
-
-.MaxSlider:hover{
-	z-index:0; 
-}
-
-.MaxSlider{
-	z-index:-1; 
-}
-.MinSlider{
-	z-index:0; 
-}*/
 
 .BasicWindow {
 				opacity:0.7;
                 position: absolute;
                 top: 10em;
-                left: 2.8em;
+                left: 3.5em;
                 min-width: 100px;
                 min-height:100px;
                 z-index: 20000;
@@ -76,7 +69,6 @@ input{
                 border-radius: 15px;
                	border-style:solid;
 				border-color:#3D3C3C;
-
                 }
 
 
@@ -89,7 +81,7 @@ input{
 	top: 0.2em;
 	right: 0.2px;
 	width: 15px;
-    heigth: 15px;
+    height: 15px;
     cursor: pointer;
 }
 
@@ -108,19 +100,21 @@ input{
 .InputLogin{
 		width:75px;
 		display:block;
-		border: 1px solid #999;
-		border-radius: 10px;
-		overflow:auto;
-		padding:2px 2x 2px;
+		border-radius: 5px;
+		background-color: #94a1a8;
+		border-style:solid;
+		border-color:#FEFDFD;
+		padding:3px;
 }
 
 .SelectList{
-	width:40px;
-	max-heigth:20px;
+	float: rigth;
+	display: inline-block;
+	min-width:50px;
 	float:rigth;
 	rigth: 0em;
 	border-radius: 5px;
-	overflow:auto;
+	overflow:scroll;
 	background-color: #94a1a8;
 	border-style:solid;
 	border-color:#FEFDFD;

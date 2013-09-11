@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted Access');
     </head>
 	<body onload="init()">
         <div id="map-id" >
-	        	<div id="TaskButtons">
+	        	<div id="TaskBar">
 		              <img id="SearchTask" class="ImageTask" style="position: relative;" src="media/com_geoi/images/chart_search.png"></img>
 		              <img id="AuthTask" class="ImageTask" style="position: relative;" src="media/com_geoi/images/Lock.png"></img>
 	        	</div>
@@ -30,17 +30,18 @@ defined('_JEXEC') or die('Restricted Access');
 							echo '<span class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
 							if ($search[1]=="CAT") {
 								echo ' <select class="SelectList" id="'.$search[0].'" multiple="multiple"> ';
-								echo '<option value=""> </option>';
-								foreach ($search[3] as $se){echo '<option value="'.$se.'">'.$se .'</option> ';}
+								//echo '<option value=""> </option>';
+								foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se .'</option> ';}
 								echo "</select>";
 								echo '<br>';
 							}elseif($search[1]=="INT"){
 								echo '<div class="SliderContainer" id="'.$search[0].'"> ';
 								//echo "<br> ";
-								echo '<span class="RangeText">min:</span><input type="text" id="minbox'.$search[0].'" class="MinBox" value="'.$search[3][0].'" onclick="$(\'#max'.$search[0].'\').hide();$(\'#min'.$search[0].'\').show();" onchange="$(\'#min'.$search[0].'\').val($(\'#minbox'.$search[0].'\').val());">';
-								echo '<span class="RangeText">max:</span><input type="text" id="maxbox'.$search[0].'" class="MaxBox" value="'.$search[3][1].'" onclick="$(\'#min'.$search[0].'\').hide();$(\'#max'.$search[0].'\').show();" onchange="$(\'#max'.$search[0].'\').val($(\'#maxbox'.$search[0].'\').val());">';
+								$valerror=JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR');
+								echo '<span class="RangeText">min:</span><input type="number" id="minbox'.$search[0].'" class="MinBox" value="'.
+								$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#max'.$search[0].'\').hide();$(\'#min'.$search[0].'\').show();" onchange="minr=document.getElementById(\'min'.$search[0].'\').value;minall=document.getElementById(\'minbox'.$search[0].'\').getAttribute(\'min\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(min)>Number(max)||Number(min)<Number(minall)){alert(\''.$valerror.'\');document.getElementById(\'minbox'.$search[0].'\').value=minr;}else{document.getElementById(\'min'.$search[0].'\').value=min;}">';
+								echo '<span class="RangeText">max:</span><input type="number" id="maxbox'.$search[0].'" class="MaxBox" value="'.$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#min'.$search[0].'\').hide();$(\'#max'.$search[0].'\').show();" onchange="maxr=document.getElementById(\'max'.$search[0].'\').value;maxall=document.getElementById(\'maxbox'.$search[0].'\').getAttribute(\'max\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(max)<Number(min)||Number(max)>Number(maxall)){alert(\''.$valerror.'\');document.getElementById(\'maxbox'.$search[0].'\').value=maxr;}else{document.getElementById(\'max'.$search[0].'\').value=max;}">';
 								echo '<br>';
-								
 								echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="$(\'#minbox'.$search[0].'\').val($(\'#min'.$search[0].'\').val()); $(\'#max'.$search[0].'\').attr(\'min\',$(\'#min'.$search[0].'\').val());"> ';
 								echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="$(\'#maxbox'.$search[0].'\').val($(\'#max'.$search[0].'\').val()); $(\'#min'.$search[0].'\').attr(\'max\',$(\'#max'.$search[0].'\').val());"> ';
 								echo '</div>';

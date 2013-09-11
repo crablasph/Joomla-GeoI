@@ -15,6 +15,9 @@ $( ".CloseWindow" ).click(function() {
 	});
 
 
+$(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
+$(".SelectList").css("width", parseInt($(".SelectList option").length) *15);
+
 
 
 ///CREAR CLASE DE CLUSTER POR ATRIBUTOS
