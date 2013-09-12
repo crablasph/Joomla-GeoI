@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted Access');
 							
 							if ($search[1]=="CAT") {
 								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
-								//echo '</div>';
+								echo '</div>';
 								//echo '<div class="SelectDiv">';
 								//echo ' <select class="SelectList" id="'.$search[0].'" multiple="multiple"> ';
 								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se .'</option> ';}
