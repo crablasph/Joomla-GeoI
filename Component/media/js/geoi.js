@@ -13,7 +13,22 @@ $( "#AuthTask" ).click(function() {
 $( ".CloseWindow" ).click(function() {
 	$(this).parent().hide();
 	});
-
+/*
+$('#SearchPolygon').click(function (){
+	var selico=document.getElementById("SearchPolygon").getAttribute("selected");
+	if(selico=="false"){
+		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_on.png");
+		document.getElementById("SearchPolygon").setAttribute("selected","true");
+		$(".SelectListPOL").prop('disabled', true);
+		
+	}
+	else{
+		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_off.png");
+		document.getElementById("SearchPolygon").setAttribute("selected","false");
+		$(".SelectListPOL").prop('disabled', false);
+	}
+	
+});*/
 
 $(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
 $(".SelectList").css("width", parseInt($(".SelectList option").length) *15);
@@ -34,7 +49,7 @@ OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Clus
     CLASS_NAME: "OpenLayers.Strategy.AttributeCluster"
 });
 
-var map, vector_layer, select, popup;
+var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
  var request=[];
  var parameters=getMapParameters();
  function init(){ 
@@ -55,6 +70,16 @@ var map, vector_layer, select, popup;
 	                    	"zoomend":popupClear
 	                    }
                 });
+	 
+	 	//ADD DRAW POLYGON
+	     pollayer = new OpenLayers.Layer.Vector( "PolygonSearch" );
+	     map.addLayer(pollayer);
+	     var container = document.getElementById("SearchPolDiv");
+	     poldrawsearchcontrol = new OpenLayers.Control.DrawFeature( pollayer , OpenLayers.Handler.Polygon );
+	     map.addControl(poldrawsearchcontrol);
+     
+
+        
 		var osm = new OpenLayers.Layer.OSM();
 		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
 		map.addLayers([osm, gmap]);
@@ -124,6 +149,8 @@ var map, vector_layer, select, popup;
             });
 		map.addControl(select);
 		select.activate(); 
+		
+		
 
 }
  
@@ -276,4 +303,24 @@ function popupClear() {
          map.removePopup(map.popups[0]);
     }
 }
+
+function polButtonClick(){
+	var selico=document.getElementById("SearchPolygon").getAttribute("selected");
+	if(selico=="false"){
+		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_on.png");
+		document.getElementById("SearchPolygon").setAttribute("selected","true");
+		$(".SelectListPOL").prop('disabled', true);
+		poldrawsearchcontrol.activate();
+		
+	}
+	else{
+		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_off.png");
+		document.getElementById("SearchPolygon").setAttribute("selected","false");
+		$(".SelectListPOL").prop('disabled', false);
+		poldrawsearchcontrol.deactivate();
+		pollayer.removeAllFeatures();
+	}
+}
+
+
 

@@ -105,7 +105,7 @@ class GeoiController extends JController
 			parent::display($cachable = false);
 			$app->close();
 		}
-		////FUNCION DE PRUBA, BORRAR
+		////FUNCION DE PRUEBA, BORRAR
 		function GetSearchParameters(){
 			$app = JFactory::getApplication();
 			$input=$app->input;

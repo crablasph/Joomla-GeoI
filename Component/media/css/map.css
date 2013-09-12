@@ -6,21 +6,22 @@
 
 
 select[multiple]{
-        width: 200px;
+        width: 250px;
         height: 200px;
     }
 
 #TaskBar {		opacity:0.5;
                 position: absolute;
-                top: 18em;
-                left: 0.5em;
-                width: 25px;
+                top: 0em;
+                left: 3.5em;
+                width: 50px;
                 z-index: 20000;
                 background-color: #94a1a8;
-                padding: 0 0.5em 0.5em 0.5em;
+                padding: 0.15em;
                 border-radius: 15px;
                	border-style:solid;
 				border-color:#3D3C3C;
+				
                 }
 
 #TaskBar:hover{
@@ -31,7 +32,13 @@ select[multiple]{
 	width: 25px;
     height: 25px;
     cursor: pointer;
+    padding:3px;
 	
+}
+.TaskDiv{
+	float:left;
+    display: inline;
+    width: 25px;
 }
 
 .ImageTask:hover
@@ -54,12 +61,15 @@ select[multiple]{
 
 input{
 	z-index:0; 
+	font-family: sans-serif;
+	font-size: 8px;
+	
 }
 
 .BasicWindow {
 				opacity:0.7;
                 position: absolute;
-                top: 10em;
+                top: 3em;
                 left: 3.5em;
                 min-width: 100px;
                 min-height:100px;
@@ -96,6 +106,8 @@ input{
     font-weight: bold;
     color: gray;
     font-size: 12px;
+    min-width:100px;
+    float:left;
 }
 .InputLogin{
 		width:75px;
@@ -111,7 +123,19 @@ input{
 	float: rigth;
 	display: inline-block;
 	min-width:50px;
-	float:rigth;
+	rigth: 0px;
+	border-radius: 5px;
+	overflow:scroll;
+	background-color: #94a1a8;
+	border-style:solid;
+	border-color:#FEFDFD;
+	padding:3px;
+}
+
+.SelectListPOL{
+	float: rigth;
+	display: inline-block;
+	min-width:50px;
 	rigth: 0em;
 	border-radius: 5px;
 	overflow:scroll;
@@ -138,9 +162,29 @@ input{
 		font-size: 10px;
 }
 
+.MinSlider, .MaxSlider {
+	background-color: #94a1a8;
+	width:90%;
+}
 
 .MinSlider {
+	
 	display: none;
+}
+
+.SelectDiv{
+	float: rigth;
+	position: relative;
+    display: inline;
+	rigth: 0em;
+	top: 0em;
+	min-width:80px;
+	padding:3px;
+}
+
+.SearchPolDiv {
+	float:left;
+  	width: 116px;	
 }
 
 

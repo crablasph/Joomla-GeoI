@@ -262,7 +262,7 @@ class GeoiModelGeoi extends JModel
         		$search_fields[$i]=Array();
         		array_push($arrexploded,$this->GetColString($arrexploded[0]));
         		if($arrexploded[1]=="CAT"){
-        			$category=$this->GetCategoryField($arrexploded[0]);
+        			$category=$this->GetCategoryField($arrexploded[0],0,0);
         			array_push($arrexploded,$category);
         		}else if($arrexploded[1]=="INT"){
         			$interval=$this->GetIntervalField($arrexploded[0]);
@@ -272,12 +272,35 @@ class GeoiModelGeoi extends JModel
         		$i++;
         		
         	}
+        	$num_pol=$this-> GetParam('NUMPOL');
+        	for ($j=1;$j<$num_pol+1;$j++){
+        		$pol_parameters=Array();
+        		$pol_nom=$this-> GetParam('POL'.$j);
+        		array_push($pol_parameters,"POL".$j);
+        		array_push($pol_parameters,"POL");
+        		array_push($pol_parameters,$pol_nom);
+        		$category=$this->GetCategoryField("NAME",1,$j);
+        		array_push($pol_parameters,$category);
+        		$search_fields[$i]=$pol_parameters;
+        		$i++;
+        	}
         	return $search_fields;
         }
         
-        private function GetCategoryField($field){
+        private function GetCategoryField($field,$opt,$poltable){
         	//$selconf ="SELECT VAL FROM GeoIConf WHERE PARAM ='".$param."' ";
-        	$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM GeoIOfertas WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+        	switch ($opt){
+        		case 0:
+	        		$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM GeoIOfertas WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+	        		break;
+        		case 1:
+        			$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM GeoIPOL".$poltable." WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+        			break;
+        		default:
+        			echo JText::_('COM_GEOI_OPT_ERR');
+        			break;
+        	}
+        	
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();

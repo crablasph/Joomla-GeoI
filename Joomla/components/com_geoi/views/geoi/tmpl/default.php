@@ -20,37 +20,61 @@ defined('_JEXEC') or die('Restricted Access');
 	<body onload="init()">
         <div id="map-id" >
 	        	<div id="TaskBar">
-		              <img id="SearchTask" class="ImageTask" style="position: relative;" src="media/com_geoi/images/chart_search.png"></img>
-		              <img id="AuthTask" class="ImageTask" style="position: relative;" src="media/com_geoi/images/Lock.png"></img>
+		              <div class="TaskDiv"><img id="SearchTask" class="ImageTask"  src="media/com_geoi/images/chart_search.png"></img></div>
+		              <div class="TaskDiv"><img id="AuthTask" class="ImageTask"  src="media/com_geoi/images/Lock.png"></img></div>
 	        	</div>
 	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
 						<label for="loginTitle" class="TitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_TITLE')?></b></label><br><hr>
 						<?php foreach ($this->search_array as $search){
-							echo '<span class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
+							
 							if ($search[1]=="CAT") {
-								echo ' <select class="SelectList" id="'.$search[0].'" multiple="multiple"> ';
-								//echo '<option value=""> </option>';
-								foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se .'</option> ';}
-								echo "</select>";
+								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
+								//echo '</div>';
+								//echo '<div class="SelectDiv">';
+								//echo ' <select class="SelectList" id="'.$search[0].'" multiple="multiple"> ';
+								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se .'</option> ';}
+								//echo "</select>";
+								//echo '</div>';
 								echo '<br>';
+								
 							}elseif($search[1]=="INT"){
+								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
+								echo '</div>';
+								echo "<br> ";
 								echo '<div class="SliderContainer" id="'.$search[0].'"> ';
-								//echo "<br> ";
 								$valerror=JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR');
-								echo '<span class="RangeText">min:</span><input type="number" id="minbox'.$search[0].'" class="MinBox" value="'.
+								echo '<span class="RangeText">min:</span><input type="text" id="minbox'.$search[0].'" class="MinBox" value="'.
 								$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#max'.$search[0].'\').hide();$(\'#min'.$search[0].'\').show();" onchange="minr=document.getElementById(\'min'.$search[0].'\').value;minall=document.getElementById(\'minbox'.$search[0].'\').getAttribute(\'min\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(min)>Number(max)||Number(min)<Number(minall)){alert(\''.$valerror.'\');document.getElementById(\'minbox'.$search[0].'\').value=minr;}else{document.getElementById(\'min'.$search[0].'\').value=min;}">';
-								echo '<span class="RangeText">max:</span><input type="number" id="maxbox'.$search[0].'" class="MaxBox" value="'.$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#min'.$search[0].'\').hide();$(\'#max'.$search[0].'\').show();" onchange="maxr=document.getElementById(\'max'.$search[0].'\').value;maxall=document.getElementById(\'maxbox'.$search[0].'\').getAttribute(\'max\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(max)<Number(min)||Number(max)>Number(maxall)){alert(\''.$valerror.'\');document.getElementById(\'maxbox'.$search[0].'\').value=maxr;}else{document.getElementById(\'max'.$search[0].'\').value=max;}">';
+								echo '<span class="RangeText">max:</span><input type="text" id="maxbox'.$search[0].'" class="MaxBox" value="'.
+								$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#min'.$search[0].'\').hide();$(\'#max'.$search[0].'\').show();" onchange="maxr=document.getElementById(\'max'.$search[0].'\').value;maxall=document.getElementById(\'maxbox'.$search[0].'\').getAttribute(\'max\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(max)<Number(min)||Number(max)>Number(maxall)){alert(\''.$valerror.'\');document.getElementById(\'maxbox'.$search[0].'\').value=maxr;}else{document.getElementById(\'max'.$search[0].'\').value=max;}">';
 								echo '<br>';
 								echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="$(\'#minbox'.$search[0].'\').val($(\'#min'.$search[0].'\').val()); $(\'#max'.$search[0].'\').attr(\'min\',$(\'#min'.$search[0].'\').val());"> ';
 								echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="$(\'#maxbox'.$search[0].'\').val($(\'#max'.$search[0].'\').val()); $(\'#min'.$search[0].'\').attr(\'max\',$(\'#max'.$search[0].'\').val());"> ';
 								echo '</div>';
 							}
-							echo '</span>';
+							
 							//echo '<br>';
 						}
 						?>
 						<label for="PolTitle" class="TitleWindow"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br>
+						<?php foreach ($this->search_array as $search){
+							if ($search[1]=="POL") {		
+								//echo "<div>";
+								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
+								echo '</div>';
+								//echo ' <select class="SelectListPOL" id="'.$search[0].'"';
+								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se.'</option> ';}
+								//echo "</select>";
+								//echo "</div>";
+								echo '<br>';
+								
+							}					
+						}
+						?>
+						<div class="LabelWindow"><b><strong><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_DRAW')) ?>: </strong></b></div>
+						<input type="image" src="media/com_geoi/images/pol_off.png" id="SearchPolygon" selected="false" style="width:22px;heigth:22px;" onclick="polButtonClick()" >
+						<br>
 						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;"><br>
 	        	</div>
 	        	<div id="LoginWindow" class="BasicWindow" style="display: none;">
