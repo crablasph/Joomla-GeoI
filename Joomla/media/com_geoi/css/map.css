@@ -106,7 +106,6 @@ input{
     font-weight: bold;
     color: gray;
     font-size: 12px;
-    min-width:100px;
     float:left;
 }
 .InputLogin{
@@ -120,30 +119,28 @@ input{
 }
 
 .SelectList{
-	float: rigth;
-	display: inline-block;
-	min-width:50px;
-	rigth: 0px;
+	float: center;
+	max-height:80px;
 	border-radius: 5px;
-	overflow:scroll;
+	overflow:auto;
 	background-color: #94a1a8;
 	border-style:solid;
 	border-color:#FEFDFD;
-	padding:3px;
+	padding:10px;
 }
-
+/*
 .SelectListPOL{
-	float: rigth;
+	float: right;
 	display: inline-block;
 	min-width:50px;
-	rigth: 0em;
+	right: 0em;
 	border-radius: 5px;
 	overflow:scroll;
 	background-color: #94a1a8;
 	border-style:solid;
 	border-color:#FEFDFD;
 	padding:3px;
-}
+}*/
 
 .RangeText{
 	font-family: sans-serif;
@@ -173,20 +170,32 @@ input{
 }
 
 .SelectDiv{
-	float: rigth;
+	float: right;
 	position: relative;
     display: inline;
-	rigth: 0em;
+	right: 0em;
 	top: 0em;
 	min-width:80px;
 	padding:3px;
 }
 
-.SearchPolDiv {
-	float:left;
-  	width: 116px;	
+.ShowValuesButton{
+	position: relative;
+	float:right;
+	width:15px;
+	heigth:15px;
+	right:0em;
+	top:0em;
+	cursor: pointer;
 }
 
+#SearchPolygon{
+	position: relative;
+	float:right;
+	right:0em;
+	top:0em;
+	cursor: pointer;
+}
 
 
 

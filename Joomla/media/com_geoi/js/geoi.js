@@ -13,22 +13,7 @@ $( "#AuthTask" ).click(function() {
 $( ".CloseWindow" ).click(function() {
 	$(this).parent().hide();
 	});
-/*
-$('#SearchPolygon').click(function (){
-	var selico=document.getElementById("SearchPolygon").getAttribute("selected");
-	if(selico=="false"){
-		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_on.png");
-		document.getElementById("SearchPolygon").setAttribute("selected","true");
-		$(".SelectListPOL").prop('disabled', true);
-		
-	}
-	else{
-		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_off.png");
-		document.getElementById("SearchPolygon").setAttribute("selected","false");
-		$(".SelectListPOL").prop('disabled', false);
-	}
-	
-});*/
+
 
 $(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
 $(".SelectList").css("width", parseInt($(".SelectList option").length) *15);
@@ -304,6 +289,8 @@ function popupClear() {
     }
 }
 
+//// FUNCIONES INTERFAZ
+
 function polButtonClick(){
 	var selico=document.getElementById("SearchPolygon").getAttribute("selected");
 	if(selico=="false"){
@@ -320,6 +307,91 @@ function polButtonClick(){
 		poldrawsearchcontrol.deactivate();
 		pollayer.removeAllFeatures();
 	}
+}
+
+function showHide(show, hide){	$(show).show();	$(hide).hide();}
+
+function setRangeMin(name, errormsg){
+	minr=document.getElementById('min'+name).value;
+	//minall=document.getElementById('minbox'+name).getAttribute('min\');
+	minall=this.min;
+	min=document.getElementById('minbox'+name).value;
+	max=document.getElementById('maxbox'+name).value;
+	if(Number(min)>Number(max)||Number(min)<Number(minall)){
+		alert(errormsg);
+		document.getElementById('minbox'+name).value=minr;
+	}else{document.getElementById('min'+name).value=min;}
+
+}
+
+function setRangeMax(name, errormsg){
+	maxr=document.getElementById('max'+name).value;
+	maxall=document.getElementById('maxbox'+name).getAttribute('max');
+	min=document.getElementById('minbox'+name).value;
+	max=document.getElementById('maxbox'+name).value;
+	if(Number(max)<Number(min)||Number(max)>Number(maxall)){
+		alert(''.$valerror);document.getElementById('maxbox'+name).value=maxr;
+	}else{document.getElementById('max'+name).value=max;}
+	
+}
+
+function setMinBox(name){
+	$('#minbox'+name).val($('#min'+name).val()); 
+	$('#minbox'+name).attr('value',$('#min'+name).val());
+	//$('#max'+name).attr('value',$('#min'+name).val());
+}
+
+function setMaxBox(name){
+	$('#maxbox'+name).val($('#max'+name).val()); 
+	$('#maxbox'+name).attr('value',$('#max'+name).val());
+	//$('#min'+name).attr('value',$('#max'+name).val());
+}
+
+function showValues(name, array){
+	var position = $('#ShowValues'+name).offset();
+	position['left']=position['left']+30;
+	position['top']=position['top']-10;
+	///alert (position.toSource());
+	$('#MultiValuesWindow').css(position);
+	$('#MultiValuesWindow').hide();
+	document.getElementById('DataContainer').innerHTML = "";
+	//$('#ShowValues'+name).toggle();
+	//alert ($('#ShowValues'+name).data('open'));
+	//var contentname=$('#MultiValuesWindow').data('content');
+	var contentname=document.getElementById('MultiValuesWindow').getAttribute('data-content');
+	var open = document.getElementById('ShowValues'+name).getAttribute('open');
+	//alert (name+':'+open);
+	//alert(contentname);
+	if(contentname!=""){
+		if(contentname!=name ){
+			$('#ShowValues'+contentname).attr('src','media/com_geoi/images/rightblue.png');
+			//$('#ShowValues'+contentname).attr('open','closed');
+			document.getElementById('ShowValues'+contentname).setAttribute('open','closed');
+			//alert ("YYYYYYYY");
+		}
+	}
+	if(open!="open"){
+		$('#MultiValuesWindow').attr('data-content',name);
+		$('#ShowValues'+name).attr('src','media/com_geoi/images/rightgreen.png');		
+		$('#ShowValues'+name).attr('open','open');
+		$('#MultiValuesWindow').show();
+		//break;
+	}else {
+		//alert ("XXX");
+		$('#ShowValues'+name).attr('src','media/com_geoi/images/rightblue.png');		
+		//$('#ShowValues'+name).attr('open','closed');
+		document.getElementById('ShowValues'+name).setAttribute('open','closed');
+		$('#MultiValuesWindow').attr('data-content',"");
+		//break;
+	}
+	var content_arr=array.split(",");
+	var html_content='<select class="SelectList" id="'+name+'" multiple="multiple">'
+	for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'" selected>'+content_arr[i]+'</option> ';}
+	html_content=html_content+"</select>";
+	var div = document.getElementById('DataContainer');
+
+	div.innerHTML = div.innerHTML + html_content;
+	
 }
 
 

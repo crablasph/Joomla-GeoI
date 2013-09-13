@@ -31,6 +31,10 @@ defined('_JEXEC') or die('Restricted Access');
 							if ($search[1]=="CAT") {
 								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
 								echo '</div>';
+								$values="";
+								foreach ($search[3] as $se){$values=$values.$se;if(end($search[3])!=$se){$values=$values.',';}}
+								//$values_json=json_encode($values);
+								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\')">';
 								//echo '<div class="SelectDiv">';
 								//echo ' <select class="SelectList" id="'.$search[0].'" multiple="multiple"> ';
 								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se .'</option> ';}
@@ -42,27 +46,32 @@ defined('_JEXEC') or die('Restricted Access');
 								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
 								echo '</div>';
 								echo "<br> ";
+								////////AÑADIR EN EL CLICK AGREGAR VALORES  AL DIV DE ABAJO
 								echo '<div class="SliderContainer" id="'.$search[0].'"> ';
 								$valerror=JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR');
-								echo '<span class="RangeText">min:</span><input type="text" id="minbox'.$search[0].'" class="MinBox" value="'.
-								$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#max'.$search[0].'\').hide();$(\'#min'.$search[0].'\').show();" onchange="minr=document.getElementById(\'min'.$search[0].'\').value;minall=document.getElementById(\'minbox'.$search[0].'\').getAttribute(\'min\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(min)>Number(max)||Number(min)<Number(minall)){alert(\''.$valerror.'\');document.getElementById(\'minbox'.$search[0].'\').value=minr;}else{document.getElementById(\'min'.$search[0].'\').value=min;}">';
-								echo '<span class="RangeText">max:</span><input type="text" id="maxbox'.$search[0].'" class="MaxBox" value="'.
-								$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="$(\'#min'.$search[0].'\').hide();$(\'#max'.$search[0].'\').show();" onchange="maxr=document.getElementById(\'max'.$search[0].'\').value;maxall=document.getElementById(\'maxbox'.$search[0].'\').getAttribute(\'max\');min=document.getElementById(\'minbox'.$search[0].'\').value;max=document.getElementById(\'maxbox'.$search[0].'\').value;if(Number(max)<Number(min)||Number(max)>Number(maxall)){alert(\''.$valerror.'\');document.getElementById(\'maxbox'.$search[0].'\').value=maxr;}else{document.getElementById(\'max'.$search[0].'\').value=max;}">';
+								echo '<span class="RangeText">min:</span><input type="number" id="minbox'.$search[0].'" class="MinBox" value="'.
+								$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#min'.$search[0].'\', \'#max'.$search[0].'\')" onchange="setRangeMin(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
+								echo '<span class="RangeText">max:</span><input type="number" id="maxbox'.$search[0].'" class="MaxBox" value="'.
+								$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#max'.$search[0].'\', \'#min'.$search[0].'\')" onchange="setRangeMax(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
 								echo '<br>';
-								echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="$(\'#minbox'.$search[0].'\').val($(\'#min'.$search[0].'\').val()); $(\'#max'.$search[0].'\').attr(\'min\',$(\'#min'.$search[0].'\').val());"> ';
-								echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="$(\'#maxbox'.$search[0].'\').val($(\'#max'.$search[0].'\').val()); $(\'#min'.$search[0].'\').attr(\'max\',$(\'#max'.$search[0].'\').val());"> ';
+								echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="setMinBox(\''.$search[0].'\')"> ';
+								echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="setMaxBox(\''.$search[0].'\')"> ';
 								echo '</div>';
 							}
 							
 							//echo '<br>';
 						}
 						?>
-						<label for="PolTitle" class="TitleWindow"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br>
+						<label id="PolTitle" class="TitleWindow"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br>
 						<?php foreach ($this->search_array as $search){
 							if ($search[1]=="POL") {		
 								//echo "<div>";
 								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
 								echo '</div>';
+								$values="";
+								foreach ($search[3] as $se){$values=$values.$se;if(end($search[3])!=$se){$values=$values.',';}}
+								//$values_json=json_encode($values);
+								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\')">';
 								//echo ' <select class="SelectListPOL" id="'.$search[0].'"';
 								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se.'</option> ';}
 								//echo "</select>";
@@ -85,6 +94,11 @@ defined('_JEXEC') or die('Restricted Access');
 						<label for="login" class="LabelWindow"><b>PASSWORD:</b><br>
 						<input type="password" name="pwd" id="pwd" class="InputLogin"></label>
 						<input type="image" src="media/com_geoi/images/send.png" id="loginButton" value="Login" style="float:rigth;width:15px;heigth:15px;"><br>
+	        	</div>
+	        	<div id="MultiValuesWindow" class="BasicWindow" style="display: none;" data-content="">
+	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
+	        		<br>
+	        		<div id="DataContainer" ></div>
 	        	</div>
         </div>
         <script src="<?php echo JURI::root()."media/com_geoi/js/geoi.js" ?>"></script>
