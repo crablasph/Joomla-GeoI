@@ -314,7 +314,7 @@ function showHide(show, hide){	$(show).show();	$(hide).hide();}
 function setRangeMin(name, errormsg){
 	minr=document.getElementById('min'+name).value;
 	//minall=document.getElementById('minbox'+name).getAttribute('min\');
-	minall=this.min;
+	minall=document.getElementById('minbox'+name).getAttribute('min');
 	min=document.getElementById('minbox'+name).value;
 	max=document.getElementById('maxbox'+name).value;
 	if(Number(min)>Number(max)||Number(min)<Number(minall)){
@@ -330,7 +330,8 @@ function setRangeMax(name, errormsg){
 	min=document.getElementById('minbox'+name).value;
 	max=document.getElementById('maxbox'+name).value;
 	if(Number(max)<Number(min)||Number(max)>Number(maxall)){
-		alert(''.$valerror);document.getElementById('maxbox'+name).value=maxr;
+		alert(errormsg);
+		document.getElementById('maxbox'+name).value=maxr;
 	}else{document.getElementById('max'+name).value=max;}
 	
 }
