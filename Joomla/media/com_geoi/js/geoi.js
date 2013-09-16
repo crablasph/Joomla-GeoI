@@ -20,17 +20,20 @@ $( ".SubTitleWindow" ).click(function() {
 	var idelemento=$( this ).attr('id');
 	element=document.getElementById(idelemento);
 	var opens = document.getElementById(idelemento).getAttribute('open');
-	id_nexdiv=element.nextSibling.nextSibling.id;
-	$//( ".SubTitleWindow" ).hide();
+	id_nextdiv=element.nextSibling.nextSibling.nextSibling.nextSibling.id;
+	//alert (id_nextdiv);
+	//$( ".conattr" ).hide();
 	if(opens=='closed'){
 		$( this ).css("right","0px");
 		$( this ).css("float","right");
-		$('#'+id_nexdiv).slideToggle();
+		$( this ).css("color","#707070");
+		$('#'+id_nextdiv).slideToggle();
 		document.getElementById(idelemento).setAttribute('open','open');
 	}else{
 		$( this ).css("left","0px");
 		$( this ).css("float","left");
-		$('#'+id_nexdiv).slideToggle();
+		$('#'+id_nextdiv).slideToggle();
+		$( this ).css("color","white");
 		document.getElementById(idelemento).setAttribute('open','closed');
 	}
 		});
@@ -318,6 +321,45 @@ function popupClear() {
     }
 }
 
+function SearchPoints(arr){
+	var search_data=[];
+	for(i=0;i<arr.length;i++){
+		current=arr[i];
+		//valor="";
+		if (current[1]=='CAT'){
+			valor=document.getElementById(current[0]);
+			if(valor){
+				search_data[i]=[];
+				search_data[i][0]=current[0];
+				search_data[i][1]=current[1];
+				search_data[i][2]="";
+				 for (var j = 0; j < valor.options.length; j++) {
+					 if(valor.options[j].selected ==true){
+					      //alert(valor.options[j].value);
+						 search_data[i][2]=search_data[i][2]+valor.options[j].value;
+					 }
+				 }
+			}
+		}else if(current[1]=='INT'){
+			///alert('minbox'+current[0]+':'+$('minbox'+current[0]).val());
+			var min=document.getElementById('minbox'+current[0]);
+			var max=document.getElementById('maxbox'+current[0]);
+			if(min && max){
+				min=min.value;
+				max=max.value;
+				search_data[i]=[];
+				search_data[i][0]=current[0];
+				search_data[i][1]=current[1];
+				search_data[i][2]=min+','+max;
+				//alert(search_data[i][2]);
+			}
+		}else if (current[1]=='POL'){
+			
+		}
+	}
+}
+
+
 //// FUNCIONES INTERFAZ
 
 function polButtonClick(){
@@ -382,32 +424,35 @@ function showValues(name, stringvalues, type){
 	position['left']=position['left']+30;
 	position['top']=position['top']-10;
 	///alert (position.toSource());
+	$( "#DataContainer > div" ).css( "display", "none" );
 	$('#MultiValuesWindow').css(position);
 	$('#MultiValuesWindow').hide();
-	document.getElementById('DataContainer').innerHTML = "";
-	//$('#ShowValues'+name).toggle();
-	//alert ($('#ShowValues'+name).data('open'));
-	//var contentname=$('#MultiValuesWindow').data('content');
 	var contentname=document.getElementById('MultiValuesWindow').getAttribute('data-content');
+	$('container_'+contentname).hide();
 	var open = document.getElementById('ShowValues'+name).getAttribute('open');
-	//alert (name+':'+open);
-	//alert(contentname);
 	if(contentname!=""){
 		if(contentname!=name ){
 			$('#ShowValues'+contentname).attr('src','media/com_geoi/images/rightblue.png');
 			//$('#ShowValues'+contentname).attr('open','closed');
 			document.getElementById('ShowValues'+contentname).setAttribute('open','closed');
+			$('container_'+contentname).css("display","none");
+			//$('container_'+contentname).hide();
 			//alert ("YYYYYYYY");
 		}
 	}
 	if(open!="open"){
+		$('#container_'+name).css("display","block");
 		$('#MultiValuesWindow').attr('data-content',name);
 		$('#ShowValues'+name).attr('src','media/com_geoi/images/rightgreen.png');		
 		$('#ShowValues'+name).attr('open','open');
+		//if(document.getElementById('container_'+name)){$('container_'+name).css("display","block");}
 		$('#MultiValuesWindow').show();
 		//break;
 	}else {
 		//alert ("XXX");
+		//$('#DataContainer').css("visibility","hidden");
+		$('container_'+name).css("display","none");
+		//$('container_'+name).hide();
 		$('#ShowValues'+name).attr('src','media/com_geoi/images/rightblue.png');		
 		//$('#ShowValues'+name).attr('open','closed');
 		document.getElementById('ShowValues'+name).setAttribute('open','closed');
@@ -416,14 +461,15 @@ function showValues(name, stringvalues, type){
 	}
 	
 	///mostrar contenido
+	var html_content='<div id="container_'+name+'" style="display:block;">';
 	var content_arr=stringvalues.split(",");
 	if(type=='cat'){
-			var html_content='<select class="SelectList" id="'+name+'" multiple="multiple">'
+			html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple">'
 			for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'" selected>'+content_arr[i]+'</option> ';}
 			html_content=html_content+"</select>";
 	}else if(type=='int'){
 		///alert (content_arr[0]+content_arr[1]);
-		var html_content='<div class="SliderContainer" id="'+name+'">'
+		var html_content=html_content+'<div class="SliderContainer" id="'+name+'">'
 		html_content=html_content+' <span class="RangeText">min:</span><input type="number" id="minbox'+name+'" class="MinBox" value="'+content_arr[0]+'"';
 		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#min'+name+'\', \'#max'+name+'\')"';
 		html_content=html_content+' onchange="setRangeMin(\''+name+'\',\'INVALID VALUE\')">';
@@ -448,10 +494,10 @@ function showValues(name, stringvalues, type){
 		//echo '<br>';
 		/////////////
 	}
+	html_content=html_content+'</div>'
 	var div = document.getElementById('DataContainer');
-	div.innerHTML = div.innerHTML + html_content;
+	if(!(document.getElementById('container_'+name))){	div.innerHTML = div.innerHTML + html_content;}
 	
 }
-
 
 

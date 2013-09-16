@@ -133,13 +133,13 @@ input{
 	
 	cursor:pointer;
 	z-index:2000;
-	background-color:#707070;
+	background-color:#909090;
 	
 }
 .LabelWindow{
 	font-family: sans-serif;
     font-weight: bold;
-    color: gray;
+    color: #707070;
     font-size: 12px;
     float:left;
     
@@ -233,5 +233,7 @@ input{
 	cursor: pointer;
 }
 
-
+.conattr{
+	display:none;
+}
 

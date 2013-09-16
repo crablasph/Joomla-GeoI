@@ -25,9 +25,9 @@ defined('_JEXEC') or die('Restricted Access');
 	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
 					<label class="TitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_TITLE')?></b></label><hr>
-					<label id="AttrTitle" class="SubTitleWindow" open="closed"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_CAR')?></b></label>
-					<div id="contattr" style="display:none;">
-					<br>
+					<label id="AttrTitle" class="SubTitleWindow" open="closed"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_CAR')?></b></label><br><hr>
+					<div id="contattr" class="conattr">
+					
 						<?php foreach ($this->search_array as $search){
 							
 							if ($search[1]=="CAT") {
@@ -52,9 +52,8 @@ defined('_JEXEC') or die('Restricted Access');
 						}
 						?>
 						</div>
-						<br>
-						<label id="PolTitle" class="SubTitleWindow" open="closed"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label>
-						<div id="contpol" style="display:none;">
+						<label id="PolTitle" class="SubTitleWindow" open="closed"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br><hr>
+						<div id="contpol" class="conattr" >
 						<?php foreach ($this->search_array as $search){
 							if ($search[1]=="POL") {		
 								//echo "<div>";
@@ -69,13 +68,14 @@ defined('_JEXEC') or die('Restricted Access');
 						}
 						?>
 						
-						<br>
 						<div class="LabelWindow"><b><strong><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_DRAW')) ?>: </strong></b></div>
 						<input type="image" src="media/com_geoi/images/pol_off.png" id="SearchPolygon" selected="false" style="width:22px;heigth:22px;" onclick="polButtonClick()" >
 						</div>
-						<br>
-						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;"><br>
-	        	</div>
+						<script>
+						  var jsonsearch = jQuery.parseJSON('<?php echo json_encode($this->search_array)?>');
+						</script>
+						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;" onclick="SearchPoints(jsonsearch)"><br>
+				</div>
 	        	<div id="LoginWindow" class="BasicWindow" style="display: none;">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
 						<label id="SearchTitle" class="TitleWindow"><b>Login</b></label><br><hr>
