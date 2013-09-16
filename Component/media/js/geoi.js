@@ -12,8 +12,14 @@ $( "#AuthTask" ).click(function() {
 
 $( ".CloseWindow" ).click(function() {
 	$(this).parent().hide();
+	$('#MultiValuesWindow').hide();
 	});
 
+$( ".SubTitleWindow" ).click(function() {
+	$( this ).css("right","0px");
+	$( this ).css("top","0");
+	$( this ).css("float","right");
+		});
 
 $(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
 $(".SelectList").css("width", parseInt($(".SelectList option").length) *15);
@@ -38,17 +44,25 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
  var request=[];
  var parameters=getMapParameters();
  function init(){ 
+	 
+	 //crear escala numerica
+	 ///
+	 //var scaletext = document.createElement("span");
+	 //scaletext.setAttribute("id", "scaletext");
+	 //document.getElementById("scaletext").style.position="absolute";
+	 //document.getElementById("scaletext").style.bottom=0;
+	 //document.getElementById("scaletext").style.left=0;
+	 //document.getElementById("scaletext").style.position=absolute;
+	 //document.getElementById("scaletext").style.position=absolute;
 	 map = new OpenLayers.Map('map-id',{
                     controls: [
                         new OpenLayers.Control.Navigation(),
-                        new OpenLayers.Control.PanZoomBar(),
+                        new OpenLayers.Control.ZoomPanel(),
+                        new OpenLayers.Control.PanPanel(), 
+                        ///new OpenLayers.Control.Scale(),
                         new OpenLayers.Control.LayerSwitcher({'ascending':false}),
-                        new OpenLayers.Control.ScaleLine(),
-                        new OpenLayers.Control.MousePosition(),
-                        new OpenLayers.Control.OverviewMap(),
                         new OpenLayers.Control.KeyboardDefaults()
                     ],
-                    numZoomLevels: 10,
                     projection: new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA),
 					displayProjection: new OpenLayers.Projection("EPSG:"+parameters.EPSG_DISP), 
 	                    eventListeners: {
@@ -56,13 +70,14 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
 	                    }
                 });
 	 
-	 	//ADD DRAW POLYGON
+	 	//ADD SEARCH DRAW POLYGON
 	     pollayer = new OpenLayers.Layer.Vector( "PolygonSearch" );
 	     map.addLayer(pollayer);
 	     var container = document.getElementById("SearchPolDiv");
 	     poldrawsearchcontrol = new OpenLayers.Control.DrawFeature( pollayer , OpenLayers.Handler.Polygon );
+	     map.layers[0].displayInLayerSwitcher = false;
 	     map.addControl(poldrawsearchcontrol);
-     
+	     
 
         
 		var osm = new OpenLayers.Layer.OSM();
@@ -348,7 +363,7 @@ function setMaxBox(name){
 	//$('#min'+name).attr('value',$('#max'+name).val());
 }
 
-function showValues(name, array){
+function showValues(name, stringvalues, type){
 	var position = $('#ShowValues'+name).offset();
 	position['left']=position['left']+30;
 	position['top']=position['top']-10;
@@ -385,12 +400,41 @@ function showValues(name, array){
 		$('#MultiValuesWindow').attr('data-content',"");
 		//break;
 	}
-	var content_arr=array.split(",");
-	var html_content='<select class="SelectList" id="'+name+'" multiple="multiple">'
-	for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'" selected>'+content_arr[i]+'</option> ';}
-	html_content=html_content+"</select>";
+	
+	///mostrar contenido
+	var content_arr=stringvalues.split(",");
+	if(type=='cat'){
+			var html_content='<select class="SelectList" id="'+name+'" multiple="multiple">'
+			for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'" selected>'+content_arr[i]+'</option> ';}
+			html_content=html_content+"</select>";
+	}else if(type=='int'){
+		///alert (content_arr[0]+content_arr[1]);
+		var html_content='<div class="SliderContainer" id="'+name+'">'
+		html_content=html_content+' <span class="RangeText">min:</span><input type="number" id="minbox'+name+'" class="MinBox" value="'+content_arr[0]+'"';
+		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#min'+name+'\', \'#max'+name+'\')"';
+		html_content=html_content+' onchange="setRangeMin(\''+name+'\',\'INVALID VALUE\')">';
+		html_content=html_content+' <span class="RangeText">max:</span><input type="number" id="maxbox'+name+'" class="MaxBox" value="'+content_arr[1]+'"';
+		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#max'+name+'\', \'#min'+name+'\')"';
+		html_content=html_content+' onchange="setRangeMax(\''+name+'\',\'INVALID VALUE\')"><br>';
+		html_content=html_content+' <input type="range" class="MinSlider" id="min'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMinBox(\''+name+'\')">';
+		html_content=html_content+' <input type="range" class="MaxSlider" id="max'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMaxBox(\''+name+'\')">';
+		html_content=html_content+' </div>';
+		
+////////AÑADIR EN EL CLICK AGREGAR VALORES  AL DIV DE ABAJO
+		//echo '<div class="SliderContainer" id="'.$search[0].'"> ';
+		//$valerror=JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR');
+		//echo '<span class="RangeText">min:</span><input type="number" id="minbox'.$search[0].'" class="MinBox" value="'.
+		//$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#min'.$search[0].'\', \'#max'.$search[0].'\')" onchange="setRangeMin(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
+		//echo '<span class="RangeText">max:</span><input type="number" id="maxbox'.$search[0].'" class="MaxBox" value="'.
+		//$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#max'.$search[0].'\', \'#min'.$search[0].'\')" onchange="setRangeMax(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
+		//echo '<br>';
+		//echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="setMinBox(\''.$search[0].'\')"> ';
+		//echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="setMaxBox(\''.$search[0].'\')"> ';
+		//echo '</div>';
+		//echo '<br>';
+		/////////////
+	}
 	var div = document.getElementById('DataContainer');
-
 	div.innerHTML = div.innerHTML + html_content;
 	
 }
