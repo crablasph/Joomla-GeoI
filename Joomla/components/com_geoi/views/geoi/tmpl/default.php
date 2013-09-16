@@ -25,8 +25,8 @@ defined('_JEXEC') or die('Restricted Access');
 	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
 					<label class="TitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_TITLE')?></b></label><hr>
-					
-					<label class="SubTitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_CAR')?></b></label>
+					<label id="AttrTitle" class="SubTitleWindow" open="closed"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_CAR')?></b></label>
+					<div id="contattr" style="display:none;">
 					<br>
 						<?php foreach ($this->search_array as $search){
 							
@@ -35,34 +35,12 @@ defined('_JEXEC') or die('Restricted Access');
 								echo '</div>';
 								$values="";
 								foreach ($search[3] as $se){$values=$values.$se;if(end($search[3])!=$se){$values=$values.',';}}
-								//$values_json=json_encode($values);
 								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'cat\')">';
-								//echo '<div class="SelectDiv">';
-								//echo ' <select class="SelectList" id="'.$search[0].'" multiple="multiple"> ';
-								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se .'</option> ';}
-								//echo "</select>";
-								//echo '</div>';
 								echo '<br>';
 								
 							}elseif($search[1]=="INT"){
 								echo '<div class="LabelWindow"> <b><strong>'.$search[2].':</strong></b>';
 								echo '</div>';
-								//echo "<br> ";
-								////////AÑADIR EN EL CLICK AGREGAR VALORES  AL DIV DE ABAJO
-								//echo '<div class="SliderContainer" id="'.$search[0].'"> ';
-								//$valerror=JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR');
-								//echo '<span class="RangeText">min:</span><input type="number" id="minbox'.$search[0].'" class="MinBox" value="'.
-								//$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#min'.$search[0].'\', \'#max'.$search[0].'\')" onchange="setRangeMin(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
-								//echo '<span class="RangeText">max:</span><input type="number" id="maxbox'.$search[0].'" class="MaxBox" value="'.
-								//$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#max'.$search[0].'\', \'#min'.$search[0].'\')" onchange="setRangeMax(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
-								//echo '<br>';
-								//echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="setMinBox(\''.$search[0].'\')"> ';
-								//echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="setMaxBox(\''.$search[0].'\')"> ';
-								//echo '</div>';
-								//echo '<br>';
-								/////////////
-								
-								///DESDE ACA NUEVO
 								$min=$search[3][0];
 								$max=$search[3][1];
 								$values=$min.','.$max;
@@ -73,7 +51,10 @@ defined('_JEXEC') or die('Restricted Access');
 							//echo '<br>';
 						}
 						?>
-						<label id="PolTitle" class="SubTitleWindow"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br>
+						</div>
+						<br>
+						<label id="PolTitle" class="SubTitleWindow" open="closed"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label>
+						<div id="contpol" style="display:none;">
 						<?php foreach ($this->search_array as $search){
 							if ($search[1]=="POL") {		
 								//echo "<div>";
@@ -81,19 +62,17 @@ defined('_JEXEC') or die('Restricted Access');
 								echo '</div>';
 								$values="";
 								foreach ($search[3] as $se){$values=$values.$se;if(end($search[3])!=$se){$values=$values.',';}}
-								//$values_json=json_encode($values);
 								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'cat\')">';
-								//echo ' <select class="SelectListPOL" id="'.$search[0].'"';
-								//foreach ($search[3] as $se){echo '<option value="'.$se.'" selected>'.$se.'</option> ';}
-								//echo "</select>";
-								//echo "</div>";
 								echo '<br>';
 						
 							}					
 						}
 						?>
+						
+						<br>
 						<div class="LabelWindow"><b><strong><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_DRAW')) ?>: </strong></b></div>
 						<input type="image" src="media/com_geoi/images/pol_off.png" id="SearchPolygon" selected="false" style="width:22px;heigth:22px;" onclick="polButtonClick()" >
+						</div>
 						<br>
 						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;"><br>
 	        	</div>

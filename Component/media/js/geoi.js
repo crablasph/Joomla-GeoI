@@ -16,9 +16,23 @@ $( ".CloseWindow" ).click(function() {
 	});
 
 $( ".SubTitleWindow" ).click(function() {
-	$( this ).css("right","0px");
-	$( this ).css("top","0");
-	$( this ).css("float","right");
+	///
+	var idelemento=$( this ).attr('id');
+	element=document.getElementById(idelemento);
+	var opens = document.getElementById(idelemento).getAttribute('open');
+	id_nexdiv=element.nextSibling.nextSibling.id;
+	$//( ".SubTitleWindow" ).hide();
+	if(opens=='closed'){
+		$( this ).css("right","0px");
+		$( this ).css("float","right");
+		$('#'+id_nexdiv).slideToggle();
+		document.getElementById(idelemento).setAttribute('open','open');
+	}else{
+		$( this ).css("left","0px");
+		$( this ).css("float","left");
+		$('#'+id_nexdiv).slideToggle();
+		document.getElementById(idelemento).setAttribute('open','closed');
+	}
 		});
 
 $(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
