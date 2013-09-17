@@ -13,6 +13,9 @@ $( "#AuthTask" ).click(function() {
 $( ".CloseWindow" ).click(function() {
 	$(this).parent().hide();
 	$('#MultiValuesWindow').hide();
+	idopen=$('.ShowValuesButton[open="open"]').attr("id");
+	$('#'+idopen).attr('src','media/com_geoi/images/rightblue.png');
+	document.getElementById(idopen).setAttribute('open','closed');
 	});
 
 $( ".SubTitleWindow" ).click(function() {
@@ -323,11 +326,13 @@ function popupClear() {
 
 function SearchPoints(arr){
 	var search_data=[];
+	var cont_pol=0;
 	for(i=0;i<arr.length;i++){
 		current=arr[i];
 		//valor="";
 		if (current[1]=='CAT'){
 			valor=document.getElementById(current[0]);
+			//alert(typeof(valor));
 			if(valor){
 				search_data[i]=[];
 				search_data[i][0]=current[0];
@@ -335,15 +340,15 @@ function SearchPoints(arr){
 				search_data[i][2]="";
 				 for (var j = 0; j < valor.options.length; j++) {
 					 if(valor.options[j].selected ==true){
-					      //alert(valor.options[j].value);
 						 search_data[i][2]=search_data[i][2]+valor.options[j].value;
+						 if(j!= valor.options.length){search_data[i][2]=search_data[i][2]+",";}
 					 }
 				 }
 			}
 		}else if(current[1]=='INT'){
 			///alert('minbox'+current[0]+':'+$('minbox'+current[0]).val());
-			var min=document.getElementById('minbox'+current[0]);
-			var max=document.getElementById('maxbox'+current[0]);
+			var min=Number(document.getElementById('minbox'+current[0]));
+			var max=Number(document.getElementById('maxbox'+current[0]));
 			if(min && max){
 				min=min.value;
 				max=max.value;
@@ -354,9 +359,56 @@ function SearchPoints(arr){
 				//alert(search_data[i][2]);
 			}
 		}else if (current[1]=='POL'){
-			
+			if(poldrawsearchcontrol.active){
+				cont_pol=cont_pol+1;
+				geom_string="";
+				if(cont_pol==1){
+						search_data[i]=[];
+						search_data[i][0]="POLDRAW";
+						search_data[i][1]="POLDRAW";
+						geom_search=pollayer.features;
+						for(j=0;j<geom_search.length;j++){
+							geom_string=geom_string+geom_search[j].geometry;
+							if(j!=geom_search.length-1){geom_string=geom_string+",";}}
+						search_data[i][2]=geom_string;
+					}
+			}else{
+				//alert("XXXXX");
+				cont_pol=0;
+				valor2=document.getElementById(current[0]);
+				if(valor2){
+					search_data[i]=[];
+					search_data[i][0]=current[0];
+					search_data[i][1]=current[1];
+					search_data[i][2]="";
+					 for (var j = 0; j < valor2.options.length; j++) {
+						 if(valor2.options[j].selected ==true){
+							 search_data[i][2]=search_data[i][2]+valor2.options[j].value;
+							 if(j!= valor2.options.length){search_data[i][2]=search_data[i][2]+",";}
+						 }
+					 }
+				}
+				
+			}
 		}
 	}
+	
+	search_datadef=[];
+	contdef=0;
+	for(i=0;i<search_data.length;i++){
+		if(search_data[i]){search_datadef.push(search_data[i]);}
+		}
+	//console.log(search_datadef);
+	var url =document.URL+"&task=SearchPoints";
+	var obj_data={"searchdata":search_datadef};
+	var req;
+	 req=($.parseJSON($.ajax({
+		 	type: "POST",
+			url:  url,
+			data:obj_data,
+			dataType: "json"
+		}).responseText));
+	 console.log( req);
 }
 
 
@@ -367,14 +419,26 @@ function polButtonClick(){
 	if(selico=="false"){
 		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_on.png");
 		document.getElementById("SearchPolygon").setAttribute("selected","true");
-		$(".SelectListPOL").prop('disabled', true);
+		arrpol=$('select[id*="POL"]');
+		if(arrpol){
+			for(i=0;i<arrpol.length;i++){
+				idonly=arrpol[i].id;
+				$("#"+idonly).prop('disabled', true);
+				}
+		}
 		poldrawsearchcontrol.activate();
-		
 	}
 	else{
 		document.getElementById("SearchPolygon").setAttribute("src","media/com_geoi/images/pol_off.png");
 		document.getElementById("SearchPolygon").setAttribute("selected","false");
-		$(".SelectListPOL").prop('disabled', false);
+		///$("#POL*").prop('disabled', false);
+		arrpol=$('select[id*="POL"]');
+		if(arrpol){
+			for(i=0;i<arrpol.length;i++){
+				idonly=arrpol[i].id;
+				$("#"+idonly).prop('disabled', false);
+			}
+		}
 		poldrawsearchcontrol.deactivate();
 		pollayer.removeAllFeatures();
 	}
@@ -464,12 +528,15 @@ function showValues(name, stringvalues, type){
 	var html_content='<div id="container_'+name+'" style="display:block;">';
 	var content_arr=stringvalues.split(",");
 	if(type=='cat'){
-			html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple">'
+		if (name.match(/POL.*/)&&poldrawsearchcontrol.active) {
+			html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple" disabled>';
+			}
+		else{html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple">';}
 			for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'" selected>'+content_arr[i]+'</option> ';}
 			html_content=html_content+"</select>";
 	}else if(type=='int'){
 		///alert (content_arr[0]+content_arr[1]);
-		var html_content=html_content+'<div class="SliderContainer" id="'+name+'">'
+		var html_content=html_content+'<div class="SliderContainer" id="'+name+'">';
 		html_content=html_content+' <span class="RangeText">min:</span><input type="number" id="minbox'+name+'" class="MinBox" value="'+content_arr[0]+'"';
 		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#min'+name+'\', \'#max'+name+'\')"';
 		html_content=html_content+' onchange="setRangeMin(\''+name+'\',\'INVALID VALUE\')">';

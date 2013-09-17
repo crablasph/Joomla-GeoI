@@ -216,12 +216,12 @@ class GeoiModelGeoi extends JModel
 					$values=$values." (";
 					$insert="INSERT INTO GeoIOfertas ( geom , TYPEP , TYPEO , VALUE , EMAIL , USERID , USERNAME ";
 					$values=$values." PointFromText('".$shparr['geom']."') , ";
-					$values=$values."'".$shparr['TYPEP']."' , ";
-					$values=$values."'".$shparr['TYPEO']."' , ";
-					$values=$values.$shparr['VALUE']." , ";
-					$values=$values."'".$shparr['email']."' , ";
+					$values=$values."'".utf8_encode($shparr['TYPEP'])."' , ";
+					$values=$values."'".utf8_encode($shparr['TYPEO'])."' , ";
+					$values=$values.utf8_encode($shparr['VALUE'])." , ";
+					$values=$values."'".utf8_encode($shparr['email'])."' , ";
 					$values=$values.$shparr['userid']." , ";
-					$values=$values."'".$shparr['username']."' ";
+					$values=$values."'".utf8_encode($shparr['username'])."' ";
 					if(is_numeric($this->SaveArray['ROOMS'])){$insert=$insert.", ROOMS ";if(is_numeric($shparr['ROOMS'])){$values=$values.", ".$shparr['ROOMS'];}else{$values=$values.", ''";}}
 					if(is_numeric($this->SaveArray['AGE'])){$insert=$insert.", AGE ";if(is_numeric($shparr['AGE'])){$values=$values.", ".$shparr['AGE'];}else{$values=$values.", ''";}}
 					if(is_numeric($this->SaveArray['toilet'])){$insert=$insert.", TOILET ";if(is_numeric($shparr['toilet'])){$values=$values.", ".$shparr['toilet'];}else{$values=$values.", ''";}}
@@ -272,7 +272,7 @@ class GeoiModelGeoi extends JModel
 					}
 					$values=$values." GeomFromText('".$geomf."') , ";
 					$values=$values."'".$shparr['idpol']."' , ";
-					$values=$values."'".$shparr['nompolis']."' ";
+					$values=$values."'".utf8_encode($shparr['nompolis'])."' ";
 					$values = $values.")" ;
 					//if($shparr != end($this->ShapefileArray)){$values = $values." , " ;}
 					$insert=$insert." ".$values;

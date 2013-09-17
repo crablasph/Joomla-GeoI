@@ -105,8 +105,8 @@ class GeoiController extends JController
 			parent::display($cachable = false);
 			$app->close();
 		}
-		////FUNCION DE PRUEBA, BORRAR
-		function GetSearchParameters(){
+		
+		function SearchPoints(){
 			$app = JFactory::getApplication();
 			$input=$app->input;
 			$input->set('view', $input->getCmd('view', 'Geojson'));
@@ -115,7 +115,10 @@ class GeoiController extends JController
 			$document->setType('raw');
 			$view = $this->getView( 'Geojson', 'raw' );
 			$model=$this->getModel();
-			print_r($model->GetSearchParameters());
+			$get_array = $input->getArray($_POST);
+			$json_arr=json_encode($get_array['searchdata']);
+			print_r($json_arr);
+			//print_r($model->GetSearchParameters());
 			parent::display($cachable = false);
 			$app->close();
 		}
