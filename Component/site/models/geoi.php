@@ -22,7 +22,7 @@ class GeoiModelGeoi extends JModel
 		
 		private function GetColArray(){
 			
-			$selconf ="SELECT CONCAT( SUBSTRING( PARAM, 3 ) , ' \'', VAL, '\'' ) FROM GeoIConf WHERE PARAM LIKE 'N\_%';";
+			$selconf ="SELECT CONCAT( SUBSTRING( PARAM, 3 ) , ' \'', VAL, '\'' ) FROM '#_geoiconf' WHERE PARAM LIKE 'N\_%';";
 			$db = JFactory::getDbo();
 			$db->setQuery($selconf);
 			$ex=$db->execute();
@@ -66,7 +66,7 @@ class GeoiModelGeoi extends JModel
 			//print_r($cols);
 			//$st="SELECT AsText(geom),oid ,  TYPEP 'Tipo de Inmueble', TYPEO 'Tipo de Oferta', VALUE 'VALUE', AREA ''  FROM ".$tbl.";";
 			//$st ="SELECT AsText(geom) geom, ".$cols." FROM ".$tbl.";";
-			//$st ="SELECT AsText(geom) geom, idpol , idint FROM GeoIPOL1";
+			//$st ="SELECT AsText(geom) geom, idpol , idint FROM '#_geoipol'1";
 			//echo $st;
 			$db = JFactory::getDbo();
 
@@ -158,7 +158,7 @@ class GeoiModelGeoi extends JModel
 		
 		private function GetParam($param) 
         {
-			$selconf ="SELECT VAL FROM GeoIConf WHERE PARAM ='".$param."' ";
+			$selconf ="SELECT VAL FROM '#_geoiconf' WHERE PARAM ='".$param."' ";
 			$db = JFactory::getDbo();
 			$db->setQuery($selconf);
 			$ex=$db->execute();
@@ -170,7 +170,7 @@ class GeoiModelGeoi extends JModel
         
          private function GetParamName($param) 
         {
-			$selconf ="SELECT PARAM FROM GeoIConf WHERE VAL ='".$param."' ";
+			$selconf ="SELECT PARAM FROM '#_geoiconf' WHERE VAL ='".$param."' ";
 			$db = JFactory::getDbo();
 			$db->setQuery($selconf);
 			$ex=$db->execute();
@@ -182,7 +182,7 @@ class GeoiModelGeoi extends JModel
         
         public function GetAttributesbyID($table,$idlist){
         	$where="oid IN ( ".$idlist.")";
-        	if(strtolower($table)=='geoiofertas'){$colo=$this->GetColArray();}
+        	if(strtolower($table)==''#_geoiofertas''){$colo=$this->GetColArray();}
         	else{$colo='*';}
         	//array_push($colo,'oid');
         	$db = JFactory::getDbo();
@@ -211,8 +211,8 @@ class GeoiModelGeoi extends JModel
         	$parameters['SYMBOLOGY_FIELD']=$this->GetParam('SYMBOLOGY_FIELD');
         	
         	$parameters['SYMBOLOGY_VALUES']=Array();
-        	//SELECT DISTINCT LOWER(TYPEO) FROM GeoIOfertas;
-        	$st="SELECT DISTINCT LOWER(".$parameters['SYMBOLOGY_FIELD']." ) SYMBOLOGY_VALUES FROM GeoIOfertas WHERE CHAR_LENGTH(TRIM(".$parameters['SYMBOLOGY_FIELD']."))>0 ORDER BY 1 ASC";
+        	//SELECT DISTINCT LOWER(TYPEO) FROM '#_geoiofertas';
+        	$st="SELECT DISTINCT LOWER(".$parameters['SYMBOLOGY_FIELD']." ) SYMBOLOGY_VALUES FROM '#_geoiofertas' WHERE CHAR_LENGTH(TRIM(".$parameters['SYMBOLOGY_FIELD']."))>0 ORDER BY 1 ASC";
         	$db = JFactory::getDbo();
         	$db->setQuery($st);
         	$ex=$db->execute();
@@ -227,7 +227,7 @@ class GeoiModelGeoi extends JModel
         		$cont++;
         	}
         	$parameters['ICON']=Array();
-        	$ts="SELECT VAL FROM GeoIConf WHERE PARAM LIKE 'ICON_%' ORDER BY PARAM ASC";
+        	$ts="SELECT VAL FROM '#_geoiconf' WHERE PARAM LIKE 'ICON_%' ORDER BY PARAM ASC";
         	$db->setQuery($ts);
         	$ex=$db->execute();
         	$results = $db->loadObjectList();
@@ -252,7 +252,7 @@ class GeoiModelGeoi extends JModel
         }
         
         public function GetSearchParameters(){
-        	////SELECT VAL FROM geoi.GeoIConf WHERE PARAM = 'SEARCH_FIELDS' 
+        	////SELECT VAL FROM geoi.'#_geoiconf' WHERE PARAM = 'SEARCH_FIELDS' 
         	$search_fields=$this-> GetParam('SEARCH_FIELDS'); 	
         	$search_fields=explode(",",$search_fields);
         	///$cont=count($search_fields);
@@ -288,13 +288,13 @@ class GeoiModelGeoi extends JModel
         }
         
         private function GetCategoryField($field,$opt,$poltable){
-        	//$selconf ="SELECT VAL FROM GeoIConf WHERE PARAM ='".$param."' ";
+        	//$selconf ="SELECT VAL FROM '#_geoiconf' WHERE PARAM ='".$param."' ";
         	switch ($opt){
         		case 0:
-	        		$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM GeoIOfertas WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+	        		$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM '#_geoiofertas' WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
 	        		break;
         		case 1:
-        			$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM GeoIPOL".$poltable." WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+        			$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM '#_geoipol'".$poltable." WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
         			break;
         		default:
         			echo JText::_('COM_GEOI_OPT_ERR');
@@ -322,7 +322,7 @@ class GeoiModelGeoi extends JModel
         
         private function GetIntervalField($field){
         	//return Array();
-        	$query="SELECT MIN( ".$field .") FROM GeoIOfertas UNION  SELECT MAX(".$field .")  FROM GeoIOfertas;";
+        	$query="SELECT MIN( ".$field .") FROM '#_geoiofertas' UNION  SELECT MAX(".$field .")  FROM '#_geoiofertas';";
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();
@@ -343,7 +343,7 @@ class GeoiModelGeoi extends JModel
         }
         
         private function GetColString($field){
-        	$query="SELECT VAL FROM GeoIConf WHERE SUBSTRING( PARAM, 3 )='".$field."';";
+        	$query="SELECT VAL FROM '#_geoiconf' WHERE SUBSTRING( PARAM, 3 )='".$field."';";
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();
