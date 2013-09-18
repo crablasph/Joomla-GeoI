@@ -13,12 +13,6 @@ DROP TABLE IF EXISTS `#__geoipol8`;
 DROP TABLE IF EXISTS `#__geoipol9`;
 DROP TABLE IF EXISTS `#__geoipol10`;
 DROP TABLE IF EXISTS `#__geoipol11`;
-DROP TABLE IF EXISTS `#_geoiopol1`;
-DROP TABLE IF EXISTS `#_geoiopol2`;
-DROP TABLE IF EXISTS `#_geoiopol3`;
-DROP TABLE IF EXISTS `#_geoiopol4`;
-DROP TABLE IF EXISTS `#_geoiopol5`;
-DROP TABLE IF EXISTS `#_geoiopol6`;
  
 CREATE TABLE `#__geoiofertas` (
   oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -47,4 +41,33 @@ CREATE TABLE `#__geoiconf` (
   VAL CHAR(80) NOT NULL 
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
-
+INSERT INTO `#__geoiconf` (PARAM , VAL) 
+	VALUES 	('EPSG_DATA','3857') , 
+			('EPSG_DISP','3857') , 
+			('BOUNDS','-8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381'),
+			('MINSCALE','50000'),
+			('ICON_1','media/com_geoi/images/building.png'),
+			('ICON_2','media/com_geoi/images/home.png'),
+			('ICON_3','media/com_geoi/images/shop.png'),
+			('ICON_4','media/com_geoi/images/land.png'),
+			('ICON_5','media/com_geoi/images/home2.png'),
+			('ICON_6','media/com_geoi/images/home3.png'),
+			('ICON_99','media/com_geoi/images/unknown.png'),
+			('SEARCH_FIELDS','TYPEP:CAT,TYPEO:CAT,VALUE:INT,ROOMS:INT,TOILET:INT'),
+			('SYMBOLOGY_FIELD','TYPEP'),
+			('LYR_NAME','Ofertas'),
+			('CLUSTER_DISTANCE','50'),
+			('CLUSTER_THRESHOLD','2'),
+			('NUMPOL','0'),
+			('N_TYPEP','Tipo de Inmueble'),
+			('N_TYPEO','Tipo de Oferta'),
+			('N_VALUE','Precio'),
+			('N_AREA','Área'),
+			('N_ROOMS','Número de Habitaciones'),
+			('N_AGE','Edad del Inmueble'),
+			('N_TOILET','Número de baños'),
+			('N_TEL1','Telefono 1'),
+			('N_TEL2','Telefono 2'),
+			('N_EMAIL','E-mail'),
+			('N_USERNAME','Nombre de Usuario');
+ 

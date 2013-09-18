@@ -1,5 +1,6 @@
 <?php
 // No direct access to this file
+header('Content-Type: text/html; charset=utf-8');
 defined('_JEXEC') or die('Restricted access');
 // import the Joomla modellist library
 jimport('joomla.application.component.model');
@@ -214,7 +215,7 @@ class GeoiModelGeoi extends JModel
 			foreach($this->ShapefileArray as $shparr){
 					//print_r($shparr);echo '<br>';
 					$values=$values." (";
-					$insert="INSERT INTO '#_geoiofertas' ( geom , TYPEP , TYPEO , VALUE , EMAIL , USERID , USERNAME ";
+					$insert="INSERT INTO `#__geoiofertas` ( geom , TYPEP , TYPEO , VALUE , EMAIL , USERID , USERNAME ";
 					$values=$values." PointFromText('".$shparr['geom']."') , ";
 					$values=$values."'".utf8_encode($shparr['TYPEP'])."' , ";
 					$values=$values."'".utf8_encode($shparr['TYPEO'])."' , ";
@@ -259,7 +260,7 @@ class GeoiModelGeoi extends JModel
 					$values=" VALUES ";
 					$insert="";
 					$values=$values." (";
-					$insert="INSERT INTO GeoI".$tbln." ( geom , idpol , NAME )";
+					$insert="INSERT INTO `#__geoi".strtolower($tbln)."` ( geom , idpol , NAME )";
 					$geomf = (string)$shparr['geom'];
 					$npar=substr_count($geomf, '(');
 					if($npar==1){
@@ -292,19 +293,19 @@ class GeoiModelGeoi extends JModel
 		protected function DropIndexes() 
         {
 			$db = JFactory::getDbo();
-			$drop ="ALTER TABLE '#_geoiofertas' DROP INDEX oid ;";
+			$drop ="ALTER TABLE `#__geoiofertas` DROP INDEX oid ;";
 			$db->setQuery($drop);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$drop ="ALTER TABLE '#_geoiofertas' DROP INDEX USERID;";
+			$drop ="ALTER TABLE `#__geoiofertas` DROP INDEX USERID;";
 			$db->setQuery($drop);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$drop ="ALTER TABLE '#_geoiofertas' DROP INDEX geom ;";
+			$drop ="ALTER TABLE `#__geoiofertas` DROP INDEX geom ;";
 			$db->setQuery($drop);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
@@ -313,21 +314,21 @@ class GeoiModelGeoi extends JModel
 		
 		protected function CreateIndexes() 
         {
-			$create ="ALTER TABLE '#_geoiofertas' ADD INDEX ( oid );";
+			$create ="ALTER TABLE `#__geoiofertas` ADD INDEX ( oid );";
 			$db = JFactory::getDbo();
 			$db->setQuery($create);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$create ="ALTER TABLE '#_geoiofertas' ADD INDEX ( USERID );";
+			$create ="ALTER TABLE `#__geoiofertas` ADD INDEX ( USERID );";
 			$db = JFactory::getDbo();
 			$db->setQuery($create);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$create ="ALTER TABLE '#_geoiofertas' ADD SPATIAL INDEX ( geom );";
+			$create ="ALTER TABLE `#__geoiofertas` ADD SPATIAL INDEX ( geom );";
 			$db = JFactory::getDbo();
 			$db->setQuery($create);
 			$ex=$db->execute();
@@ -338,7 +339,7 @@ class GeoiModelGeoi extends JModel
 		
         public function GetParam($param) 
         {
-			$selconf ="SELECT VAL FROM '#_geoiconf' WHERE PARAM ='".$param."' ";
+			$selconf ="SELECT VAL FROM `#__geoiconf` WHERE PARAM ='".$param."' ";
 			$db = JFactory::getDbo();
 			$db->setQuery($selconf);
 			$ex=$db->execute();
@@ -351,7 +352,7 @@ class GeoiModelGeoi extends JModel
         
          public function GetParamName($param) 
         {
-			$selconf ="SELECT PARAM FROM '#_geoiconf' WHERE VAL ='".$param."' ";
+			$selconf ="SELECT PARAM FROM `#__geoiconf` WHERE VAL ='".$param."' ";
 			$db = JFactory::getDbo();
 			$db->setQuery($selconf);
 			$ex=$db->execute();
@@ -367,7 +368,7 @@ class GeoiModelGeoi extends JModel
 			$numpol=$this->GetParam('NUMPOL');
 			$numpola=$numpol+1;
 			
-			$selconf ="INSERT INTO '#_geoiconf' (PARAM, VAL) VALUES ( 'POL".$numpola."' , '".$nom."' );";
+			$selconf ="INSERT INTO `#__geoiconf` (PARAM, VAL) VALUES ( 'POL".$numpola."' , '".$nom."' );";
 			$db = JFactory::getDbo();
 			$db->setQuery($selconf);
 			$ex=$db->execute();
@@ -375,22 +376,22 @@ class GeoiModelGeoi extends JModel
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
 
-			$updatepol ="UPDATE '#_geoiconf' SET VAL ='".$numpola."' WHERE PARAM = 'NUMPOL' ;";
+			$updatepol ="UPDATE `#__geoiconf` SET VAL ='".$numpola."' WHERE PARAM = 'NUMPOL' ;";
 			$db = JFactory::getDbo();
 			$db->setQuery($updatepol);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			$crea ="CREATE TABLE '#_geoipol'".$numpola."( oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(20) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
+			$crea ="CREATE TABLE `#__geoipol".$numpola."` ( oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, geom GEOMETRY NOT NULL ,idpol CHAR(11) NOT NULL, NAME CHAR(20) NOT NULL, SPATIAL INDEX ( geom ) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8";;
 			$db = JFactory::getDbo();
 			$db->setQuery($crea);
 			$ex=$db->execute();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
-			//$addcol ="ALTER TABLE '#_geoiofertas' ADD IDPOL".$numpola." int(11);";
-			$addcol="CREATE TABLE '#_geoiopol'".$numpola." (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, idpol int(11) NOT NULL, idofe int(11) NOT NULL)ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+			//$addcol ="ALTER TABLE `#__geoiofertas` ADD IDPOL".$numpola." int(11);";
+			$addcol="CREATE TABLE `#__geoiopol".$numpola."` (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, idpol int(11) NOT NULL, idofe int(11) NOT NULL)ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
 			$db = JFactory::getDbo();
 			$db->setQuery($addcol);
 			$ex=$db->execute();
@@ -399,8 +400,8 @@ class GeoiModelGeoi extends JModel
         }
 		
 		protected function getPolArray($idpol){
-			$pol="SELECT AsText(geom) geom, oid FROM '#_geoipol'".$idpol.";";
-			//$ofe="SELECT AsText(geom), oid FROM '#_geoiofertas'";
+			$pol="SELECT AsText(geom) geom, oid FROM `#__geoipol".$idpol."`;";
+			//$ofe="SELECT AsText(geom), oid FROM `#__geoiofertas`";
 			$db = JFactory::getDbo();
 			$db->setQuery($pol);
 			$ex=$db->execute();
@@ -413,7 +414,7 @@ class GeoiModelGeoi extends JModel
 		public function Intersects($pol){
 			$nampol=strrev ($this->GetParamName($pol));
 			$polArray=$this->getPolArray($nampol{0});
-			$ofe="SELECT oid FROM '#_geoiofertas' WHERE Intersects(geom, GeomFromText(";
+			$ofe="SELECT oid FROM `#__geoiofertas` WHERE Intersects(geom, GeomFromText(";
 			$ofe=$ofe."));";			
 			$db = JFactory::getDbo();
 			$db->setQuery($ofe);

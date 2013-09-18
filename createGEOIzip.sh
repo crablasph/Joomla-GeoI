@@ -13,6 +13,7 @@ mkdir $TMPDIR/media
 #sudo chmod -R 755 $TMPDIR
 
 cp $JBASEDIR/administrator/components/com_geoi/geoi.xml $TMPDIR/geoi.xml
+cp $JBASEDIR/administrator/components/com_geoi/geoi.xml $TMPDIR/script.php
 
 cd $JBASEDIR/components/com_geoi/
 cp -R * $TMPDIR/site/

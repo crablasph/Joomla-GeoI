@@ -12,7 +12,7 @@
         <!-- The description is optional and defaults to the name -->
         <!--<description>Gestor de Ofertas Inmobiliarias</description> -->
 		<description>COM_GEOI_DESC</description>
-        
+        <scriptfile>script.php</scriptfile>
         <install> <!-- Runs on install -->
                 <sql>
                         <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
