@@ -10,7 +10,7 @@ select[multiple]{
         height: 200px;
     }
 
-#TaskBar {		opacity:0.5;
+#TaskBar {		opacity:0.7;
                 position: absolute;
                 top: 0em;
                 left: 3.5em;

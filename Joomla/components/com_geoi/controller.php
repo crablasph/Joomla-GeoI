@@ -116,8 +116,11 @@ class GeoiController extends JController
 			$view = $this->getView( 'Geojson', 'raw' );
 			$model=$this->getModel();
 			$get_array = $input->getArray($_POST);
-			$json_arr=json_encode($get_array['searchdata']);
-			print_r($json_arr);
+			if(isset($get_array['searchdata'])){
+				$json_arr=json_encode($get_array['searchdata']);
+				print_r($json_arr);
+			}
+			
 			//print_r($model->GetSearchParameters());
 			parent::display($cachable = false);
 			$app->close();
