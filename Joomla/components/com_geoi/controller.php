@@ -60,12 +60,13 @@ class GeoiController extends JController
             if( isset ($get_array['bbox'])){$bbox=$get_array['bbox'];}else {$bbox=FALSE;}
             if( isset ($get_array['layer'])){$layer=$get_array['layer'];}else {$layer='GeoIOfertas';}
             if( isset ($get_array['type'])){$type=$get_array['type'];}else {$type='';}
+            if( isset ($get_array['idlist'])){$idlist=$get_array['idlist'];}else {$idlist=FALSE;}
             if( isset ($get_array['properties'])){
             	if(strtolower($get_array['properties'])=='true'){$properties=FALSE;}
             }
             
             //echo $bbox."\n\n";
-            echo $model->STtoGeoJson($layer, $bbox, $properties,$type) ;
+            echo $model->STtoGeoJson($layer, $bbox, $properties,$type, $idlist) ;
             
             //echo $geojson;
             parent::display($cachable = false);
@@ -117,8 +118,8 @@ class GeoiController extends JController
 			$model=$this->getModel();
 			$get_array = $input->getArray($_POST);
 			if(isset($get_array['searchdata'])){
-				$json_arr=json_encode($get_array['searchdata']);
-				print_r($json_arr);
+				$model->SearchPoints($get_array['searchdata']);
+				//print_r($json_arr);
 			}
 			
 			//print_r($model->GetSearchParameters());

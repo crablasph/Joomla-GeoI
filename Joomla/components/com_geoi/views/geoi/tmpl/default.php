@@ -74,7 +74,7 @@ defined('_JEXEC') or die('Restricted Access');
 						<script>
 						  var jsonsearch = jQuery.parseJSON('<?php echo json_encode($this->search_array)?>');
 						</script>
-						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;" onclick="SearchPoints(jsonsearch)"><br>
+						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;" onclick="SearchPoints(jsonsearch);"><br>
 				</div>
 	        	<div id="LoginWindow" class="BasicWindow" style="display: none;">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>

@@ -46,17 +46,24 @@ class GeoiModelGeoi extends JModel
 			
 		}
 			
-        public function STtoGeoJson($tbl,$bbox,$colums,$type) 
+        public function STtoGeoJson($tbl,$bbox,$colums,$type, $idlist) 
         {
+        	///$where="oid IN ( ".$idlist.")";
 			//echo JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.DS.'geoPHP.inc';;
         	//$fecha = new DateTime();
         	//echo $fecha->format('c')."\n";
         	//$fecha1= $fecha->getTimestamp();
 			//echo "1.".$fecha1."\n";
+        	$where="";
         	$tbl="`#__".strtolower($tbl)."`";
 			if ($type!=''){$colsi= array("AsText(geom)", "oid , LOWER(".$type.") 'type'");}
 			else{$colsi= array("AsText(geom)", "oid ");}
-			$where= "Intersects(geom, GeomFromText('".$bbox."'))";
+			if($bbox!=FALSE){$where=$where. "Intersects(geom, GeomFromText('".$bbox."'))";}
+			if($idlist!=FALSE){
+				if($bbox!=FALSE){$where=$where." AND oid IN ( ".$idlist.")";}
+				else{$where=$where." oid IN ( ".$idlist.")";}
+			}
+			//echo $where."\n";
 			if ($colums!=TRUE){
 				$colo=$this->GetColArray();
 				$cols=array_merge($colsi,$colo);
@@ -76,7 +83,7 @@ class GeoiModelGeoi extends JModel
 			$st
 				->select($cols)
 				->from($tbl);
-			if(is_string($bbox)){ $st->where($where);}
+			if(is_string($bbox) || is_string($idlist)){ $st->where($where);}
 			$db->setQuery($st);
 			$ex=$db->execute();
 			$results = $db->loadObjectList();
@@ -366,5 +373,61 @@ class GeoiModelGeoi extends JModel
         		//$cont++;
         	}
         	///return $array_res;
+        }
+        
+        public function SearchPoints($array_search){
+        	$where=Array();
+        	$where_cat=Array();
+        	$where_int=Array();
+        	$where_pol=Array();
+        	$colsi= array("AsText(geom) geom", "oid ");
+        	$colo=$this->GetColArray();
+        	$cols=array_merge($colsi,$colo);
+        	foreach($array_search as $arra){
+        		if ($arra[1]=="CAT"){
+        			$str_where="";
+        			foreach(($arra[2]) as $arr2){
+        				$str_where=$str_where.$arra[0]."='".$arr2."'";
+        				if(end($arra[2])!=$arr2){
+        					$str_where=$str_where." OR ";
+        				}
+        			}
+        			array_push($where,$str_where);
+        		}elseif ($arra[1]=="INT."){
+        			///expr BETWEEN min AND max
+        			$minmax = explode(",", $arra[2]);
+        			array_push($where,$arra[0]." BETWEEN ".$minmax[0]." AND ".$minmax[1]);
+        		}elseif ($arra[1]=="POL"){
+        			//retornar la gemetria, no hacer busqueda
+        			//echo $arra[0];
+        			//$pol_idx=$this->GetParamName($arra[0]);
+        			//array_push($where_pol,", `#__geoi".$arra[0]."` b WHERE Intersects(a.geom, b.geom) and b.NAME IN ");
+        		}elseif ($arra[1]=="POLDRAW"){
+        			//array_push($where_pol," WHERE Intersects(a.geom, "..") and b.NAME IN ");
+        			//retornar la gemetria, no hacer busqueda
+        		}else{return FALSE;}
+        	}
+        	//print_r(json_encode($where_cat));
+        	//print_r(json_encode($where_int));
+        	///print_r(json_encode($array_search));
+        	$res_array=Array();
+        	if(count($where_cat)>0){array_push($res_array,$where_cat);}
+        	if(count($where_int)>0){array_push($res_array,$where_int);}
+        	if(count($where_pol)>0){array_push($res_array,$where_pol);}
+        	
+        	$tbl="`#__geoiofertas`";
+        	$db = JFactory::getDbo();
+        	$st= $db->getQuery(true);
+        	$st
+        	->select($cols)
+        	->from($tbl)
+        	->where($where);
+        	$db->setQuery($st);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	
+        	print_r(json_encode($results));
         }
 }

@@ -326,42 +326,47 @@ function popupClear() {
 
 function SearchPoints(arr){
 	var search_data=[];
-	var cont_pol=0;
+	var cont_pol=0, db_pol=0;
+	var geom_string="";
 	for(i=0;i<arr.length;i++){
 		current=arr[i];
 		//valor="";
-		if (current[1]=='CAT'){
+		
+		if (String(current[1])==String("CAT")){
 			valor=document.getElementById(current[0]);
 			//alert(typeof(valor));
 			if(valor){
 				search_data[i]=[];
-				search_data[i][0]=current[0];
-				search_data[i][1]=current[1];
-				search_data[i][2]="";
+				search_data[i][0]=String(current[0]);
+				search_data[i][1]=String(current[1]);
+				search_data[i][2]=[];
 				 for (var j = 0; j < valor.options.length; j++) {
 					 if(valor.options[j].selected ==true){
-						 search_data[i][2]=search_data[i][2]+valor.options[j].value;
-						 if(j!= valor.options.length){search_data[i][2]=search_data[i][2]+",";}
+						 search_data[i][2].push(valor.options[j].value);
+						 //if(j!= Number(valor.options.length)){search_data[i][2]=search_data[i][2]+",";}
 					 }
 				 }
 			}
-		}else if(current[1]=='INT'){
+		}else if(String(current[1])==String("INT")){
+			//alert(current[0]+","+current[1]+", minbox"+current[0]);
 			///alert('minbox'+current[0]+':'+$('minbox'+current[0]).val());
-			var min=Number(document.getElementById('minbox'+current[0]));
-			var max=Number(document.getElementById('maxbox'+current[0]));
+			var min=document.getElementById('minbox'+current[0]);
+			var max=document.getElementById('maxbox'+current[0]);
+			//alert("X:"+min.value+","+max.value);
 			if(min && max){
 				min=min.value;
 				max=max.value;
 				search_data[i]=[];
-				search_data[i][0]=current[0];
-				search_data[i][1]=current[1];
+				search_data[i][0]=String(current[0]);
+				search_data[i][1]=String(current[1])+".";
 				search_data[i][2]=min+','+max;
 				//alert(search_data[i][2]);
 			}
-		}else if (current[1]=='POL'){
+		}else if (String(current[1])==String("POL")){
+			//console.log("POLXlog");
+			db_pol=db_pol+1;
 			if(poldrawsearchcontrol.active){
 				cont_pol=cont_pol+1;
-				geom_string="";
 				if(cont_pol==1){
 						search_data[i]=[];
 						search_data[i][0]="POLDRAW";
@@ -369,7 +374,7 @@ function SearchPoints(arr){
 						geom_search=pollayer.features;
 						for(j=0;j<geom_search.length;j++){
 							geom_string=geom_string+geom_search[j].geometry;
-							if(j!=geom_search.length-1){geom_string=geom_string+",";}}
+							if(j!=Number(geom_search.length-1)){geom_string=geom_string+",";}}
 						search_data[i][2]=geom_string;
 					}
 			}else{
@@ -378,13 +383,14 @@ function SearchPoints(arr){
 				valor2=document.getElementById(current[0]);
 				if(valor2){
 					search_data[i]=[];
-					search_data[i][0]=current[0];
-					search_data[i][1]=current[1];
-					search_data[i][2]="";
+					search_data[i][0]=String(current[0]);
+					search_data[i][1]=String(current[1]);
+					search_data[i][2]=[];
 					 for (var j = 0; j < valor2.options.length; j++) {
 						 if(valor2.options[j].selected ==true){
-							 search_data[i][2]=search_data[i][2]+valor2.options[j].value;
-							 if(j!= valor2.options.length){search_data[i][2]=search_data[i][2]+",";}
+							 search_data[i][2].push(valor2.options[j].value);
+							 //search_data[i][2]=search_data[i][2]+valor2.options[j].value;
+							 //if(j!=Number( valor2.options.length-1)){search_data[i][2]=search_data[i][2]+",";}
 						 }
 					 }
 				}
@@ -393,25 +399,47 @@ function SearchPoints(arr){
 		}
 	}
 	
+	if(db_pol==0 && poldrawsearchcontrol.active){
+		var tmp_arr=[];
+		tmp_arr.push("POLDRAW");
+		tmp_arr.push("POLDRAW");
+		geom_search=pollayer.features;
+		for(j=0;j<geom_search.length;j++){
+			geom_string=geom_string+geom_search[j].geometry;
+			if(j!=Number(geom_search.length-1)){geom_string=geom_string+",";}}
+		tmp_arr.push(geom_string);
+		search_data.push(tmp_arr);
+	}
+	
 	search_datadef=[];
-	contdef=0;
 	for(i=0;i<search_data.length;i++){
-		if(search_data[i]){search_datadef.push(search_data[i]);}
+		if(search_data[i]){
+			if(search_data[i][1]=='CAT' && search_data[i][2].length>0){	search_datadef.push(clone(search_data[i])); }
+			else if(search_data[i][1]=='INT.'){	search_datadef.push(clone(search_data[i])); }
+			else if(search_data[i][1]=='POLDRAW' && search_data[i][2].length>0){	search_datadef.push(clone(search_data[i])); }
+			else if(search_data[i][1]=='POL' && search_data[i][2].length>0){	search_datadef.push(clone(search_data[i])); }
+			//console.log(search_data[i]);
+			}
 		}
-	//console.log(search_datadef);
-	var url =document.URL+"&task=SearchPoints";
-	var obj_data={"searchdata":search_datadef};
-	var req;
-	 req=($.parseJSON($.ajax({
-		 	type: "POST",
-			url:  url,
-			data:obj_data,
-			dataType: "json"
-		}).responseText));
-	 console.log( req);
+	if(search_datadef.length>0){
+		console.log(search_datadef);
+		var url =document.URL+"&task=SearchPoints";
+		var obj_data={"searchdata":search_datadef};
+		var req;
+		 req=($.parseJSON($.ajax({
+			 	type: "POST",
+				url:  url,
+				data:obj_data,
+				dataType: "json",
+				async: false
+			}).responseText));
+		 //console.log( req);
+	}else {alert('Please, select values to search');}
 }
 
-
+function clone(obj) {
+	  return JSON.parse(JSON.stringify(obj));
+	}
 //// FUNCIONES INTERFAZ
 
 function polButtonClick(){
@@ -531,8 +559,8 @@ function showValues(name, stringvalues, type){
 		if (name.match(/POL.*/)&&poldrawsearchcontrol.active) {
 			html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple" disabled>';
 			}
-		else{html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple">';}
-			for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'" selected>'+content_arr[i]+'</option> ';}
+		else{html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple" onchange="reSelect(\''+name+'\')">';}
+			for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'">'+content_arr[i]+'</option> ';}
 			html_content=html_content+"</select>";
 	}else if(type=='int'){
 		///alert (content_arr[0]+content_arr[1]);
@@ -543,28 +571,25 @@ function showValues(name, stringvalues, type){
 		html_content=html_content+' <span class="RangeText">max:</span><input type="number" id="maxbox'+name+'" class="MaxBox" value="'+content_arr[1]+'"';
 		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#max'+name+'\', \'#min'+name+'\')"';
 		html_content=html_content+' onchange="setRangeMax(\''+name+'\',\'INVALID VALUE\')"><br>';
-		html_content=html_content+' <input type="range" class="MinSlider" id="min'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMinBox(\''+name+'\')">';
-		html_content=html_content+' <input type="range" class="MaxSlider" id="max'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMaxBox(\''+name+'\')">';
+		html_content=html_content+' <input type="range" class="MinSlider" value="'+content_arr[0]+'" id="min'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMinBox(\''+name+'\')">';
+		html_content=html_content+' <input type="range" class="MaxSlider" value="'+content_arr[1]+'" id="max'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMaxBox(\''+name+'\')">';
 		html_content=html_content+' </div>';
-		
-////////AÑADIR EN EL CLICK AGREGAR VALORES  AL DIV DE ABAJO
-		//echo '<div class="SliderContainer" id="'.$search[0].'"> ';
-		//$valerror=JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR');
-		//echo '<span class="RangeText">min:</span><input type="number" id="minbox'.$search[0].'" class="MinBox" value="'.
-		//$search[3][0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#min'.$search[0].'\', \'#max'.$search[0].'\')" onchange="setRangeMin(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
-		//echo '<span class="RangeText">max:</span><input type="number" id="maxbox'.$search[0].'" class="MaxBox" value="'.
-		//$search[3][1].'" min="'.$search[3][0].'" max="'.$search[3][1].'" onclick="showHide(\'#max'.$search[0].'\', \'#min'.$search[0].'\')" onchange="setRangeMax(\''.$search[0].'\', \''.JTEXT::_('COM_GEOI_SEARCH_VAL_ERROR').'\')">';
-		//echo '<br>';
-		//echo '<input type="range" class="MinSlider" id="min'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][0].'" onchange="setMinBox(\''.$search[0].'\')"> ';
-		//echo '<input type="range" class="MaxSlider" id="max'.$search[0].'" min="'.$search[3][0].'" max="'.$search[3][1].'" value="'.$search[3][1].'" onchange="setMaxBox(\''.$search[0].'\')"> ';
-		//echo '</div>';
-		//echo '<br>';
-		/////////////
 	}
 	html_content=html_content+'</div>'
 	var div = document.getElementById('DataContainer');
 	if(!(document.getElementById('container_'+name))){	div.innerHTML = div.innerHTML + html_content;}
 	
+}
+
+function reSelect(name){
+	valor=document.getElementById(name);
+	if(valor){
+		 for (var j = 0; j < valor.options.length; j++) {
+			 if(valor.options[j].selected ==true){
+				 $('#'+name+' option[value="'+valor.options[j].value+'"]').attr("selected","selected");
+			 }
+		 }
+	}
 }
 
 
