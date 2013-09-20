@@ -237,7 +237,7 @@ function onFeatureSelect(event) {
             }
             //alert (attr[0].Precio);
 			//alert(oids);
-            content = content + "<br>";
+           /* content = content + "<br>";
             if (content.search("<script") != -1) {
                 content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
             }
@@ -247,9 +247,24 @@ function onFeatureSelect(event) {
                                      content,
                                      null, true, onPopupClose);
            
-            feature.popup = popup;
+            feature.popup = popup;*/
             vector_layer.events.un({"moveend":reDrawGeojson});
-            map.addPopup(popup);
+            //map.addPopup(popup);
+            var div_popup=document.createElement("div");
+            var map_element=document.getElementById('map-id');
+            map_width=map_element.offsetWidth;
+            div_popup.id="div_popup";
+            div_popup.className="BasicWindow";
+            div_popup.style.top="10em"
+           // div_popup.style.removeProperty("left");
+            div_popup.style.float="right";
+            div_popup.style.left=String(((map_width/3)*2.5))+"px";
+            div_popup.style.right="0";
+            div_popup.style.overflow="auto";
+            div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
+            div_popup.innerHTML=div_popup.innerHTML+content;
+            map_element.appendChild(div_popup); 
+            vector_layer.events.un({"moveend":reDrawGeojson});
             map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
         }

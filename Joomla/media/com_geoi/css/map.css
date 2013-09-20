@@ -91,6 +91,7 @@ input{
                 top: 3em;
                 left: 3.5em;
                 min-height:100px;
+                max-height:50%;
                 z-index: 20000;
                 background-color: #94a1a8;
                 padding: 0 0.5em 0.5em 0.5em;
