@@ -10,7 +10,7 @@ $( "#AuthTask" ).click(function() {
 		});
 
 
-$( ".CloseWindow" ).click(function() {
+$( ".CloseWindow" ).on( "click", function() {
 	$(this).parent().hide();
 	$('#MultiValuesWindow').hide();
 	idopen=$('.ShowValuesButton[open="open"]').attr("id");
@@ -219,7 +219,7 @@ function onFeatureSelect(event) {
             for (var key in attr) { 
             	//content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";	
             	if (attr.length>1){
-            		content = content +'<dt><b>'+(conta+1)+'</b></dt><dd>';
+            		content = content +'<dt><b>'+(conta+1)+'</b></dt><br><dd>';
             		//content = content + "<b>" +key+": </b>" + attr2[key]+"<br>";
             		$.each( attr[key], function(k, v){
 	            		content=content+ "<b>" + k + "</b>: " + v +"<br>";
@@ -250,20 +250,31 @@ function onFeatureSelect(event) {
             feature.popup = popup;*/
             vector_layer.events.un({"moveend":reDrawGeojson});
             //map.addPopup(popup);
-            var div_popup=document.createElement("div");
+            var div_popup
+            if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');}
+            else {div_popup= document.createElement("div");}
             var map_element=document.getElementById('map-id');
             map_width=map_element.offsetWidth;
             div_popup.id="div_popup";
             div_popup.className="BasicWindow";
-            div_popup.style.top="10em"
+            div_popup.style.top="12.5em"
            // div_popup.style.removeProperty("left");
             div_popup.style.float="right";
             div_popup.style.left=String(((map_width/3)*2.5))+"px";
             div_popup.style.right="0";
             div_popup.style.overflow="auto";
-            div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
+            //div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
+            closebtn= document.createElement("img");
+            closebtn.id="CloseWindow";
+            closebtn.className="CloseWindow";
+            closebtn.style.position=" relative";
+            closebtn.src="media/com_geoi/images/close.png";
+            //closebtn.onclick=closeWindow;
+            div_popup.innerHTML="";
+            //div_popup.appendChild(closebtn);
             div_popup.innerHTML=div_popup.innerHTML+content;
             map_element.appendChild(div_popup); 
+            closebtn.onclick=closeWindow;
             vector_layer.events.un({"moveend":reDrawGeojson});
             map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
@@ -607,4 +618,6 @@ function reSelect(name){
 	}
 }
 
-
+function closeWindow(){
+	alert (this.id);
+}

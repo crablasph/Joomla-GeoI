@@ -23,6 +23,22 @@ select[multiple]{
 				border-color:#3D3C3C;
 				
                 }
+                
+#div_popup{
+	font-family: sans-serif;
+    font-weight: bold;
+    color: #707070;
+    font-size: 12px;
+    float: right; 
+    right: 0px;
+}
+
+#div_popup>b, dd>b, dt{
+	float: left; 
+	color: white; 
+	left: 0px;
+}
+
 
 input[type='range'] {
 				position: absolute;

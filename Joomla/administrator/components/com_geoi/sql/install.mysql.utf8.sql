@@ -13,12 +13,12 @@ DROP TABLE IF EXISTS `#__geoipol8`;
 DROP TABLE IF EXISTS `#__geoipol9`;
 DROP TABLE IF EXISTS `#__geoipol10`;
 DROP TABLE IF EXISTS `#__geoipol11`;
-DROP TABLE IF EXISTS `#_geoiopol1`;
-DROP TABLE IF EXISTS `#_geoiopol2`;
-DROP TABLE IF EXISTS `#_geoiopol3`;
-DROP TABLE IF EXISTS `#_geoiopol4`;
-DROP TABLE IF EXISTS `#_geoiopol5`;
-DROP TABLE IF EXISTS `#_geoiopol6`;
+DROP TABLE IF EXISTS `#__geoiopol1`;
+DROP TABLE IF EXISTS `#__geoiopol2`;
+DROP TABLE IF EXISTS `#__geoiopol3`;
+DROP TABLE IF EXISTS `#__geoiopol4`;
+DROP TABLE IF EXISTS `#__geoiopol5`;
+DROP TABLE IF EXISTS `#__geoiopol6`;
  
 CREATE TABLE `#__geoiofertas` (
   oid int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
