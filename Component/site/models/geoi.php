@@ -190,9 +190,11 @@ class GeoiModelGeoi extends JModel
         }
         
         public function GetAttributesbyID($table,$idlist){
+        	//$idlist=$idlist.", oid";
         	$where="oid IN ( ".$idlist.")";
         	if(strtolower($table)=='geoiofertas'){
         		$colo=$this->GetColArray();
+        		array_push($colo, "oid");
         		$table=strtolower("`#__".$table."`");
         	}
         	else{$colo='*';}
@@ -403,7 +405,7 @@ class GeoiModelGeoi extends JModel
         			//$pol_idx=$this->GetParamName($arra[0]);
         			//array_push($where_pol,", `#__geoi".$arra[0]."` b WHERE Intersects(a.geom, b.geom) and b.NAME IN ");
         		}elseif ($arra[1]=="POLDRAW"){
-        			//array_push($where_pol," WHERE Intersects(a.geom, "..") and b.NAME IN ");
+        			//array_push($where," Intersects(geom, GeomFromText('".$arra[2]."'))");
         			//retornar la gemetria, no hacer busqueda
         		}else{return FALSE;}
         	}

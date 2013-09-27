@@ -219,17 +219,22 @@ function onFeatureSelect(event) {
             for (var key in attr) { 
             	//content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";	
             	if (attr.length>1){
-            		content = content +'<dt><b>'+(conta+1)+'</b></dt><br><dd>';
+            		//console.log(attr);
+            		content = content +'<dt id="feature'+attr[key].oid+'"><b>'+(attr[key].oid)+'</b></dt><br><dd>';
             		//content = content + "<b>" +key+": </b>" + attr2[key]+"<br>";
             		$.each( attr[key], function(k, v){
-	            		content=content+ "<b>" + k + "</b>: " + v +"<br>";
+            			if(k!="oid"){
+            				content=content+ "<b>" + k + "</b>: " + v +"<br>";
+            			}
 	            		});
             		//content=content+"<br>"
             		content = content +"</dd>";
             	}
             	else{
             		$.each( attr[key], function(k, v){
-            			content=content+ "<b>" + k + "</b>: " + v +"<br>";
+            			if(k!="oid"){
+            				content=content+ "<b>" + k + "</b>: " + v +"<br>";
+            			}
 	            		});
             	}
             	conta++;
@@ -250,8 +255,9 @@ function onFeatureSelect(event) {
             feature.popup = popup;*/
             vector_layer.events.un({"moveend":reDrawGeojson});
             //map.addPopup(popup);
+            map.setCenter(new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y));
             var div_popup
-            if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');}
+            if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');div_popup.style.display="block";}
             else {div_popup= document.createElement("div");}
             var map_element=document.getElementById('map-id');
             map_width=map_element.offsetWidth;
@@ -265,16 +271,17 @@ function onFeatureSelect(event) {
             div_popup.style.overflow="auto";
             //div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
             closebtn= document.createElement("img");
-            closebtn.id="CloseWindow";
+            closebtn.id="ClosePopup";
             closebtn.className="CloseWindow";
             closebtn.style.position=" relative";
             closebtn.src="media/com_geoi/images/close.png";
             //closebtn.onclick=closeWindow;
-            div_popup.innerHTML="";
-            //div_popup.appendChild(closebtn);
+            div_popup.innerHTML='';
+            div_popup.appendChild(closebtn);
             div_popup.innerHTML=div_popup.innerHTML+content;
+            ///alert (feature.geometry)
             map_element.appendChild(div_popup); 
-            closebtn.onclick=closeWindow;
+            document.getElementById('ClosePopup').onclick = function(){ document.getElementById('div_popup').style.display="none";};
             vector_layer.events.un({"moveend":reDrawGeojson});
             map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
