@@ -127,6 +127,22 @@ class GeoiController extends JController
 			$app->close();
 		}
 		
+		function test(){
+			$app = JFactory::getApplication();
+			$input=$app->input;
+			$input->set('view', $input->getCmd('view', 'Geojson'));
+			$document = JFactory::getDocument();
+			$document->setMimeEncoding('application/json; charset=UTF8');
+			$document->setType('raw');
+			$view = $this->getView( 'Geojson', 'raw' );
+			$model=$this->getModel();
+			$model->testintersection();
+				
+			//print_r($model->GetSearchParameters());
+			parent::display($cachable = false);
+			$app->close();
+		}
+		
 		
 			
 }

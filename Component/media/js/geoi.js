@@ -97,6 +97,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
 	     poldrawsearchcontrol = new OpenLayers.Control.DrawFeature( pollayer , OpenLayers.Handler.Polygon );
 	     map.layers[0].displayInLayerSwitcher = false;
 	     map.addControl(poldrawsearchcontrol);
+	     pollayer.events.on({   "featuresadded": onPolAdd     });
 	     
 
         
@@ -173,6 +174,12 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
 		
 
 }
+ 
+ function onPolAdd() {
+	 if(pollayer.features.length>1){
+		 pollayer.removeFeatures(pollayer.features[0]);
+	 }
+ }
  
 function onPopupClose() {
 	select.unselectAll();

@@ -11,7 +11,8 @@ require JPATH_ADMINISTRATOR.DS.'components'.DS.'com_geoi'.DS.'src'.DS.'geophp'.D
 
 
 class GeoiModelGeoi extends JModel
-{
+{	
+	var $pointOnVertex = true; // Check if the point sits exactly on one of the vertices? - POINT IN POLYGON
 		private function WKT_to_GeoJson($wkt) {
 			$wktr = new WKT();
 			$geometry = $wktr ->read($wkt,true);
@@ -186,7 +187,7 @@ class GeoiModelGeoi extends JModel
 			$results = $db->loadObjectList();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
-			foreach ($results[0] as $res){return $res;}
+			foreach ($results as $res){return $res;}
         }
         
         public function GetAttributesbyID($table,$idlist){
@@ -377,12 +378,35 @@ class GeoiModelGeoi extends JModel
         	///return $array_res;
         }
         
+        public function WKT2Array($geomtxt){
+        	//$geomtxt="POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30, 35 35, 30 20, 20 30))";
+        	$inif=strripos($geomtxt,"(");
+        	$strini= substr ( $geomtxt , 0, $inif);
+        	$geomtxt = str_replace($strini, "", $geomtxt);
+        	$geomtxt = str_replace("(", "", $geomtxt);
+        	$geomtxt = str_replace(")", "", $geomtxt);
+        	$geomarr=explode(",",$geomtxt);
+        	return $geomarr;
+        }
+        
+        public function testintersection(){
+        	//$points = array("50 70","70 40","-20 30","100 10","-10 -10","40 -20","110 -20");
+        	//$polygon = array("-50 30","50 70","100 50","80 10","110 -10","110 -30","-20 -50","-30 -40","10 -10","-10 10","-30 -20","-50 -30");
+        	// The last point's coordinates must be the same as the first one's, to "close the loop"
+        	$points = $this->WKT2Array('POINT(-8247036.2342 517670.8443)');
+        	$polygon=$this->WKT2Array('POLYGON((-8258027.2157964 521912.02217256,-8258180.0898529 511516.58632722,-8248701.8983469 508306.23113969,-8238000.7143884 524052.25896424,-8258027.2157964 521912.02217256))');
+        	foreach($points as $key => $point) {
+        		echo "point " . ($key+1) . " ($point): " . $this->pointInPolygon($point, $polygon) . "\n";
+        	}
+        }
+        
         public function SearchPoints($array_search){
+        	$db = JFactory::getDbo();
         	$where=Array();
-        	$where_cat=Array();
-        	$where_int=Array();
-        	$where_pol=Array();
-        	$colsi= array("AsText(geom) geom", "oid ");
+        	$where_pol_draw=Array();
+        	$where_pol_name=Array();
+        	$colsi= array("AsText(geom) geom", "oid");
+        	$colspol= array("NAME","AsText(geom) geom");
         	$colo=$this->GetColArray();
         	$cols=array_merge($colsi,$colo);
         	foreach($array_search as $arra){
@@ -402,34 +426,114 @@ class GeoiModelGeoi extends JModel
         		}elseif ($arra[1]=="POL"){
         			//retornar la gemetria, no hacer busqueda
         			//echo $arra[0];
-        			//$pol_idx=$this->GetParamName($arra[0]);
-        			//array_push($where_pol,", `#__geoi".$arra[0]."` b WHERE Intersects(a.geom, b.geom) and b.NAME IN ");
+        			$pol_idx=$this->GetParamName($arra[0]);
+        			$tbl="`#__geoi".$arra[0]."`";
+        			$strimplode=implode(",",$arra[2]);
+        			$strimplode=str_replace(",", "','", $strimplode);
+        			$strimplode="'".$strimplode."'";
+        			$st= $db->getQuery(true);
+        			$st
+        			->select( $colspol)
+        			->from(strtolower($tbl))
+        			->where("NAME IN (".$strimplode.")");
+        			$db->setQuery($st);
+        			$ex=$db->execute();
+        			$results = $db->loadObjectList();
+        			$msg=$db->getErrorMsg();
+        			if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        			array_push($where_pol_name,$results);
         		}elseif ($arra[1]=="POLDRAW"){
-        			//array_push($where," Intersects(geom, GeomFromText('".$arra[2]."'))");
+        			//array_push($where," ST_Intersects(geom, GeomFromText('".$arra[2]."'))");
+        			array_push($where_pol_draw,$arra[2]);
         			//retornar la gemetria, no hacer busqueda
         		}else{return FALSE;}
         	}
-        	//print_r(json_encode($where_cat));
-        	//print_r(json_encode($where_int));
-        	///print_r(json_encode($array_search));
-        	$res_array=Array();
-        	if(count($where_cat)>0){array_push($res_array,$where_cat);}
-        	if(count($where_int)>0){array_push($res_array,$where_int);}
-        	if(count($where_pol)>0){array_push($res_array,$where_pol);}
-        	
+       	
         	$tbl="`#__geoiofertas`";
-        	$db = JFactory::getDbo();
         	$st= $db->getQuery(true);
         	$st
         	->select($cols)
-        	->from($tbl)
-        	->where($where);
+        	->from($tbl);
+        	if(count($where)>0){   $st->where($where);}
         	$db->setQuery($st);
         	$ex=$db->execute();
         	$results = $db->loadObjectList();
         	$msg=$db->getErrorMsg();
         	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
         	
-        	print_r(json_encode($results));
+        	//print_r(json_encode($results));
+        	$results2["SEARCH"]=$results;
+        	if(count($where_pol_draw)>0){   $results2["DRAWPOL"]=$where_pol_draw;}
+        	if(count($where_pol_name)>0){   $results2["NAMEPOL"]=$where_pol_name;}
+        	//else{}
+        	print_r(json_encode($results2));
         }
+        
+        ////POINT IN POLYGON ALGORITHM
+        ////http://assemblysys.com/php-point-in-polygon-algorithm/
+        
+        function pointInPolygon($point, $polygon, $pointOnVertex = true) {
+        	$this->pointOnVertex = $pointOnVertex;
+        
+        	// Transform string coordinates into arrays with x and y values
+        	$point = $this->pointStringToCoordinates($point);
+        	$vertices = array();
+        	foreach ($polygon as $vertex) {
+        		$vertices[] = $this->pointStringToCoordinates($vertex);
+        	}
+        
+        	// Check if the point sits exactly on a vertex
+        	if ($this->pointOnVertex == true and $this->pointOnVertex($point, $vertices) == true) {
+        		//return "vertex";
+        		return true;
+        	}
+        
+        	// Check if the point is inside the polygon or on the boundary
+        	$intersections = 0;
+        	$vertices_count = count($vertices);
+        
+        	for ($i=1; $i < $vertices_count; $i++) {
+        		$vertex1 = $vertices[$i-1];
+        		$vertex2 = $vertices[$i];
+        		if ($vertex1['y'] == $vertex2['y'] and $vertex1['y'] == $point['y'] and $point['x'] > min($vertex1['x'], $vertex2['x']) and $point['x'] < max($vertex1['x'], $vertex2['x'])) { // Check if point is on an horizontal polygon boundary
+        			//return "boundary";
+        			return true;
+        		}
+        		if ($point['y'] > min($vertex1['y'], $vertex2['y']) and $point['y'] <= max($vertex1['y'], $vertex2['y']) and $point['x'] <= max($vertex1['x'], $vertex2['x']) and $vertex1['y'] != $vertex2['y']) {
+        			$xinters = ($point['y'] - $vertex1['y']) * ($vertex2['x'] - $vertex1['x']) / ($vertex2['y'] - $vertex1['y']) + $vertex1['x'];
+        			if ($xinters == $point['x']) { // Check if point is on the polygon boundary (other than horizontal)
+        				//return "boundary";
+        				return true;
+        			}
+        			if ($vertex1['x'] == $vertex2['x'] || $point['x'] <= $xinters) {
+        				$intersections++;
+        			}
+        		}
+        	}
+        	// If the number of edges we passed through is odd, then it's in the polygon.
+        	if ($intersections % 2 != 0) {
+        		//return "inside";
+        		return true;
+        	} else {
+        		//return "outside";
+        		return false;
+        	}
+        }
+        
+        function pointOnVertex($point, $vertices) {
+        	foreach($vertices as $vertex) {
+        		if ($point == $vertex) {
+        			return true;
+        		}
+        	}
+        
+        }
+        
+        function pointStringToCoordinates($pointString) {
+        	$coordinates = explode(" ", $pointString);
+        	return array("x" => $coordinates[0], "y" => $coordinates[1]);
+        }
+        
 }
+
+
