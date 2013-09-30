@@ -389,12 +389,25 @@ class GeoiModelGeoi extends JModel
         	return $geomarr;
         }
         
+        public function WKT2String($geomtxt){
+        	//$geomtxt="POLYGON((35 10,10 20,15 40,45 45,35 10),(20 30, 35 35, 30 20, 20 30))";
+        	$inif=strripos($geomtxt,"(");
+        	$strini= substr ( $geomtxt , 0, $inif);
+        	$geomtxt = str_replace($strini, "", $geomtxt);
+        	$geomtxt = str_replace("(", "", $geomtxt);
+        	$geomtxt = str_replace(")", "", $geomtxt);
+        	//$geomarr=explode(",",$geomtxt);
+        	return $geomtxt;
+        }
+        
         public function testintersection(){
         	//$points = array("50 70","70 40","-20 30","100 10","-10 -10","40 -20","110 -20");
         	//$polygon = array("-50 30","50 70","100 50","80 10","110 -10","110 -30","-20 -50","-30 -40","10 -10","-10 10","-30 -20","-50 -30");
         	// The last point's coordinates must be the same as the first one's, to "close the loop"
         	$points = $this->WKT2Array('POINT(-8247036.2342 517670.8443)');
+        	print_r( $points) ;
         	$polygon=$this->WKT2Array('POLYGON((-8258027.2157964 521912.02217256,-8258180.0898529 511516.58632722,-8248701.8983469 508306.23113969,-8238000.7143884 524052.25896424,-8258027.2157964 521912.02217256))');
+        	print_r( $polygon) ;
         	foreach($points as $key => $point) {
         		echo "point " . ($key+1) . " ($point): " . $this->pointInPolygon($point, $polygon) . "\n";
         	}
@@ -405,6 +418,7 @@ class GeoiModelGeoi extends JModel
         	$where=Array();
         	$where_pol_draw=Array();
         	$where_pol_name=Array();
+        	$filter=Array();
         	$colsi= array("AsText(geom) geom", "oid");
         	$colspol= array("NAME","AsText(geom) geom");
         	$colo=$this->GetColArray();
@@ -444,7 +458,10 @@ class GeoiModelGeoi extends JModel
         			array_push($where_pol_name,$results);
         		}elseif ($arra[1]=="POLDRAW"){
         			//array_push($where," ST_Intersects(geom, GeomFromText('".$arra[2]."'))");
-        			array_push($where_pol_draw,$arra[2]);
+        			$geompol =array();
+        			$geompol['geom'] =$arra[2];
+        			$geompol['NAME'] ="Drawn";
+        			array_push($where_pol_draw,$geompol);
         			//retornar la gemetria, no hacer busqueda
         		}else{return FALSE;}
         	}
@@ -461,12 +478,29 @@ class GeoiModelGeoi extends JModel
         	$msg=$db->getErrorMsg();
         	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
         	
+        	foreach($results as $res){
+        		$res=(array)$res;
+        		//POL SERARCH
+	        	if(count($where_pol_draw)>0){   $respol=$where_pol_draw;}
+	        	if(count($where_pol_name)>0){   $respol=$where_pol_name[0];}
+        			foreach ($respol as $pol){
+        				$pol=(array)$pol;
+        				$point=$this->WKT2String($res['geom']);
+        				$polygon=$this->WKT2Array($pol['geom']);
+        				//echo "OID: ".$res['oid']." NAME:".$pol['NAME']." Intersects?".$this->pointInPolygon($point, $polygon);
+        				//echo "\n\n";
+        				if($this->pointInPolygon($point, $polygon)==1){	array_push($filter,$res);}
+        			}
+        		//print_r($res);
+        		//$res['geom']
+        	}
+        	
         	//print_r(json_encode($results));
-        	$results2["SEARCH"]=$results;
-        	if(count($where_pol_draw)>0){   $results2["DRAWPOL"]=$where_pol_draw;}
-        	if(count($where_pol_name)>0){   $results2["NAMEPOL"]=$where_pol_name;}
+        	//$results2["SEARCH"]=$results;
+        	//if(count($where_pol_draw)>0){   $results2["DRAWPOL"]=$where_pol_draw;}
+        	//if(count($where_pol_name)>0){   $results2["NAMEPOL"]=$where_pol_name;}
         	//else{}
-        	print_r(json_encode($results2));
+        	print_r(json_encode($filter));
         }
         
         ////POINT IN POLYGON ALGORITHM
@@ -485,7 +519,7 @@ class GeoiModelGeoi extends JModel
         	// Check if the point sits exactly on a vertex
         	if ($this->pointOnVertex == true and $this->pointOnVertex($point, $vertices) == true) {
         		//return "vertex";
-        		return true;
+        		return 1;
         	}
         
         	// Check if the point is inside the polygon or on the boundary
@@ -497,13 +531,13 @@ class GeoiModelGeoi extends JModel
         		$vertex2 = $vertices[$i];
         		if ($vertex1['y'] == $vertex2['y'] and $vertex1['y'] == $point['y'] and $point['x'] > min($vertex1['x'], $vertex2['x']) and $point['x'] < max($vertex1['x'], $vertex2['x'])) { // Check if point is on an horizontal polygon boundary
         			//return "boundary";
-        			return true;
+        			return 1;
         		}
         		if ($point['y'] > min($vertex1['y'], $vertex2['y']) and $point['y'] <= max($vertex1['y'], $vertex2['y']) and $point['x'] <= max($vertex1['x'], $vertex2['x']) and $vertex1['y'] != $vertex2['y']) {
         			$xinters = ($point['y'] - $vertex1['y']) * ($vertex2['x'] - $vertex1['x']) / ($vertex2['y'] - $vertex1['y']) + $vertex1['x'];
         			if ($xinters == $point['x']) { // Check if point is on the polygon boundary (other than horizontal)
         				//return "boundary";
-        				return true;
+        				return 1;
         			}
         			if ($vertex1['x'] == $vertex2['x'] || $point['x'] <= $xinters) {
         				$intersections++;
@@ -513,10 +547,10 @@ class GeoiModelGeoi extends JModel
         	// If the number of edges we passed through is odd, then it's in the polygon.
         	if ($intersections % 2 != 0) {
         		//return "inside";
-        		return true;
+        		return 1;
         	} else {
         		//return "outside";
-        		return false;
+        		return 0;
         	}
         }
         

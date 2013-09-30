@@ -107,13 +107,14 @@ input{
                 top: 3em;
                 left: 3.5em;
                 min-height:100px;
-                max-height:50%;
+                max-height:60%;
                 z-index: 20000;
                 background-color: #94a1a8;
                 padding: 0 0.5em 0.5em 0.5em;
                 border-radius: 15px;
                	border-style:solid;
 				border-color:#3D3C3C;
+				overflow:auto;
                 }
 
 
