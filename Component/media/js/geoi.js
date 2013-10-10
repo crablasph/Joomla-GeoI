@@ -60,7 +60,7 @@ OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Clus
     CLASS_NAME: "OpenLayers.Strategy.AttributeCluster"
 });
 
-var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
+var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearch_layer;
  var request=[];
  var parameters=getMapParameters();
  function init(){ 
@@ -99,8 +99,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
 	     map.addControl(poldrawsearchcontrol);
 	     pollayer.events.on({   "featuresadded": onPolAdd     });
 	     
-
-        
+	             
 		var osm = new OpenLayers.Layer.OSM();
 		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
 		map.addLayers([osm, gmap]);
@@ -113,6 +112,11 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
 		strategy.distance=parameters.CLUSTER_DISTANCE;
 		//strategy.distance=10000;
 		strategy.threshold =parameters.CLUSTER_THRESHOLD;
+		
+		strategysearch =new OpenLayers.Strategy.AttributeCluster({  attribute:'type' });
+		strategysearch.distance=parameters.CLUSTER_DISTANCE;
+		//strategy.distance=10000;
+		strategysearch.threshold =parameters.CLUSTER_THRESHOLD;
 
 		var defaultStyle = new OpenLayers.Style({
             pointRadius: "15",
@@ -156,11 +160,40 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
 		var selectStyle = new OpenLayers.Style({pointRadius: "20"});
 		
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
+		
 		vector_layer = new OpenLayers.Layer.Vector(parameters.LYR_NAME, {
 			strategies: [strategy] ,
 			styleMap:stylegeojson,
 			minScale: parameters.MINSCALE});
        	map.addLayers([vector_layer]);
+       	
+       	
+       	var defaultStyleSearch = new OpenLayers.Style({
+       		pointRadius: "15",
+            label: "${label}",
+            fontColor:"blue",
+            fontSize:"8",
+            fontWeight: "bold",
+            labelOutlineColor: "white",
+            labelOutlineWidth: 3,
+            externalGraphic:"media/com_geoi/images/search_home.png"
+        }, {
+        	context: 
+        	{ label: function(vector_layer) {
+        		if (typeof(vector_layer.attributes.count)=='undefined'){
+        		return "";}
+        		else
+        			return vector_layer.attributes.count;
+        		}}});
+       	StyleMapSearch = new OpenLayers.StyleMap({'default': defaultStyleSearch,'select': selectStyle});
+       	pointSearch_layer=new OpenLayers.Layer.Vector( "search_result",{strategies: [strategysearch] ,styleMap:StyleMapSearch});
+       	//pointSearch_layer.styleMap=StyleMapSearch;
+       	//pointSearch_layer.style=defaultStyleSearch;
+       	//console.log(pointSearch_layer.style);
+       	map.addLayer(pointSearch_layer);
+       	map.layers[4].displayInLayerSwitcher = false;
+       	select2 = new OpenLayers.Control.SelectFeature(pointSearch_layer);
+
 		//select = new OpenLayers.Control.SelectFeature(vector_layer,{hover:true});
        	select = new OpenLayers.Control.SelectFeature(vector_layer);
         vector_layer.events.on({
@@ -168,8 +201,21 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol;
                 "featureunselected": onFeatureUnselect,
 				"moveend":reDrawGeojson
             });
+        pointSearch_layer.events.on({
+            "featureselected": onFeatureSelect,
+            "featureunselected": onFeatureUnselect
+        });
 		map.addControl(select);
+		map.addControl(select2);
 		select.activate(); 
+		select2.activate();
+		
+       	//map.addLayer(pointSearch_layer);
+       	//pointSearch_layer.setName('search_result');
+       	//pointSearch_layer.name='search_result';
+    	//pointSearch_layer.removeAllFeatures();
+       	//map.layers[4].displayInLayerSwitcher = false;
+       	//alert(	map.layers[4].name);
 		
 		
 
@@ -193,6 +239,7 @@ function onFeatureSelect(event) {
 			var content = "";
 			var pjson = feature.attributes;
 			var oids="";
+			map.setCenter(new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y));
 			if(!feature.cluster) // if not cluster
 		    {
 				for (var key in pjson) { 
@@ -211,13 +258,9 @@ function onFeatureSelect(event) {
 		    			if(key=="oid"){
 		    				if(cfeatures[i]==cfeatures[cfeatures.length-1]){oids=oids+pjson2[key];}
 		    				else{	oids=oids+pjson2[key]+",";	}
-		    				
 		    				}
 						}
-		    		//content = content +"</dd>";
-
 				}
-		    	//content = content + '</dl>';
             }
     		
             var attr=getAttributesbyID(oids);
@@ -262,37 +305,44 @@ function onFeatureSelect(event) {
             feature.popup = popup;*/
             vector_layer.events.un({"moveend":reDrawGeojson});
             //map.addPopup(popup);
-            map.setCenter(new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y));
-            var div_popup
-            if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');div_popup.style.display="block";}
-            else {div_popup= document.createElement("div");}
-            var map_element=document.getElementById('map-id');
-            map_width=map_element.offsetWidth;
-            div_popup.id="div_popup";
-            div_popup.className="BasicWindow";
-            div_popup.style.top="12.5em"
-           // div_popup.style.removeProperty("left");
-            div_popup.style.float="right";
-            div_popup.style.left=String(((map_width/3)*2.5))+"px";
-            div_popup.style.right="0";
-            div_popup.style.overflow="auto";
-            //div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
-            closebtn= document.createElement("img");
-            closebtn.id="ClosePopup";
-            closebtn.className="CloseWindow";
-            closebtn.style.position=" relative";
-            closebtn.src="media/com_geoi/images/close.png";
-            //closebtn.onclick=closeWindow;
-            div_popup.innerHTML='';
-            div_popup.appendChild(closebtn);
-            div_popup.innerHTML=div_popup.innerHTML+content;
-            ///alert (feature.geometry)
-            map_element.appendChild(div_popup); 
-            document.getElementById('ClosePopup').onclick = function(){ document.getElementById('div_popup').style.display="none";};
+            openPopUp(content);
             vector_layer.events.un({"moveend":reDrawGeojson});
             map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
         }
+
+function openPopUp(content){
+    var div_popup
+    if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');div_popup.style.display="block";}
+    else {div_popup= document.createElement("div");}
+    var map_element=document.getElementById('map-id');
+    map_width=map_element.offsetWidth;
+    div_popup.id="div_popup";
+    div_popup.className="BasicWindow";
+    div_popup.style.top="12.5em"
+   // div_popup.style.removeProperty("left");
+    div_popup.style.float="right";
+    div_popup.style.left=String(((map_width/3)*2.5))+"px";
+    div_popup.style.right="0";
+    div_popup.style.overflow="auto";
+    //div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
+    closebtn= document.createElement("img");
+    closebtn.id="ClosePopup";
+    closebtn.className="CloseWindow";
+    closebtn.style.position=" relative";
+    closebtn.src="media/com_geoi/images/close.png";
+    //closebtn.onclick=closeWindow;
+    div_popup.innerHTML='';
+    div_popup.appendChild(closebtn);
+    div_popup.innerHTML=div_popup.innerHTML+content;
+    ///alert (feature.geometry)
+    map_element.appendChild(div_popup); 
+    document.getElementById('ClosePopup').onclick = function(){ 
+    				document.getElementById('div_popup').style.display="none";
+    				select.unselectAll();
+    	            map.controls[0].activate();
+    	            vector_layer.events.on({"moveend":reDrawGeojson	});};
+}
         
 function onFeatureUnselect(event) {
             var feature = event.feature;
@@ -462,7 +512,7 @@ function SearchPoints(arr){
 			}
 		}
 	if(search_datadef.length>0){
-		console.log(search_datadef);
+		//console.log(search_datadef);
 		var url =document.URL+"&task=SearchPoints";
 		var obj_data={"searchdata":search_datadef};
 		var req;
@@ -475,6 +525,28 @@ function SearchPoints(arr){
 			}).responseText));
 		 //console.log( req);
 	}else {alert('Please, select values to search');}
+	//console.log(req);
+	
+	////ADD MAP LAYER , GEOMETRY PROPERTIES
+	var WKT_format = new OpenLayers.Format.WKT();
+	pointSearch_layer.removeAllFeatures();
+	///
+	var vector_search=[];
+	for (var r in req){
+		//console.log(req[r]);
+			///WKT_format.read(req[r].geom);
+			vector_search.push( new OpenLayers.Feature.Vector(
+					OpenLayers.Geometry.fromWKT(req[r].geom),
+					req[r]));
+			
+	}
+	vector_layer.events.un({"moveend":reDrawGeojson});
+	vector_layer.visibility=false;
+	//vector_layer.display=false;
+	console.log(vector_search);
+	pointSearch_layer.addFeatures(vector_search);
+	pointSearch_layer.redraw();
+	///
 }
 
 function clone(obj) {

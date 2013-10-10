@@ -481,8 +481,10 @@ class GeoiModelGeoi extends JModel
         	foreach($results as $res){
         		$res=(array)$res;
         		//POL SERARCH
+        		$respol=0;
 	        	if(count($where_pol_draw)>0){   $respol=$where_pol_draw;}
 	        	if(count($where_pol_name)>0){   $respol=$where_pol_name[0];}
+	        	if($respol!=0){
         			foreach ($respol as $pol){
         				$pol=(array)$pol;
         				$point=$this->WKT2String($res['geom']);
@@ -491,6 +493,8 @@ class GeoiModelGeoi extends JModel
         				//echo "\n\n";
         				if($this->pointInPolygon($point, $polygon)==1){	array_push($filter,$res);}
         			}
+	        	}
+	        	else {array_push($filter,$res);}
         		//print_r($res);
         		//$res['geom']
         	}
