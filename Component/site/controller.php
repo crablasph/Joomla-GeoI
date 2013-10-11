@@ -118,7 +118,7 @@ class GeoiController extends JController
 			$model=$this->getModel();
 			$get_array = $input->getArray($_POST);
 			if(isset($get_array['searchdata'])){
-				$model->SearchPoints($get_array['searchdata']);
+				$model->SearchPoints($get_array['searchdata'],false);
 				//print_r($json_arr);
 			}
 			

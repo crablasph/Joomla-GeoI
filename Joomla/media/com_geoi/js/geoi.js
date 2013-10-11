@@ -186,12 +186,12 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
         			return vector_layer.attributes.count;
         		}}});
        	StyleMapSearch = new OpenLayers.StyleMap({'default': defaultStyleSearch,'select': selectStyle});
-       	pointSearch_layer=new OpenLayers.Layer.Vector( "search_result",{strategies: [strategysearch] ,styleMap:StyleMapSearch});
+       	pointSearch_layer=new OpenLayers.Layer.Vector( "Search",{strategies: [strategysearch] ,styleMap:StyleMapSearch});
        	//pointSearch_layer.styleMap=StyleMapSearch;
        	//pointSearch_layer.style=defaultStyleSearch;
        	//console.log(pointSearch_layer.style);
        	map.addLayer(pointSearch_layer);
-       	map.layers[4].displayInLayerSwitcher = false;
+       	//map.layers[4].displayInLayerSwitcher = false;
        	select2 = new OpenLayers.Control.SelectFeature(pointSearch_layer);
 
 		//select = new OpenLayers.Control.SelectFeature(vector_layer,{hover:true});
@@ -239,7 +239,7 @@ function onFeatureSelect(event) {
 			var content = "";
 			var pjson = feature.attributes;
 			var oids="";
-			map.setCenter(new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y));
+			
 			if(!feature.cluster) // if not cluster
 		    {
 				for (var key in pjson) { 
@@ -263,33 +263,7 @@ function onFeatureSelect(event) {
 				}
             }
     		
-            var attr=getAttributesbyID(oids);
-            //alert (JSON.stringify(getAttributesbyID(oids)));
-            var conta=0;
-            for (var key in attr) { 
-            	//content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";	
-            	if (attr.length>1){
-            		//console.log(attr);
-            		content = content +'<dt id="feature'+attr[key].oid+'"><b>'+(attr[key].oid)+'</b></dt><br><dd>';
-            		//content = content + "<b>" +key+": </b>" + attr2[key]+"<br>";
-            		$.each( attr[key], function(k, v){
-            			if(k!="oid"){
-            				content=content+ "<b>" + k + "</b>: " + v +"<br>";
-            			}
-	            		});
-            		//content=content+"<br>"
-            		content = content +"</dd>";
-            	}
-            	else{
-            		$.each( attr[key], function(k, v){
-            			if(k!="oid"){
-            				content=content+ "<b>" + k + "</b>: " + v +"<br>";
-            			}
-	            		});
-            	}
-            	conta++;
-            	
-            }
+
             //alert (attr[0].Precio);
 			//alert(oids);
            /* content = content + "<br>";
@@ -304,14 +278,44 @@ function onFeatureSelect(event) {
            
             feature.popup = popup;*/
             vector_layer.events.un({"moveend":reDrawGeojson});
+            map.setCenter(new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y));
             //map.addPopup(popup);
-            openPopUp(content);
-            vector_layer.events.un({"moveend":reDrawGeojson});
+            openPopUp(oids);
+            //vector_layer.events.un({"moveend":reDrawGeojson});
             map.controls[0].deactivate();
             //vector_layer.events.on({"moveend":reDrawGeojson	});
         }
 
-function openPopUp(content){
+function openPopUp(oids){
+	
+    var attr=getAttributesbyID(oids);
+    //alert (JSON.stringify(getAttributesbyID(oids)));
+    var content = "";
+    var conta=0;
+    for (var key in attr) { 
+    	//content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";	
+    	if (attr.length>1){
+    		//console.log(attr);
+    		content = content +'<dt id="feature'+attr[key].oid+'"><b>'+(attr[key].oid)+'</b></dt><br><dd>';
+    		//content = content + "<b>" +key+": </b>" + attr2[key]+"<br>";
+    		$.each( attr[key], function(k, v){
+    			if(k!="oid"){
+    				content=content+ "<b>" + k + "</b>: " + v +"<br>";
+    			}
+        		});
+    		//content=content+"<br>"
+    		content = content +"</dd>";
+    	}
+    	else{
+    		$.each( attr[key], function(k, v){
+    			if(k!="oid"){
+    				content=content+ "<b>" + k + "</b>: " + v +"<br>";
+    			}
+        		});
+    	}
+    	conta++;
+    	
+    }
     var div_popup
     if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');div_popup.style.display="block";}
     else {div_popup= document.createElement("div");}
@@ -319,7 +323,7 @@ function openPopUp(content){
     map_width=map_element.offsetWidth;
     div_popup.id="div_popup";
     div_popup.className="BasicWindow";
-    div_popup.style.top="12.5em"
+    div_popup.style.top="13.8em"
    // div_popup.style.removeProperty("left");
     div_popup.style.float="right";
     div_popup.style.left=String(((map_width/3)*2.5))+"px";
@@ -356,7 +360,6 @@ function onFeatureUnselect(event) {
 	            select.unselectAll();
 	            map.controls[0].activate();
 	            vector_layer.events.on({"moveend":reDrawGeojson	});
-	            
             }
 			}
 	
@@ -524,29 +527,38 @@ function SearchPoints(arr){
 				async: false
 			}).responseText));
 		 //console.log( req);
+			vector_layer.visibility=false;
+			//vector_layer.display=false;
+			vector_layer.removeAllFeatures();
+			////ADD MAP LAYER , GEOMETRY PROPERTIES
+			var WKT_format = new OpenLayers.Format.WKT();
+			pointSearch_layer.removeAllFeatures();
+			pointSearch_layer.visibility=true;
+			///
+			var vector_search=[];
+			var oids="";
+			for (var r in req){
+				//console.log(req[r]);
+					///WKT_format.read(req[r].geom);
+					vector_search.push( new OpenLayers.Feature.Vector(
+							OpenLayers.Geometry.fromWKT(req[r].geom),
+							req[r]));
+					oids=oids+req[r].oid;
+					if(req[r]!=req[req.length-1]){
+						oids=oids+",";
+					}
+			}
+			console.log(oids);
+			//vector_layer.events.un({"moveend":reDrawGeojson});
+			var selico=document.getElementById("SearchPolygon").getAttribute("selected");
+			if(selico=="true"){polButtonClick();}
+			pointSearch_layer.addFeatures(vector_search);
+			openPopUp(oids)
+			pointSearch_layer.redraw();
+			///
 	}else {alert('Please, select values to search');}
 	//console.log(req);
-	
-	////ADD MAP LAYER , GEOMETRY PROPERTIES
-	var WKT_format = new OpenLayers.Format.WKT();
-	pointSearch_layer.removeAllFeatures();
-	///
-	var vector_search=[];
-	for (var r in req){
-		//console.log(req[r]);
-			///WKT_format.read(req[r].geom);
-			vector_search.push( new OpenLayers.Feature.Vector(
-					OpenLayers.Geometry.fromWKT(req[r].geom),
-					req[r]));
-			
-	}
-	vector_layer.events.un({"moveend":reDrawGeojson});
-	vector_layer.visibility=false;
-	//vector_layer.display=false;
-	console.log(vector_search);
-	pointSearch_layer.addFeatures(vector_search);
-	pointSearch_layer.redraw();
-	///
+
 }
 
 function clone(obj) {

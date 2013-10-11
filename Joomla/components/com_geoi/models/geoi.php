@@ -413,7 +413,7 @@ class GeoiModelGeoi extends JModel
         	}
         }
         
-        public function SearchPoints($array_search){
+        public function SearchPoints($array_search,$pcol){
         	$db = JFactory::getDbo();
         	$where=Array();
         	$where_pol_draw=Array();
@@ -422,7 +422,9 @@ class GeoiModelGeoi extends JModel
         	$colsi= array("AsText(geom) geom", "oid");
         	$colspol= array("NAME","AsText(geom) geom");
         	$colo=$this->GetColArray();
+        	if ($pcol==true){
         	$cols=array_merge($colsi,$colo);
+        	}else {$cols=$colsi;}
         	foreach($array_search as $arra){
         		if ($arra[1]=="CAT"){
         			$str_where="";
