@@ -28,6 +28,7 @@ class com_GeoiInstallerScript
         			('ICON_4','media/com_geoi/images/land.png'),
         			('ICON_5','media/com_geoi/images/home2.png'),
         			('ICON_6','media/com_geoi/images/home3.png'),
+        			('ICON_98','media/com_geoi/images/search_home.png'),
         			('ICON_99','media/com_geoi/images/unknown.png'),
         			('SEARCH_FIELDS','TYPEP:CAT,TYPEO:CAT,VALUE:INT,ROOMS:INT,TOILET:INT'),
         			('SYMBOLOGY_FIELD','TYPEP'),

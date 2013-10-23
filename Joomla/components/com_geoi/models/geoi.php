@@ -337,7 +337,7 @@ class GeoiModelGeoi extends JModel
         
         private function GetIntervalField($field){
         	//return Array();
-        	$query="SELECT MIN( ".$field .") FROM `#__geoiofertas` UNION  SELECT MAX(".$field .")  FROM `#__geoiofertas`;";
+        	$query="SELECT MIN(IFNULL( ".$field .",0)) FROM `#__geoiofertas` UNION  SELECT MAX(IFNULL(".$field .",1))  FROM `#__geoiofertas`;";
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();
@@ -487,13 +487,14 @@ class GeoiModelGeoi extends JModel
 	        	if(count($where_pol_draw)>0){   $respol=$where_pol_draw;}
 	        	if(count($where_pol_name)>0){   $respol=$where_pol_name[0];}
 	        	if($respol!=0){
+	        		$inters=0;
         			foreach ($respol as $pol){
         				$pol=(array)$pol;
         				$point=$this->WKT2String($res['geom']);
         				$polygon=$this->WKT2Array($pol['geom']);
         				//echo "OID: ".$res['oid']." NAME:".$pol['NAME']." Intersects?".$this->pointInPolygon($point, $polygon);
         				//echo "\n\n";
-        				if($this->pointInPolygon($point, $polygon)==1){	array_push($filter,$res);}
+        				if($this->pointInPolygon($point, $polygon)==1){	array_push($filter,$res);$inters++;}
         			}
 	        	}
 	        	else {array_push($filter,$res);}
@@ -506,6 +507,7 @@ class GeoiModelGeoi extends JModel
         	//if(count($where_pol_draw)>0){   $results2["DRAWPOL"]=$where_pol_draw;}
         	//if(count($where_pol_name)>0){   $results2["NAMEPOL"]=$where_pol_name;}
         	//else{}
+        	//echo $inters;
         	print_r(json_encode($filter));
         }
         

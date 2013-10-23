@@ -8,8 +8,10 @@ defined('_JEXEC') or die('Restricted Access');
 <!DOCTYPE html>
 <html >
     <head>
+    <?php JHTML::_('behavior.mootools'); ?>
+    <?php	$user = JFactory::getUser(); ?>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<base href="<?php echo JURI::root()?>" >
+	<base id="baseURL" href="<?php echo JURI::root()?>" >
 	<title><?php echo JTEXT::_('COM_GEOI')?></title>
 	<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script> 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -19,13 +21,13 @@ defined('_JEXEC') or die('Restricted Access');
 	<body onload="init()">
         <div id="map-id" >
 	        	<div id="TaskBar">
-		              <div class="TaskDiv"><img id="SearchTask" class="ImageTask"  src="media/com_geoi/images/chart_search.png"></img></div>
-		              <div class="TaskDiv"><img id="AuthTask" class="ImageTask"  src="media/com_geoi/images/Lock.png"></img></div>
+		              <div class="TaskDiv"><img id="SearchTask" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_GO'));?>' class="ImageTask"  src="media/com_geoi/images/chart_search.png"></img></div>
+		              <div class="TaskDiv"><img id="AuthTask" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_LOGIN'));?>' class="ImageTask"  src="media/com_geoi/images/Lock.png"></img></div>
 	        	</div>
 	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
 					<label class="TitleWindow"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_TITLE')?></b></label><hr>
-					<label id="AttrTitle" class="SubTitleWindow" open="closed"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_CAR')?></b></label><br><hr>
+					<label id="AttrTitle" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_EXPAND'));?>' class="SubTitleWindow" open="closed"><b><?php echo JTEXT::_('COM_GEOI_SEARCH_CAR')?></b></label><br><hr>
 					<div id="contattr" class="conattr">
 					
 						<?php foreach ($this->search_array as $search){
@@ -52,7 +54,7 @@ defined('_JEXEC') or die('Restricted Access');
 						}
 						?>
 						</div>
-						<label id="PolTitle" class="SubTitleWindow" open="closed"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br><hr>
+						<label id="PolTitle" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_EXPAND'));?>'  class="SubTitleWindow" open="closed"><b><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_POL'))?></b></label><br><hr>
 						<div id="contpol" class="conattr" >
 						<?php foreach ($this->search_array as $search){
 							if ($search[1]=="POL") {		
@@ -67,23 +69,44 @@ defined('_JEXEC') or die('Restricted Access');
 							}					
 						}
 						?>
-						
+					<script>
+						  var jsonsearch = jQuery.parseJSON('<?php echo json_encode($this->search_array)?>');
+						  var arrayText = Array();
+						  //alert ('<?php echo $user->name;  ?>');
+						 //arrayText[0] = '<?php echo utf8_encode(JTEXT::_(''));?>';
+						 arrayText[0] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_RESULT_TITTLE'));?>';
+						 arrayText[1] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_ERRORVAL'));?>';
+						 arrayText[2] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_ERRORIM'));?>';
+						 arrayText[3] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_EXPAND'));?>';
+						 arrayText[4] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_GO'));?>';
+						 arrayText[5] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_CLEAR'));?>';
+						 arrayText[6] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_LOGIN'));?>';
+					</script>
 						<div class="LabelWindow"><b><strong><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_DRAW')) ?>: </strong></b></div>
 						<input type="image" src="media/com_geoi/images/pol_off.png" id="SearchPolygon" selected="false" style="width:22px;heigth:22px;" onclick="polButtonClick()" >
 						</div>
-						<script>
-						  var jsonsearch = jQuery.parseJSON('<?php echo json_encode($this->search_array)?>');
-						</script>
-						<input type="image" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;" onclick="SearchPoints(jsonsearch);"><br>
+						<br>
+						<input type="image" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_GO'));?>' title="Buscar" src="media/com_geoi/images/earth_search.png" id="SearchButton" style="width:30px;heigth:30px;" onclick="SearchPoints(jsonsearch);">
+						<input type="image" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_CLEAR'));?>' title="Limpiar Busqueda" src="media/com_geoi/images/window_close.png" id="ClearButton" style="width:30px;heigth:30px;" onclick="ClearPoints();"><br>
 				</div>
 	        	<div id="LoginWindow" class="BasicWindow" style="display: none;">
-	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
+	        			<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
 						<label id="SearchTitle" class="TitleWindow"><b>Login</b></label><br><hr>
+						<!--
 						<label class="LabelWindow"><b>USERNAME:</b>
 						<input type="text" name="username" id="username" class="InputLogin"></label>
 						<label class="LabelWindow"><b>PASSWORD:</b><br>
 						<input type="password" name="pwd" id="pwd" class="InputLogin"></label>
 						<input type="image" src="media/com_geoi/images/send.png" id="loginButton" value="Login" style="float:rigth;width:15px;heigth:15px;"><br>
+						-->
+						<?php jimport('joomla.application.module.helper');
+						// this is where you want to load your module position
+						$modules = JModuleHelper::getModule('login'); 
+						//foreach($modules as $module)
+						//{
+						echo JModuleHelper::renderModule($modules);
+						//}
+						?>
 	        	</div>
 	        	<div id="MultiValuesWindow" class="BasicWindow" style="display: none;" data-content="">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>

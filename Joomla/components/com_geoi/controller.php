@@ -82,7 +82,7 @@ class GeoiController extends JController
 			$document->setType('raw');
 			$view = $this->getView( 'Geojson', 'raw' );
 			$model=$this->getModel();
-			$get_array = $input->getArray($_GET);
+			$get_array = $input->getArray($_POST);
 			//Lista de IDS separadas por comas
 			if( isset ($get_array['layer'])){$layer=$get_array['layer'];}else {$layer='GeoIOfertas';}
 			if( isset ($get_array['idlist'])){$idlist=$get_array['idlist'];}else {$idlist=FALSE;}
