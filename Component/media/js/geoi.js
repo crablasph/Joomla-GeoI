@@ -18,6 +18,10 @@ $( ".CloseWindow" ).on( "click", function() {
 	document.getElementById(idopen).setAttribute('open','closed');
 	});
 
+$(".button").attr("type","image");
+$(".button").attr("src","media/com_geoi/images/send.png");
+$(".button:before").text("<br>");
+
 $( ".SubTitleWindow" ).click(function() {
 	///
 	var idelemento=$( this ).attr('id');
@@ -43,9 +47,32 @@ $( ".SubTitleWindow" ).click(function() {
 
 $(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
 $(".SelectList").css("width", parseInt($(".SelectList option").length) *15);
+$(".button").after("<br>");
+$(".button").before("<br>");
+//$('.button').attr('title', $('.button').value);
 
+///fuente http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+Number.prototype.toMoney = function(decimals, decimal_sep, thousands_sep)
+{ 
+   var n = this,
+   c = isNaN(decimals) ? 2 : Math.abs(decimals), //if decimal is zero we must take it, it means user does not want to show any decimal
+   d = decimal_sep || '.', //if no decimal separator is passed we use the dot as default decimal separator (we MUST use a decimal separator)
 
+   /*
+   according to [http://stackoverflow.com/questions/411352/how-best-to-determine-if-an-argument-is-not-sent-to-the-javascript-function]
+   the fastest way to check for not defined parameter is to use typeof value === 'undefined' 
+   rather than doing value === undefined.
+   */   
+   t = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep, //if you don't want to use a thousands separator you can pass empty string as thousands_sep value
 
+   sign = (n < 0) ? '-' : '',
+
+   //extracting the absolute value of the integer part of the number and converting to string
+   i = parseInt(n = Math.abs(n).toFixed(c)) + '', 
+
+   j = ((j = i.length) > 3) ? j % 3 : 0; 
+   return sign + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : ''); 
+};
 ///CREAR CLASE DE CLUSTER POR ATRIBUTOS
 
 OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
@@ -144,15 +171,21 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
             		}
                 } else if(feature.cluster) {
                     for (var i = 0; i < feature.cluster.length; i++) {
+                    	//console.log(parameters.SYMBOLOGY_VALUES.length+":_"+parameters.SYMBOLOGY_VALUES[0]);
+                    	if(parameters.SYMBOLOGY_VALUES.length==0){
+                    		return parameters.ICON[parameters.ICON.length - 1];
+                    	}
                     	for(j=0;j<parameters.SYMBOLOGY_VALUES.length;j++){
 	                    	var atn=parameters.SYMBOLOGY_VALUES[j];
-	            			var ico=parameters.ICON[j];
-	            			if (feature.cluster[i].attributes.type == ""){return parameters.ICON[parameters.ICON.length - 1];}
-	            			else if (feature.cluster[i].attributes.type.toLowerCase() == atn) {return ico;}
+	                    	var ico=parameters.ICON[j];
+	                    	//console.log(parameters.SYMBOLOGY_VALUES[j]);
+	                    	//if(ico=='undefined'){ico=parameters.ICON[parameters.ICON.length - 1];}
+	               			//if (feature.cluster[i].attributes.type == ""){return parameters.ICON[parameters.ICON.length - 1];}
+	            			if (feature.cluster[i].attributes.type.toLowerCase() == atn) {return ico;}
                     	}
                     }
                  }
-                else {return parameters.ICON[parameters.ICON.length - 1];}
+                else if(feature.attributes.type==""){return parameters.ICON[parameters.ICON.length - 1];}
                }
             }
         });
@@ -176,7 +209,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
             fontWeight: "bold",
             labelOutlineColor: "white",
             labelOutlineWidth: 3,
-            externalGraphic:"media/com_geoi/images/search_home.png"
+            externalGraphic:parameters.ICON[parameters.ICON.length - 2]
         }, {
         	context: 
         	{ label: function(vector_layer) {
@@ -191,25 +224,35 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
        	//pointSearch_layer.style=defaultStyleSearch;
        	//console.log(pointSearch_layer.style);
        	map.addLayer(pointSearch_layer);
+       	
+        select = new OpenLayers.Control.SelectFeature(
+                [pointSearch_layer, vector_layer],
+                {
+                    clickout: true, toggle: false,
+                    multiple: false, hover: false,
+                    toggleKey: "ctrlKey", // ctrl key removes from selection
+                    multipleKey: "shiftKey" // shift key adds to selection
+                }
+            );
        	//map.layers[4].displayInLayerSwitcher = false;
-       	select2 = new OpenLayers.Control.SelectFeature(pointSearch_layer);
+       	//select2 = new OpenLayers.Control.SelectFeature(pointSearch_layer);
 
 		//select = new OpenLayers.Control.SelectFeature(vector_layer,{hover:true});
-       	select = new OpenLayers.Control.SelectFeature(vector_layer);
-        vector_layer.events.on({
-                "featureselected": onFeatureSelect,
-                "featureunselected": onFeatureUnselect,
-				"moveend":reDrawGeojson
-            });
+       	//select = new OpenLayers.Control.SelectFeature(vector_layer);
         pointSearch_layer.events.on({
             "featureselected": onFeatureSelect,
             "featureunselected": onFeatureUnselect
         });
-		map.addControl(select);
-		map.addControl(select2);
-		select.activate(); 
-		select2.activate();
+       	
 		
+        vector_layer.events.on({
+            "featureselected": onFeatureSelect,
+            "featureunselected": onFeatureUnselect,
+			"moveend":reDrawGeojson
+        });
+        //map.addControl(select);
+        map.addControl(select);
+        select.activate(); 
        	//map.addLayer(pointSearch_layer);
        	//pointSearch_layer.setName('search_result');
        	//pointSearch_layer.name='search_result';
@@ -277,7 +320,9 @@ function onFeatureSelect(event) {
                                      null, true, onPopupClose);
            
             feature.popup = popup;*/
-            vector_layer.events.un({"moveend":reDrawGeojson});
+            vector_layer.events.remove("moveend");
+            delete vector_layer.events.listeners.moveend;
+            //console.log(vector_layer.events);
             map.setCenter(new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y));
             //map.addPopup(popup);
             openPopUp(oids);
@@ -287,32 +332,36 @@ function onFeatureSelect(event) {
         }
 
 function openPopUp(oids){
-	
-    var attr=getAttributesbyID(oids);
+	//console.log(jsonsearch);
+	var attr=Array();
+	if(oids!=''){
+		attr=getAttributesbyID(oids);
+	}
     //alert (JSON.stringify(getAttributesbyID(oids)));
     var content = "";
+    
+    var price=0;
     var conta=0;
+    for (var j in  jsonsearch){
+    	if(jsonsearch[j][0]=="VALUE"){
+    		var valuestring = jsonsearch[j][2];
+    		//console.log(valuestring);
+    		break;
+    	}
+    }
+    
     for (var key in attr) { 
-    	//content = content + "<b>" +key+": </b>" + pjson2[key]+"<br>";	
-    	if (attr.length>1){
-    		//console.log(attr);
-    		content = content +'<dt id="feature'+attr[key].oid+'"><b>'+(attr[key].oid)+'</b></dt><br><dd>';
-    		//content = content + "<b>" +key+": </b>" + attr2[key]+"<br>";
+    		content = content +'<dt id="feature'+attr[key].oid+'">ID: <b>'+(attr[key].oid)+'</b>';
+    		var content2 = '<dd id="ddfeature'+attr[key].oid+'"><br>';
     		$.each( attr[key], function(k, v){
     			if(k!="oid"){
-    				content=content+ "<b>" + k + "</b>: " + v +"<br>";
+    				content2=content2+ "<b>" + k + ":</b> " + v +"<br>";
+    				if(k==valuestring){price=v;price=Number(price);}
     			}
         		});
-    		//content=content+"<br>"
-    		content = content +"</dd>";
-    	}
-    	else{
-    		$.each( attr[key], function(k, v){
-    			if(k!="oid"){
-    				content=content+ "<b>" + k + "</b>: " + v +"<br>";
-    			}
-        		});
-    	}
+    		content = content +' '+valuestring+':<b> $'+price.toMoney();
+    		content = content + '</b><br></dt><br>' + content2;
+    		content = content +"<br><br></dd>";
     	conta++;
     	
     }
@@ -323,12 +372,13 @@ function openPopUp(oids){
     map_width=map_element.offsetWidth;
     div_popup.id="div_popup";
     div_popup.className="BasicWindow";
-    div_popup.style.top="13.8em"
+    div_popup.style.top="14.7em"
    // div_popup.style.removeProperty("left");
     div_popup.style.float="right";
-    div_popup.style.left=String(((map_width/3)*2.5))+"px";
+    div_popup.style.left=String(((map_width/3)*2))+"px";
     div_popup.style.right="0";
-    div_popup.style.overflow="auto";
+    div_popup.style.overflow="hidden";
+    div_popup.style.maxHeight="48%";
     //div_popup.innerHTML='<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>';
     closebtn= document.createElement("img");
     closebtn.id="ClosePopup";
@@ -338,18 +388,129 @@ function openPopUp(oids){
     //closebtn.onclick=closeWindow;
     div_popup.innerHTML='';
     div_popup.appendChild(closebtn);
-    div_popup.innerHTML=div_popup.innerHTML+content;
-    ///alert (feature.geometry)
+    div_popup.innerHTML=div_popup.innerHTML+"<b>("+attr.length+") "+arrayText[0]+"</b><br><hr>";
+    //attr.length
+    divbody= document.createElement("div");
+    divbody.id="divbody";
+    divbody.style.overflow="auto";
     map_element.appendChild(div_popup); 
+    div_popup.appendChild(divbody);
+    divbody.innerHTML=divbody.innerHTML+content;
+    divbody.style.maxHeight=(div_popup.offsetHeight-30)+"px";
+    //
+    //alert(div_popup.offsetHeight);
     document.getElementById('ClosePopup').onclick = function(){ 
     				document.getElementById('div_popup').style.display="none";
     				select.unselectAll();
     	            map.controls[0].activate();
-    	            vector_layer.events.on({"moveend":reDrawGeojson	});};
+    	            //if(vector_layer.events.listeners.moveend){ remove
+    	            vector_layer.events.remove("moveend");
+    	            delete vector_layer.events.listeners.moveend;
+    	            	vector_layer.events.on({"moveend":reDrawGeojson	});//}
+    	            //}
+    	            };
+    var featuret=$( "[id^='feature']" );
+    var featureb=$( "[id^='ddfeature']" );
+    //alert(featuret.length);
+    for(f=0;f<featureb.length;f++){
+    	ffea=featureb[f];
+    	ffet=featuret[f];
+    	//featuret[f].onclick = dispBodyFeature(featuret[f].id);
+    	idel=featuret[f].id;
+    	ffea.style.display="none";
+    	//console.log(document.getElementById('dd'+idel));
+    	document.getElementById(idel).onclick = function(evtt){ 
+    		//console.log(idel);
+    		//console.log(evtt.currentTarget.id);
+    		
+    		var textf = new String(evtt.currentTarget.id);
+    		//alert(textf);
+    		var oidint=parseInt(textf.replace(/[^0-9]/gi, ''));
+    		//alert(oidint);
+    		//console.log(pointSearch_layer);
+    		//pointSearch_layer.features;
+
+    		/*funcion de buscar id en cluster */
+    		//console.log(oidint);
+    		var fss=selectSearchOIDinCluster(oidint);
+    		//var fss=pointSearch_layer.getFeatureBy('oid',oidint);
+    		//alert(fss.length);
+    		///bounds
+    		//select2.unselectAll();
+    		select.unselectAll();
+    		//pointSearch_layer.events.on({"featureselected": onFeatureSelect});
+    		pointSearch_layer.events.un({"featureselected": onFeatureSelect})
+    		if(document.getElementById('dd'+evtt.currentTarget.id).style.display=="none"){
+    			//var br = document.createElement("br");
+    			//document.getElementById('dd'+evtt.currentTarget.id).insertAdjacentHTML("afterend", "<br>");
+    			//document.getElementById('div_popup').insertBefore(br, document.getElementById('dd'+evtt.currentTarget.id));
+    			//document.getElementById('dd'+evtt.currentTarget.id).nextSibling.
+    			document.getElementById('dd'+evtt.currentTarget.id).style.display="block";
+    			//console.log(fss);
+    			//map.controls[0].deactivate();
+    			console.log('dd'+evtt.currentTarget.id);
+    			console.log(document.getElementById('dd'+evtt.currentTarget.id).id);
+    			map.zoomToExtent(fss.geometry.bounds);
+        		map.setCenter(new OpenLayers.LonLat(fss.geometry.x, fss.geometry.y));
+        		//
+        		//"featureselected": onFeatureSelect
+        		var fss2=selectSearchOIDinCluster(oidint);
+        		
+        		//fss2.renderIntent="select";
+        		//console.log(fss2.attributes.oid);
+        		//console.log(fss2);
+        		select.select(fss2);
+        		//console.log(oidint);
+        		//console.log(evtt.currentTarget.id.replace(/[^0-9]/gi, ''));
+        		
+        		//vector_layer.events.un({"moveend":reDrawGeojson});
+    		}else{
+    			console.log('dd'+evtt.currentTarget.id);
+    			console.log(document.getElementById('dd'+evtt.currentTarget.id).id);
+    		document.getElementById('dd'+evtt.currentTarget.id).style.display="none";
+    		delete pointSearch_layer.events.listeners.featureselected;
+    		pointSearch_layer.events.on({"featureselected": onFeatureSelect});
+    		//map.controls[0].activate();
+    			}
+
+    	}
+    }
+////   	            
 }
-        
+function selectSearchOIDinCluster(oidint)
+{
+	
+	for (var kk=0;kk<pointSearch_layer.features.length;kk++){
+		if(pointSearch_layer.features[kk].cluster){
+			for(var kv=0;kv<pointSearch_layer.features[kk].cluster.length;kv++){
+				if(pointSearch_layer.features[kk].cluster[kv].attributes.oid==oidint){
+					//console.log("cluster");
+					//console.log(pointSearch_layer.features[kk].cluster[kv]);
+					return pointSearch_layer.features[kk];
+					}
+			}
+		}else{
+			if(pointSearch_layer.features[kk].attributes.oid==oidint){
+			//console.log("feature");
+			//console.log(pointSearch_layer.features[kk]);
+			return pointSearch_layer.features[kk];
+			}
+		}
+	}
+}
+
 function onFeatureUnselect(event) {
-            var feature = event.feature;
+            //var feature = event.feature;
+			map.controls[0].deactivate();
+            select.unselectAll();
+            //select2.unselectAll();
+            vector_layer.events.remove("moveend");
+            delete vector_layer.events.listeners.moveend;
+            vector_layer.events.on({"moveend":reDrawGeojson	});
+            delete pointSearch_layer.events.listeners.featureselected;
+            pointSearch_layer.events.on({"featureselected": onFeatureSelect});
+            map.controls[0].activate();
+            /*
             if (typeof feature != 'undefined'){
 	            if(feature.popup) {
 	                map.removePopup(feature.popup);
@@ -357,17 +518,17 @@ function onFeatureUnselect(event) {
 	                delete feature.popup;
 					//vector_layer.events.on({"moveend":reDrawGeojson	});
 	            }
-	            select.unselectAll();
-	            map.controls[0].activate();
-	            vector_layer.events.on({"moveend":reDrawGeojson	});
-            }
+	            
+	            
+	            
+            }*/
 			}
 	
 function getGeojson(){
 		
 	 var extent = map.getExtent();
 	 var type =parameters.SYMBOLOGY_FIELD;
-	 var url =document.URL + '&task=geojson&type='+type+'&bbox='+extent.toGeometry();
+	 var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=geojson&type='+type+'&bbox='+extent.toGeometry();
 	 request.push($.parseJSON($.ajax({
 			url:  url,
 			dataType: "json", 
@@ -378,22 +539,22 @@ function getGeojson(){
 	}
 
 function getAttributesbyID(idList){
-	
 	 var extent = map.getExtent();
-		
-	 var url =document.URL + '&task=geojson&task=GetAttributes&idlist='+idList;
+	 var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=geojson&task=GetAttributes';
+	 var dataids="idlist="+idList;
 	 var req;
 	 req=($.parseJSON($.ajax({
+		 type: "POST",
+		 data:dataids,
 			url:  url,
 			dataType: "json", 
 			async: false
 		}).responseText));
 	 return  req;
-	
 	}
 
 function getMapParameters(){
-	var url =document.URL + '&task=GetMapParameters';
+	var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=GetMapParameters';
 	var req;
 	 req=($.parseJSON($.ajax({
 			url:  url,
@@ -407,8 +568,11 @@ function reDrawGeojson(event) {
 					var featurecollection = getGeojson();
 					var geojson_format = new OpenLayers.Format.GeoJSON();
 					var geojson_read=geojson_format.read(featurecollection);
+					map.controls[0].deactivate();
 					vector_layer.removeAllFeatures();
 					vector_layer.addFeatures(geojson_read);
+					map.controls[0].activate();
+					//console.log(vector_layer.events);
                 }
 
 function popupClear() {
@@ -417,7 +581,18 @@ function popupClear() {
     }
 }
 
+function ClearPoints(){
+	select.unselectAll();
+	//select2.unselectAll();
+    map.controls[0].activate();
+    pointSearch_layer.visibility=false;
+	pointSearch_layer.removeAllFeatures();
+	document.getElementById('div_popup').style.display="none";
+	vector_layer.visibility=true;
+}
+
 function SearchPoints(arr){
+	$("#map-id").css("cursor", "wait");
 	var search_data=[];
 	var cont_pol=0, db_pol=0;
 	var geom_string="";
@@ -516,7 +691,7 @@ function SearchPoints(arr){
 		}
 	if(search_datadef.length>0){
 		//console.log(search_datadef);
-		var url =document.URL+"&task=SearchPoints";
+		var url =document.getElementById ("baseURL").href+"index.php?option=com_geoi&task=SearchPoints";
 		var obj_data={"searchdata":search_datadef};
 		var req;
 		 req=($.parseJSON($.ajax({
@@ -548,16 +723,20 @@ function SearchPoints(arr){
 						oids=oids+",";
 					}
 			}
-			console.log(oids);
+			//console.log(oids);
 			//vector_layer.events.un({"moveend":reDrawGeojson});
 			var selico=document.getElementById("SearchPolygon").getAttribute("selected");
 			if(selico=="true"){polButtonClick();}
+			//select2.activate();
+			select.activate();
 			pointSearch_layer.addFeatures(vector_search);
 			openPopUp(oids)
 			pointSearch_layer.redraw();
+			//map.zoomToExtent(pointSearch_layer.getDataExtent());
 			///
-	}else {alert('Please, select values to search');}
+	}else {alert(arrayText[1]);}
 	//console.log(req);
+	$("#map-id").css("cursor", "default");
 
 }
 
@@ -565,6 +744,8 @@ function clone(obj) {
 	  return JSON.parse(JSON.stringify(obj));
 	}
 //// FUNCIONES INTERFAZ
+
+
 
 function polButtonClick(){
 	var selico=document.getElementById("SearchPolygon").getAttribute("selected");
@@ -598,27 +779,75 @@ function polButtonClick(){
 
 function showHide(show, hide){	$(show).show();	$(hide).hide();}
 
+function setRangeTittle(name){
+	minn=document.getElementById('min'+name);
+	tipminn = new Tips('#min'+name,{
+        onShow: function(tip, el){
+            tip.setStyles({
+                display: 'block'
+            }).fade('in');
+        }
+    });
+	tipminn.setText((Number(minn)).toMoney());
+	//tipminn.show();
+	//minn.setAttribute('title', (Number(minn)).toMoney());
+	minb=document.getElementById('minbox'+name);
+	tipminb = new Tips('#minbox'+name,{
+        onShow: function(tip, el){
+            tip.setStyles({
+                display: 'block'
+            }).fade('in');
+        }
+    });
+	tipminb.setText((Number(minb)).toMoney());
+	tipminb.show();
+	//minb.setAttribute('title', (Number(minb)).toMoney());
+	maxn=document.getElementById('max'+name);
+	tipmaxn = new Tips('#max'+name,{
+        onShow: function(tip, el){
+            tip.setStyles({
+                display: 'block'
+            }).fade('in');
+        }
+    });
+	tipmaxn.setText((Number(maxn)).toMoney());
+	tipmaxn.show();
+	//maxn.setAttribute('title', (Number(maxn)).toMoney());
+	maxb=document.getElementById('maxbox'+name);
+	tipmaxb = new Tips('#maxbox'+name,{
+        onShow: function(tip, el){
+            tip.setStyles({
+                display: 'block'
+            }).fade('in');
+        }
+    });
+	tipmaxb.setText((Number(maxb)).toMoney());
+	tipmaxb.show();
+	//maxb.setAttribute('title', (Number(maxb)).toMoney());
+};
 function setRangeMin(name, errormsg){
+	//setRangeTittle(name);
 	minr=document.getElementById('min'+name).value;
 	//minall=document.getElementById('minbox'+name).getAttribute('min\');
 	minall=document.getElementById('minbox'+name).getAttribute('min');
 	min=document.getElementById('minbox'+name).value;
 	max=document.getElementById('maxbox'+name).value;
 	if(Number(min)>Number(max)||Number(min)<Number(minall)){
-		alert(errormsg);
 		document.getElementById('minbox'+name).value=minr;
+		alert(errormsg);
 	}else{document.getElementById('min'+name).value=min;}
 
 }
 
 function setRangeMax(name, errormsg){
+	//setRangeTittle(name);
 	maxr=document.getElementById('max'+name).value;
 	maxall=document.getElementById('maxbox'+name).getAttribute('max');
 	min=document.getElementById('minbox'+name).value;
 	max=document.getElementById('maxbox'+name).value;
 	if(Number(max)<Number(min)||Number(max)>Number(maxall)){
-		alert(errormsg);
 		document.getElementById('maxbox'+name).value=maxr;
+		alert(errormsg);
 	}else{document.getElementById('max'+name).value=max;}
 	
 }
@@ -684,17 +913,23 @@ function showValues(name, stringvalues, type){
 			html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple" disabled>';
 			}
 		else{html_content=html_content+'<select class="SelectList" id="'+name+'" multiple="multiple" onchange="reSelect(\''+name+'\')">';}
-			for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'">'+content_arr[i]+'</option> ';}
+			if(content_arr.length>=1 && content_arr[0]!=""){
+				for (i=0;i<content_arr.length;i++){ html_content=html_content+'<option value="'+content_arr[i]+'">'+content_arr[i]+'</option> ';}
+			}
 			html_content=html_content+"</select>";
 	}else if(type=='int'){
 		///alert (content_arr[0]+content_arr[1]);
+		if(content_arr[1]=="" ){
+			content_arr[0]=0;
+			content_arr[1]=1;
+		}
 		var html_content=html_content+'<div class="SliderContainer" id="'+name+'">';
 		html_content=html_content+' <span class="RangeText">min:</span><input type="number" id="minbox'+name+'" class="MinBox" value="'+content_arr[0]+'"';
 		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#min'+name+'\', \'#max'+name+'\')"';
-		html_content=html_content+' onchange="setRangeMin(\''+name+'\',\'INVALID VALUE\')">';
+		html_content=html_content+' onchange="setRangeMin(\''+name+'\',\''+arrayText[2]+'\')">';
 		html_content=html_content+' <span class="RangeText">max:</span><input type="number" id="maxbox'+name+'" class="MaxBox" value="'+content_arr[1]+'"';
 		html_content=html_content+' min="'+content_arr[0]+'" max="'+content_arr[1]+'" onclick="showHide( \'#max'+name+'\', \'#min'+name+'\')"';
-		html_content=html_content+' onchange="setRangeMax(\''+name+'\',\'INVALID VALUE\')"><br>';
+		html_content=html_content+' onchange="setRangeMax(\''+name+'\',\''+arrayText[2]+'\')"><br>';
 		html_content=html_content+' <input type="range" class="MinSlider" value="'+content_arr[0]+'" id="min'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMinBox(\''+name+'\')">';
 		html_content=html_content+' <input type="range" class="MaxSlider" value="'+content_arr[1]+'" id="max'+name+'" min="'+content_arr[0]+'" max="'+content_arr[1]+'" onchange="setMaxBox(\''+name+'\')">';
 		html_content=html_content+' </div>';

@@ -47,6 +47,9 @@ $( ".SubTitleWindow" ).click(function() {
 
 $(".SelectList").css("height", parseInt($(".SelectList option").length) *7);
 $(".SelectList").css("width", parseInt($(".SelectList option").length) *15);
+$(".button").after("<br>");
+$(".button").before("<br>");
+//$('.button').attr('title', $('.button').value);
 
 ///fuente http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
 Number.prototype.toMoney = function(decimals, decimal_sep, thousands_sep)

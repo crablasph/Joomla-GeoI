@@ -18,13 +18,15 @@ dt[id^="feature"]:hover{
                 position: absolute;
                 top: 0em;
                 left: 3.5em;
-                width: 50px;
+                min-width: 50px;
                 z-index: 20000;
                 background-color: #94a1a8;
                 padding: 0.15em;
                 border-radius: 15px;
                	border-style:solid;
 				border-color:#3D3C3C;
+				float:left;
+				display:inline;
 				
                 }
                 

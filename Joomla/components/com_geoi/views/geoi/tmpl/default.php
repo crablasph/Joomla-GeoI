@@ -23,6 +23,11 @@ defined('_JEXEC') or die('Restricted Access');
 	        	<div id="TaskBar">
 		              <div class="TaskDiv"><img id="SearchTask" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_GO'));?>' class="ImageTask"  src="media/com_geoi/images/chart_search.png"></img></div>
 		              <div class="TaskDiv"><img id="AuthTask" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_LOGIN'));?>' class="ImageTask"  src="media/com_geoi/images/Lock.png"></img></div>
+		             <?php
+			             if($user->id!=0){
+				             echo '<div class="TaskDiv"><img id="InsertTask" title="'.utf8_encode(JTEXT::_('COM_GEOI_INSERT')).'" class="ImageTask"  src="media/com_geoi/images/pencildraw.png"></img></div>';
+			              }
+			          ?>
 	        	</div>
 	        	<div id="SearchWindow" class="BasicWindow">
 	        		<img id="CloseWindow" class="CloseWindow" style="position: relative;" src="media/com_geoi/images/close.png"></img>
@@ -72,7 +77,9 @@ defined('_JEXEC') or die('Restricted Access');
 					<script>
 						  var jsonsearch = jQuery.parseJSON('<?php echo json_encode($this->search_array)?>');
 						  var arrayText = Array();
-						  //alert ('<?php echo $user->name;  ?>');
+						  
+						  //console.log('<?php echo "/*".$user->id."*/"; ?>');
+						  
 						 //arrayText[0] = '<?php echo utf8_encode(JTEXT::_(''));?>';
 						 arrayText[0] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_RESULT_TITTLE'));?>';
 						 arrayText[1] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_ERRORVAL'));?>';

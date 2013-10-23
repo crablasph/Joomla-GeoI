@@ -9,18 +9,24 @@ select[multiple]{
         width: 250px;
         height: 200px;
     }
-
+dt[id^="feature"]:hover{ 
+	cursor:pointer;
+	z-index:2000;
+	background-color:#909090;
+}
 #TaskBar {		opacity:0.7;
                 position: absolute;
                 top: 0em;
                 left: 3.5em;
-                width: 50px;
+                min-width: 50px;
                 z-index: 20000;
                 background-color: #94a1a8;
                 padding: 0.15em;
                 border-radius: 15px;
                	border-style:solid;
 				border-color:#3D3C3C;
+				float:left;
+				display:inline;
 				
                 }
                 
@@ -107,7 +113,8 @@ input{
                 top: 3em;
                 left: 3.5em;
                 min-height:100px;
-                max-height:60%;
+                max-height:90%;
+                min-width:150px;
                 z-index: 20000;
                 background-color: #94a1a8;
                 padding: 0 0.5em 0.5em 0.5em;
@@ -131,6 +138,22 @@ input{
     cursor: pointer;
 }
 
+#form-login-remember{
+	display:none;
+	}
+#form-login-username,#form-login-password{
+	display: inline;
+	float: left;
+	}
+.button{	
+	width:15px;
+	heigth:15px;
+}
+.button:before
+{
+content:"<br>";
+} 
+
 .TitleWindow{
 	font-family: sans-serif;
     font-weight: bold;
@@ -138,7 +161,7 @@ input{
     font-size: medium;
 }
 
-.SubTitleWindow{
+.SubTitleWindow, #form-login-username>label, #form-login-password>label{
 	float:center;
 	left:50%;
 	font-family: sans-serif;
@@ -162,7 +185,7 @@ input{
     float:left;
     
 }
-.InputLogin{
+.InputLogin, #form-login-username>input, #form-login-password>input{
 		width:75px;
 		display:block;
 		border-radius: 5px;
