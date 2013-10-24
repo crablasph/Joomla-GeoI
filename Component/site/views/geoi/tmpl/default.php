@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted Access');
 		              <div class="TaskDiv"><img id="AuthTask" title='<?php echo utf8_encode(JTEXT::_('COM_GEOI_LOGIN'));?>' class="ImageTask"  src="media/com_geoi/images/Lock.png"></img></div>
 		             <?php
 			             if($user->id!=0){
-				             echo '<div class="TaskDiv"><img id="AuthTask" id= title="InsertTask" title="'.utf8_encode(JTEXT::_('COM_GEOI_INSERT')).'" class="ImageTask"  src="media/com_geoi/images/pencildraw.png"></img></div>';
+				             echo '<div class="TaskDiv"><img id="InsertTask" editing="false" title="'.utf8_encode(JTEXT::_('COM_GEOI_INSERT')).'" class="ImageTask"  src="media/com_geoi/images/pencildraw.png"></img></div>';
 			              }
 			          ?>
 	        	</div>

@@ -87,7 +87,7 @@ OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Clus
     CLASS_NAME: "OpenLayers.Strategy.AttributeCluster"
 });
 
-var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearch_layer;
+var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearch_layer, drawLayer, pointDrawControl;
  var request=[];
  var parameters=getMapParameters();
  function init(){ 
@@ -117,15 +117,38 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 	                    }
                 });
 	 
+	 	var selectStyle = new OpenLayers.Style({pointRadius: "20"});
+	 
 	 	//ADD SEARCH DRAW POLYGON
 	     pollayer = new OpenLayers.Layer.Vector( "PolygonSearch" );
 	     map.addLayer(pollayer);
-	     var container = document.getElementById("SearchPolDiv");
+	     //var container = document.getElementById("SearchPolDiv");
 	     poldrawsearchcontrol = new OpenLayers.Control.DrawFeature( pollayer , OpenLayers.Handler.Polygon );
 	     map.layers[0].displayInLayerSwitcher = false;
 	     map.addControl(poldrawsearchcontrol);
 	     pollayer.events.on({   "featuresadded": onPolAdd     });
 	     
+	     
+	     //ADD DRAW FEATURE y CONTROLS
+	     defaultStyleDrawPoint = new OpenLayers.Style({'pointRadius': 15,
+				'externalGraphic': parameters.ICON[parameters.ICON.length - 3]});
+	     //drawPointStyle=new OpenLayers.StyleMap({'default':defaultStyleDrawPoint, 'selected':selectStyle});
+	     drawPointStyle=new OpenLayers.StyleMap({'pointRadius': 15,
+				'externalGraphic': parameters.ICON[parameters.ICON.length - 3]});
+	     drawLayer = new OpenLayers.Layer.Vector( "DrawLayer", {styleMap:drawPointStyle});
+	     map.addLayer(drawLayer);
+	     pointDrawControl = new OpenLayers.Control.DrawFeature( drawLayer , OpenLayers.Handler.Point );
+	     map.layers[1].displayInLayerSwitcher = false;
+	     map.addControl(pointDrawControl);
+	     pointModControl= new OpenLayers.Control.ModifyFeature(drawLayer);
+	     map.addControl(pointModControl);
+	     if(document.getElementById("InsertTask")){document.getElementById("InsertTask").onclick = toggleDraw;}
+	     drawLayer.events.on({
+	            "featureselected": onSelectMod,
+	            "featureunselected": onUnselectMod,
+	    	 	"featureadded":addPoint
+	        });
+	       	
 	             
 		var osm = new OpenLayers.Layer.OSM();
 		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
@@ -190,7 +213,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
             }
         });
 		
-		var selectStyle = new OpenLayers.Style({pointRadius: "20"});
+		
 		
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
 		
@@ -226,7 +249,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
        	map.addLayer(pointSearch_layer);
        	
         select = new OpenLayers.Control.SelectFeature(
-                [pointSearch_layer, vector_layer],
+                [pointSearch_layer, vector_layer, drawLayer],
                 {
                     clickout: true, toggle: false,
                     multiple: false, hover: false,
@@ -262,6 +285,46 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 		
 		
 
+}
+ 
+function toggleDraw() {
+	var edit= document.getElementById("InsertTask").getAttribute('editing');
+	alert("clickout:"+pointModControl.clickout+"\n toggle:"+pointModControl.toggle);
+	if(edit=="true" ) {
+		document.getElementById("InsertTask").setAttribute("editing","false");
+		pointDrawControl.deactivate()
+		drawLayer.removeAllFeatures();
+		drawLayer.visibility=false;
+		vector_layer.visibility=true;
+		pointSearch_layer.visibility=true;
+		pointModControl.deactivate();
+	}else {
+		document.getElementById("InsertTask").setAttribute("editing","true");
+		pointDrawControl.activate();
+		drawLayer.visibility=true;
+		vector_layer.visibility=false;
+		pointSearch_layer.visibility=false;
+		vector_layer.removeAllFeatures();
+		pointSearch_layer.removeAllFeatures();
+		document.getElementById('ClosePopup').click();
+		//testRequest();
+	}
+}
+
+function addPoint(){
+	//alert("XXXXX");
+	pointDrawControl.deactivate();
+	openInfo("","");
+	pointModControl.activate();
+}
+
+function onSelectMod(){
+	openInfo("","");
+	//pointModControl.activate();
+}
+function onUnselectMod(){
+	//alert("XXXXX");
+	document.getElementById('ClosePopup').click();
 }
  
  function onPolAdd() {
@@ -365,6 +428,10 @@ function openPopUp(oids){
     	conta++;
     	
     }
+    openInfo(content, attr);
+}
+
+function openInfo(content, attr){
     var div_popup
     if(document.getElementById('div_popup')){div_popup=document.getElementById('div_popup');div_popup.style.display="block";}
     else {div_popup= document.createElement("div");}
@@ -388,7 +455,9 @@ function openPopUp(oids){
     //closebtn.onclick=closeWindow;
     div_popup.innerHTML='';
     div_popup.appendChild(closebtn);
-    div_popup.innerHTML=div_popup.innerHTML+"<b>("+attr.length+") "+arrayText[0]+"</b><br><hr>";
+    if(attr){
+    	div_popup.innerHTML=div_popup.innerHTML+"<b>("+attr.length+") "+arrayText[0]+"</b><br><hr>";
+    }
     //attr.length
     divbody= document.createElement("div");
     divbody.id="divbody";
@@ -448,8 +517,8 @@ function openPopUp(oids){
     			document.getElementById('dd'+evtt.currentTarget.id).style.display="block";
     			//console.log(fss);
     			//map.controls[0].deactivate();
-    			console.log('dd'+evtt.currentTarget.id);
-    			console.log(document.getElementById('dd'+evtt.currentTarget.id).id);
+    			//console.log('dd'+evtt.currentTarget.id);
+    			//console.log(document.getElementById('dd'+evtt.currentTarget.id).id);
     			map.zoomToExtent(fss.geometry.bounds);
         		map.setCenter(new OpenLayers.LonLat(fss.geometry.x, fss.geometry.y));
         		//
@@ -555,6 +624,17 @@ function getAttributesbyID(idList){
 
 function getMapParameters(){
 	var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=GetMapParameters';
+	var req;
+	 req=($.parseJSON($.ajax({
+			url:  url,
+			dataType: "json", 
+			async: false
+		}).responseText));
+	 return  req;
+}
+
+function testRequest(){
+	var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=test';
 	var req;
 	 req=($.parseJSON($.ajax({
 			url:  url,

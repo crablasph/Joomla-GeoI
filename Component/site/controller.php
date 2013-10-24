@@ -136,7 +136,12 @@ class GeoiController extends JController
 			$document->setType('raw');
 			$view = $this->getView( 'Geojson', 'raw' );
 			$model=$this->getModel();
-			$model->testintersection();
+			$user = JFactory::getUser();
+			echo "------------\n";
+			echo "USERNAME:".$user->name."\n";
+			echo "USERID:".$user->id."\n";
+			echo "------------";
+			//$model->testintersection();
 				
 			//print_r($model->GetSearchParameters());
 			parent::display($cachable = false);
