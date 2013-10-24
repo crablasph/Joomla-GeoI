@@ -289,7 +289,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
  
 function toggleDraw() {
 	var edit= document.getElementById("InsertTask").getAttribute('editing');
-	alert("clickout:"+pointModControl.clickout+"\n toggle:"+pointModControl.toggle);
+	//alert("clickout:"+pointModControl.clickout+"\n toggle:"+pointModControl.toggle);
 	if(edit=="true" ) {
 		document.getElementById("InsertTask").setAttribute("editing","false");
 		pointDrawControl.deactivate()
@@ -298,6 +298,7 @@ function toggleDraw() {
 		vector_layer.visibility=true;
 		pointSearch_layer.visibility=true;
 		pointModControl.deactivate();
+		if(document.getElementById('ClosePopup')){document.getElementById('ClosePopup').click();}
 	}else {
 		document.getElementById("InsertTask").setAttribute("editing","true");
 		pointDrawControl.activate();
@@ -306,7 +307,6 @@ function toggleDraw() {
 		pointSearch_layer.visibility=false;
 		vector_layer.removeAllFeatures();
 		pointSearch_layer.removeAllFeatures();
-		document.getElementById('ClosePopup').click();
 		//testRequest();
 	}
 }
@@ -314,12 +314,12 @@ function toggleDraw() {
 function addPoint(){
 	//alert("XXXXX");
 	pointDrawControl.deactivate();
-	openInfo("","");
+	openInfo(parameters.FIELDS_FORM,"");
 	pointModControl.activate();
 }
 
 function onSelectMod(){
-	openInfo("","");
+	openInfo(parameters.FIELDS_FORM,"");
 	//pointModControl.activate();
 }
 function onUnselectMod(){

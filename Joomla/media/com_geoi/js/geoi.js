@@ -289,7 +289,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
  
 function toggleDraw() {
 	var edit= document.getElementById("InsertTask").getAttribute('editing');
-	alert("clickout:"+pointModControl.clickout+"\n toggle:"+pointModControl.toggle);
+	//alert("clickout:"+pointModControl.clickout+"\n toggle:"+pointModControl.toggle);
 	if(edit=="true" ) {
 		document.getElementById("InsertTask").setAttribute("editing","false");
 		pointDrawControl.deactivate()
@@ -314,12 +314,12 @@ function toggleDraw() {
 function addPoint(){
 	//alert("XXXXX");
 	pointDrawControl.deactivate();
-	openInfo("","");
+	openInfo(parameters.FIELDS_FORM,"");
 	pointModControl.activate();
 }
 
 function onSelectMod(){
-	openInfo("","");
+	openInfo(parameters.FIELDS_FORM,"");
 	//pointModControl.activate();
 }
 function onUnselectMod(){

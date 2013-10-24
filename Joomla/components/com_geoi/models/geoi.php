@@ -262,6 +262,7 @@ class GeoiModelGeoi extends JModel
         	$parameters['LYR_NAME']=$this->GetParam('LYR_NAME');
         	$parameters['CLUSTER_DISTANCE']=$this->GetParam('CLUSTER_DISTANCE');
         	$parameters['CLUSTER_THRESHOLD']=$this->GetParam('CLUSTER_THRESHOLD');
+        	$parameters['FIELDS_FORM']=$this->GetFields();
         	//$parameters['']=$this->GetParam('');
         	return json_encode($parameters);
         }
@@ -376,6 +377,17 @@ class GeoiModelGeoi extends JModel
         		//$cont++;
         	}
         	///return $array_res;
+        }
+        
+        private function GetFields(){
+        	$query="SELECT SUBSTRING( PARAM, 3 ) NAME, VAL ALIAS FROM `#__geoiconf` WHERE PARAM LIKE 'N\_%';";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	return $results ;
         }
         
         public function WKT2Array($geomtxt){
