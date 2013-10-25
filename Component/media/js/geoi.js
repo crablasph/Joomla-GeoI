@@ -34,6 +34,7 @@ $( ".SubTitleWindow" ).click(function() {
 		$( this ).css("right","0px");
 		$( this ).css("float","right");
 		$( this ).css("color","#707070");
+		$( this ).attr('title',arrayText[7]);
 		$('#'+id_nextdiv).slideToggle();
 		document.getElementById(idelemento).setAttribute('open','open');
 	}else{
@@ -41,6 +42,7 @@ $( ".SubTitleWindow" ).click(function() {
 		$( this ).css("float","left");
 		$('#'+id_nextdiv).slideToggle();
 		$( this ).css("color","white");
+		$( this ).attr('title',arrayText[3]);
 		document.getElementById(idelemento).setAttribute('open','closed');
 	}
 		});
@@ -314,12 +316,14 @@ function toggleDraw() {
 function addPoint(){
 	//alert("XXXXX");
 	pointDrawControl.deactivate();
-	openInfo(parameters.FIELDS_FORM,"");
+	getForm();
 	pointModControl.activate();
 }
 
 function onSelectMod(){
-	openInfo(parameters.FIELDS_FORM,"");
+	//openInfo("","");
+	//buildForm();
+	getForm();
 	//pointModControl.activate();
 }
 function onUnselectMod(){
@@ -333,6 +337,33 @@ function onUnselectMod(){
 	 }
  }
  
+function buildForm(){
+	var frm = "";
+	frm =frm +'<div style="overflow: auto; max-height: 280px;">';
+	frm =frm +'<img id="SaveData" title="'+arrayText[8]+'" src="'+parameters.ICON[parameters.ICON.length - 4]+'" style="width:30px;heigth:30px;"></img>';
+	frm =frm +'<img id="DeleteFeature" title="'+arrayText[9]+'" src="'+parameters.ICON[parameters.ICON.length - 5]+'" style="width:30px;heigth:30px;"></img>';
+	frm =frm +'<table>';
+	for(var i=0;i<parameters.FIELDS_FORM.length;i++){
+		if(parameters.FIELDS_FORM[i].NAME!='EMAIL'&&parameters.FIELDS_FORM[i].NAME!='USERNAME')
+		frm=frm+"<tr><td><a>"+parameters.FIELDS_FORM[i].ALIAS+"</a></td><td><input id='input"+parameters.FIELDS_FORM[i].NAME+"' type='text' class='InputForm'></input></td></tr>\n";
+	}
+	frm =frm +'</table></div>';
+	return frm;
+} 
+function getForm(){
+	openInfo(buildForm(),"");
+	 document.getElementById('DeleteFeature').onclick = function(){ 
+		 pointModControl.deactivate();
+		 pointDrawControl.deactivate();
+		 drawLayer.visibility=true;
+		 vector_layer.visibility=false;
+		 pointSearch_layer.visibility=false;
+		 drawLayer.removeAllFeatures();
+		 if(document.getElementById('ClosePopup')){document.getElementById('ClosePopup').click();}
+		 ///AUN NO ELIMINA NADA
+	 };
+	
+}
 function onPopupClose() {
 	select.unselectAll();
 	
@@ -456,8 +487,9 @@ function openInfo(content, attr){
     div_popup.innerHTML='';
     div_popup.appendChild(closebtn);
     if(attr){
-    	div_popup.innerHTML=div_popup.innerHTML+"<b>("+attr.length+") "+arrayText[0]+"</b><br><hr>";
+    	div_popup.innerHTML=div_popup.innerHTML+"<b>("+attr.length+") "+arrayText[0]+"</b>";
     }
+    div_popup.innerHTML=div_popup.innerHTML+"<br><hr>";
     //attr.length
     divbody= document.createElement("div");
     divbody.id="divbody";
@@ -972,6 +1004,8 @@ function showValues(name, stringvalues, type){
 		$('#ShowValues'+name).attr('open','open');
 		//if(document.getElementById('container_'+name)){$('container_'+name).css("display","block");}
 		$('#MultiValuesWindow').show();
+		//document.getElementById('ShowValues'+contentname).setAttribute('title',arrayText[7]);
+		$('#ShowValues'+name).attr('title',arrayText[7]);
 		//break;
 	}else {
 		//alert ("XXX");
@@ -982,6 +1016,8 @@ function showValues(name, stringvalues, type){
 		//$('#ShowValues'+name).attr('open','closed');
 		document.getElementById('ShowValues'+name).setAttribute('open','closed');
 		$('#MultiValuesWindow').attr('data-content',"");
+		//document.getElementById('ShowValues'+contentname).setAttribute('title',arrayText[3]);
+		$('#ShowValues'+name).attr('title',arrayText[3]);
 		//break;
 	}
 	

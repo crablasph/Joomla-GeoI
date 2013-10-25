@@ -28,6 +28,8 @@ class com_GeoiInstallerScript
         			('ICON_4','media/com_geoi/images/land.png'),
         			('ICON_5','media/com_geoi/images/home2.png'),
         			('ICON_6','media/com_geoi/images/home3.png'),
+        			('ICON_95','media/com_geoi/images/delete_edit.png'),
+        			('ICON_96','media/com_geoi/images/save.png'),
         			('ICON_97','media/com_geoi/images/green_home.png'),
         			('ICON_98','media/com_geoi/images/search_home.png'),
         			('ICON_99','media/com_geoi/images/unknown.png'),

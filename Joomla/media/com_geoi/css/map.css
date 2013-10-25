@@ -107,6 +107,17 @@ input{
 	
 }
 
+input[type="text"]{
+		border-radius: 5px;
+		background-color: #94a1a8;
+		border-style:solid;
+		border-color:#FEFDFD;
+		padding:3px;
+	
+}
+
+
+
 .BasicWindow {
 				opacity:0.7;
                 position: absolute;
@@ -185,7 +196,7 @@ content:"<br>";
     float:left;
     
 }
-.InputLogin, #form-login-username>input, #form-login-password>input{
+.InputLogin, #form-login-username>input, #form-login-password>input, .InputForm{
 		width:75px;
 		display:block;
 		border-radius: 5px;

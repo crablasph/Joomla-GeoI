@@ -42,7 +42,7 @@ defined('_JEXEC') or die('Restricted Access');
 								echo '</div>';
 								$values="";
 								foreach ($search[3] as $se){$values=$values.$se;if(end($search[3])!=$se){$values=$values.',';}}
-								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'cat\')">';
+								echo '<input type="image" title="'.utf8_encode(JTEXT::_('COM_GEOI_SEARCH_EXPAND')).'" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'cat\')">';
 								echo '<br>';
 								
 							}elseif($search[1]=="INT"){
@@ -51,7 +51,7 @@ defined('_JEXEC') or die('Restricted Access');
 								$min=$search[3][0];
 								$max=$search[3][1];
 								$values=$min.','.$max;
-								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'int\')">';
+								echo '<input type="image" title="'.utf8_encode(JTEXT::_('COM_GEOI_SEARCH_EXPAND')).'" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'int\')">';
 								echo "<br> ";
 							}
 							
@@ -68,7 +68,7 @@ defined('_JEXEC') or die('Restricted Access');
 								echo '</div>';
 								$values="";
 								foreach ($search[3] as $se){$values=$values.$se;if(end($search[3])!=$se){$values=$values.',';}}
-								echo '<input type="image" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'cat\')">';
+								echo '<input type="image" title="'.utf8_encode(JTEXT::_('COM_GEOI_SEARCH_EXPAND')).'" src="media/com_geoi/images/rightblue.png" id="ShowValues'.$search[0].'" class="ShowValuesButton" open="closed" onclick="showValues(\''.$search[0].'\', \''.$values.'\',\'cat\')">';
 								echo '<br>';
 						
 							}					
@@ -88,6 +88,9 @@ defined('_JEXEC') or die('Restricted Access');
 						 arrayText[4] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_GO'));?>';
 						 arrayText[5] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_CLEAR'));?>';
 						 arrayText[6] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_LOGIN'));?>';
+						 arrayText[7] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_COLLAPSE'));?>';
+						 arrayText[8] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_SAVEDATA'));?>';
+						 arrayText[9] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_DELETEFEATURE'));?>';
 					</script>
 						<div class="LabelWindow"><b><strong><?php echo utf8_encode(JTEXT::_('COM_GEOI_SEARCH_DRAW')) ?>: </strong></b></div>
 						<input type="image" src="media/com_geoi/images/pol_off.png" id="SearchPolygon" selected="false" style="width:22px;heigth:22px;" onclick="polButtonClick()" >
