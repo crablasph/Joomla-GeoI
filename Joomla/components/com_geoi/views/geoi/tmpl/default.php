@@ -78,7 +78,10 @@ defined('_JEXEC') or die('Restricted Access');
 						  var jsonsearch = jQuery.parseJSON('<?php echo json_encode($this->search_array)?>');
 						  var arrayText = Array();
 						  
-						  //console.log('<?php echo "/*".$user->id."*/"; ?>');
+						  userid='<?php echo "/*".$user->id."*/"; ?>';
+						  username='<?php echo "/*".$user->name."*/"; ?>';
+						  useremail='<?php echo "/*".$user->email."*/"; ?>';
+						  console.log(userid, username, useremail);
 						  
 						 //arrayText[0] = '<?php echo utf8_encode(JTEXT::_(''));?>';
 						 arrayText[0] = '<?php echo utf8_encode(JTEXT::_('COM_GEOI_RESULT_TITTLE'));?>';

@@ -154,12 +154,14 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 	             
 		var osm = new OpenLayers.Layer.OSM();
 		var gmap = new OpenLayers.Layer.Google("Google Streets", {visibility: false});
+		//var ags = new OpenLayers.Layer.ArcGISCache("Mapa Referencia Bogota", "http://imagenes.catastrobogota.gov.co/arcgis/rest/services/CM/CommunityMap/MapServer",{visibility: false});
+		//map.addLayers([osm, gmap, ags]);
 		map.addLayers([osm, gmap]);
 		var str = parameters.BOUNDS;
 		str=str.split(",");
 		var bounds = new OpenLayers.Bounds(str[0],str[1],str[2],str[3]); 
-        map.zoomToExtent(bounds);
-        
+        //map.zoomToExtent(bounds);
+        map.zoomToExtent(ags.getDataExtent());
         strategy =new OpenLayers.Strategy.AttributeCluster({  attribute:'type' });
 		strategy.distance=parameters.CLUSTER_DISTANCE;
 		//strategy.distance=10000;
