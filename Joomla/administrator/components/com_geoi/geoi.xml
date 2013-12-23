@@ -22,12 +22,14 @@
                 <sql>
                         <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
                 </sql>
-        </uninstall>
-        <update> <!-- Runs on update; New in 2.5 -->
+        </uninstall>}
+        <!--
+        <update> 
                 <schemas>
                         <schemapath type="mysql">sql/updates/mysql</schemapath>
                 </schemas>
         </update>
+        -->
         
         <media destination="com_geoi" folder="media">
               <folder>css</folder>
@@ -54,14 +56,12 @@
 				
 	
 		<administration>
-                <menu>COM_GEOI_MENU</menu>
+                <menu img="../media/com_geoi/images/geoilogo.png" >COM_GEOI_MENU</menu>
                 <submenu>
-						<menu link="option=com_geoi&amp;task=load">COM_GEOI_SUBMENU_LOAD</menu>
-						<menu link="option=com_geoi&amp;task=report">COM_GEOI_SUBMENU_REPORT</menu>
-						<menu link="option=com_geoi&amp;task=config">COM_GEOI_SUBMENU_CONFIG</menu>
-                
-				
-				</submenu>
+                		<menu img="../media/com_geoi/images/homeadmin.png" link="option=com_geoi">COM_GEOI_SUBMENU_HOME</menu>
+						<menu img="../media/com_geoi/images/data.png" link="option=com_geoi&amp;task=load">COM_GEOI_SUBMENU_LOAD</menu>
+						<menu img="../media/com_geoi/images/config.png" link="option=com_geoi&amp;task=config">COM_GEOI_SUBMENU_CONFIG</menu>
+                </submenu>
                 <files folder="admin">
                         <filename>index.html</filename>
                         <filename>geoi.php</filename>

@@ -69,9 +69,49 @@ class GeoiController extends JController
 		
 		function config()
 		        {
-			JToolBarHelper::Title(Jtext::_('COM_GEOI_MCONFIG'));
-			echo "CONFIGURACION";
+			JToolBarHelper::Title(utf8_encode(Jtext::_('COM_GEOI_MCONFIG')));
+			//echo "CONFIGURACION";
 			GeoiHelper::addSubmenu('task');
+			$view = $this->getView('Config','html');
+			$model=$this->getModel();
+			$view->epsgdata=$model->GetParam('EPSG_DATA');
+			$view->epsgdisp=$model->GetParam('EPSG_DISP');
+			$view->maxresolution=$model->GetParam('MAXRESOLUTION');
+			$view->lname=$model->GetParam('LYR_NAME');
+			$view->clusterd=$model->GetParam('CLUSTER_DISTANCE');
+			$view->clustert=$model->GetParam('CLUSTER_THRESHOLD');
+			$view->ulimage=$model->GetParam('ULIMIT_IMAGES');
+			$view->ulshape=$model->GetParam('ULIMIT_SHAPE');
+			$view->title=$model->GetParam('TITLE');
+			$view->symbolfield=$model->GetParam('SYMBOLOGY_FIELD');
+			$view->symbols=$model->GetSymbols();
+			$view->fields=$model->GetFieldsO();
+			$fieldsatt=array();
+			foreach ($view->fields as $fields){
+				$arrfields=array();
+				$arrfields['name']=$fields;
+				$arrfields['alias']=$model->GetParam('N_'.$fields);
+				$arrfields['type']=$model->GetParam('SF_'.$fields);
+				$arrfields['restriction']=$model->GetParam('R_'.$fields);
+				array_push($fieldsatt,$arrfields);
+				
+			}
+			$view->fieldsatt=$fieldsatt;
+			$view->bounds=$model->GetParam('BOUNDS');
+			$doc = JFactory::getDocument();
+			$doc->addStyleSheet(JURI::root()."media/com_geoi/css/admin.css");
+			//$doc->addScript("http://maps.google.com/maps/api/js?v=3&amp;sensor=false");
+			$doc->addScript(JURI::root()."media/com_geoi/openlayers/OpenLayers.js");
+			//$doc->addScript(JURI::root()."media/com_geoi/js/geoi_admin.js");
+			$doc->addScript("http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js");
+			
+			
+			//$view->xx=$model->GetParam('xx');
+			
+			//
+			//
+			//
+			$view->display();
 		}
 		
 		function uploadfile(){
@@ -83,12 +123,14 @@ class GeoiController extends JController
 				$allowedExts = array("zip");
 				$temp = explode(".", $_FILES["file"]["name"]);
 				$extension = end($temp);
+				$model=$this->getModel();
+				$uplimit=$model->GetParam('ULIMIT_SHAPE');
 				if ((($_FILES["file"]["type"] == "application/zip")
 				|| ($_FILES["file"]["type"] == "application/x-zip-compressed")
 				|| ($_FILES["file"]["type"] == "multipart/x-zip")
 				|| ($_FILES["file"]["type"] == "application/x-compressed")
 				|| ($_FILES["file"]["type"] == "application/octet-stream"))
-				&& ($_FILES["file"]["size"] < 4000000000)
+				&& ($_FILES["file"]["size"] < $uplimit)
 				&& in_array($extension, $allowedExts)
 				)
 				  {
@@ -119,7 +161,7 @@ class GeoiController extends JController
 									$file2upload=$tmpfile;
 									//echo "El fichero $storedfile no existe";
 								}
-							  $model=$this->getModel();
+							  
 							  $model->ZippedShapefile=$file2upload;
 							  $checkz=$model->ExtractZipFile();
 							  if($checkz===TRUE){
@@ -255,6 +297,129 @@ class GeoiController extends JController
 				  $model->Intersects($post_array['nompol']);
 			
 			}
+			
+		function deletepolygon(){
+			
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_DELETETEXT'));
+			GeoiHelper::addSubmenu('task');
+			$model=$this->getModel();
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model->DeletePolygon($post_array['nompol']);
+			
+		}
+		
+		function deleteO(){
+				
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_DELETETEXT'));
+			GeoiHelper::addSubmenu('task');
+			$model=$this->getModel();
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model->DeleteO($post_array['fid']);
+				
+		}
+		
+		function truncateO(){
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_DELETETEXT'));
+			GeoiHelper::addSubmenu('task');
+			$model=$this->getModel();
+			$model->TruncateO();
+		}
+		
+		function SetParameter(){
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_SETPARAMETER_TEXT'));
+			GeoiHelper::addSubmenu('task');
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model=$this->getModel();
+			foreach ($post_array as $postk=>$postv){
+				if($postk!="options") {$param=$postk; $value=$postv;break;}
+			}
+			//echo $param."--xxxx--". $value;
+			$model->SetParameter($param, $value);
+			
+		}
+		
+		function SetSymbol(){
+				JToolBarHelper::Title(Jtext::_('COM_GEOI_SETPARAMETER_TEXT'));
+				GeoiHelper::addSubmenu('task');
+				$input = JFactory::getApplication()->input;
+				$post_array = $input->getArray($_POST);
+				$model=$this->getModel();
+				$uplimit=$model->GetParam('ULIMIT_IMAGES');
+				$allowedExts = array("gif", "jpeg", "jpg", "png");
+				if($_FILES['file']['tmp_name']!=""){
+					$ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+					$tmpFilePath = $_FILES['file']['tmp_name'];
+					if((   ($_FILES["file"]["type"] == "image/gif")
+								|| ($_FILES["file"]["type"] == "image/jpeg")
+								|| ($_FILES["file"]["type"] == "image/jpg")
+								|| ($_FILES["file"]["type"] == "image/pjpeg")
+								|| ($_FILES["file"]["type"] == "image/x-png")
+								|| ($_FILES["file"]["type"] == "image/png"))
+								&& ($_FILES["file"]["size"] < $uplimit)
+								&& in_array($ext, $allowedExts)){
+						
+					
+						$newFname="ICON_".uniqid().".".$ext;
+						$newFilePath = $uploadpath=JPATH_ROOT.DS.'media'.DS.'com_geoi'.DS.'images'.DS.$newFname;
+						$newRPath='media/com_geoi/images/'.$newFname;
+						if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+							$model->SetSymbol($post_array['id'],$post_array['SYMVALUE'],$newRPath);
+						}else echo Jtext::_('COM_GEOI_ERR_MOVE');
+						
+					}else echo Jtext::_('COM_GEOI_ERR_ICO');
+				}
+				else {$model->SetSymbol($post_array['id'],$post_array['SYMVALUE'],"");}
+					
+					//print_r($post_array);
+				
+			
+		}
+		
+		function AddSymbol(){
+				JToolBarHelper::Title(Jtext::_('COM_GEOI_SETPARAMETER_TEXT'));
+				GeoiHelper::addSubmenu('task');
+				$input = JFactory::getApplication()->input;
+				$post_array = $input->getArray($_POST);
+				$model=$this->getModel();
+				$uplimit=$model->GetParam('ULIMIT_IMAGES');
+				$allowedExts = array("gif", "jpeg", "jpg", "png");
+				if($_FILES['file']['tmp_name']!=""){
+					$ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+					$tmpFilePath = $_FILES['file']['tmp_name'];
+					if((   ($_FILES["file"]["type"] == "image/gif")
+								|| ($_FILES["file"]["type"] == "image/jpeg")
+								|| ($_FILES["file"]["type"] == "image/jpg")
+								|| ($_FILES["file"]["type"] == "image/pjpeg")
+								|| ($_FILES["file"]["type"] == "image/x-png")
+								|| ($_FILES["file"]["type"] == "image/png"))
+								&& ($_FILES["file"]["size"] < $uplimit)
+								&& in_array($ext, $allowedExts)){
+						$newFname="ICON_".uniqid().".".$ext;
+						$newFilePath = $uploadpath=JPATH_ROOT.DS.'media'.DS.'com_geoi'.DS.'images'.DS.$newFname;
+						$newRPath='media/com_geoi/images/'.$newFname;
+						if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+							$model->AddSymbol($post_array['SYMVALUE'],$newRPath);
+						}else echo Jtext::_('COM_GEOI_ERR_MOVE');
+						
+					}else echo Jtext::_('COM_GEOI_ERR_ICO');
+				}
+				else {$model->AddSymbol($post_array['SYMVALUE'],"");}
+		}
+		
+		function DelSymbol(){
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_SETPARAMETER_TEXT'));
+			GeoiHelper::addSubmenu('task');
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model=$this->getModel();
+			if(isset($post_array['id'])){
+				$model->DelSymbol($post_array['id']);
+			}
+			
+		}
 		
 			
 }

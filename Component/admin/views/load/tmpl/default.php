@@ -10,13 +10,19 @@ $uploadurl= JURI::current();
 //$uploadurl= $uploadurl."?option=com_geoi&task=load&layout=upload";
 $intersecturl=$uploadurl."?option=com_geoi&task=intersect";
 $uploadurl= $uploadurl."?option=com_geoi&task=uploadfile";
-echo "<b>".Jtext::_('COM_GEOI_WELCOME')."</b><br><br>";
+$delpolurl= $uploadurl."?option=com_geoi&task=deletepolygon";
+$deleteo= $uploadurl."?option=com_geoi&task=deleteO";
+$truncateo= $uploadurl."?option=com_geoi&task=truncateO";
+echo "<h1>".Jtext::_('COM_GEOI_WELCOME')."</h1><br><br>";
 echo Jtext::_('COM_GEOI_LOADMESSAGE').$this->epsg."<br>";
 echo Jtext::_('COM_GEOI_LOAD_INFO')."<br>";
 ?>
 
 <br>
 <br>
+<h2><?php echo Jtext::_('COM_GEOI_LOADTEXT');?></h2>
+<br>
+<hr>
 <b><?php echo Jtext::_('COM_GEOI_UPLOADFORM_CO');?></b><br>
 <form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 <label for="file"><?php echo Jtext::_('COM_GEOI_UPLOADFORM_NAME');?></label>
@@ -54,20 +60,37 @@ echo Jtext::_('COM_GEOI_LOAD_INFO')."<br>";
 <input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
 </form>
 
+<br>
+<br>
+<h2><?php echo Jtext::_('COM_GEOI_DELETETEXT');?></h2>
+<br>
+<hr>
 
-<br>
-<br>
-<!--
-<b><?php echo Jtext::_('COM_GEOI_UPLOADFORM_INTER');?></b><br>
-<form action=<?php echo $intersecturl; ?> method="post"enctype="multipart/form-data">
+<b><?php echo Jtext::_('COM_GEOI_DELPOL');?></b><br>
+<form action=<?php echo $delpolurl; ?> method="post"enctype="multipart/form-data">
 <?php echo Jtext::_('COM_GEOI_UPLOADFORM_NOMPOL');?>
- <select name="nompol"> 
-<option value=""></option>
-<?php foreach($this->polnom as $sch){echo '<option value="'.$sch.'">'.$sch .'</option>';}?>
-</select><br> 
-<input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_INTEBTN');?>">
- </form> -->
+<select name="nompol">
+	<?php foreach($this->polnom as $sch){echo '<option value="'.$sch.'">'.$sch .'</option>';}?>
+</select><br>
+<input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
+</form>
 
+<br>
+<br>
+
+<b><?php echo Jtext::_('COM_GEOI_DELO');?></b><br>
+<form action=<?php echo $deleteo; ?> method="post"enctype="multipart/form-data">
+<?php echo Jtext::_('COM_GEOI_DELOID');?> <input type="number" name="fid"><br>
+<input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
+</form>
+
+<br>
+<br>
+
+<b><?php echo Jtext::_('COM_GEOI_TRUNCATEO');?></b><br>
+<form action=<?php echo $truncateo; ?> method="post"enctype="multipart/form-data">
+<input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
+</form>
 
 </body>
 </html> 

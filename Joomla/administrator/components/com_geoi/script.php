@@ -3,9 +3,7 @@
 header('Content-Type: text/html; charset=utf-8');
 defined('_JEXEC') or die('Restricted access');
  
-/**
- * Script file of HelloWorld component
- */
+
 class com_GeoiInstallerScript
 {
         /**
@@ -18,27 +16,23 @@ class com_GeoiInstallerScript
         			$query ="INSERT INTO `#__geoiconf` (PARAM , VAL) VALUES";
         			
         			$query = $query ."
+        			('TITLE','GEOI INMOBILIARIO'),
         			('EPSG_DATA','3857') ,
         			('EPSG_DISP','3857') ,
         			('BOUNDS','-8279888.2058829,483769.94506356,-8203451.1776083,560206.9733381'),
-        			('MINSCALE','50000'),
-        			('ICON_1','media/com_geoi/images/building.png'),
-        			('ICON_2','media/com_geoi/images/home.png'),
-        			('ICON_3','media/com_geoi/images/shop.png'),
-        			('ICON_4','media/com_geoi/images/land.png'),
-        			('ICON_5','media/com_geoi/images/home2.png'),
-        			('ICON_6','media/com_geoi/images/home3.png'),
-        			('ICON_95','media/com_geoi/images/delete_edit.png'),
-        			('ICON_96','media/com_geoi/images/save.png'),
-        			('ICON_97','media/com_geoi/images/green_home.png'),
-        			('ICON_98','media/com_geoi/images/search_home.png'),
-        			('ICON_99','media/com_geoi/images/unknown.png'),
-        			('SEARCH_FIELDS','TYPEP:CAT,TYPEO:CAT,VALUE:INT,ROOMS:INT,TOILET:INT'),
+        			('MAXRESOLUTION','30'),
         			('SYMBOLOGY_FIELD','TYPEP'),
         			('LYR_NAME','Ofertas'),
         			('CLUSTER_DISTANCE','50'),
         			('CLUSTER_THRESHOLD','2'),
         			('NUMPOL','0'),
+        			('SF_TYPEP','CAT'),
+        			('SF_TYPEO','CAT'),
+        			('SF_VALUE','INT'),
+        			('SF_ROOMS','INT'),
+        			('SF_TOILET','INT'),
+        			('ULIMIT_IMAGES','3145728'),
+        			('ULIMIT_SHAPE','10485760'),
         			('N_TYPEP','Tipo de Inmueble'),
         			('N_TYPEO','Tipo de Oferta'),
         			('N_VALUE','Precio'),
@@ -49,12 +43,43 @@ class com_GeoiInstallerScript
         			('N_TEL1','Telefono 1'),
         			('N_TEL2','Telefono 2'),
         			('N_EMAIL','E-mail'),
-        			('N_USERNAME','Nombre de Usuario');";
+        			('R_TYPEP','lote,apartamento,casa,local,habitacion,apartaestudio,loft,casa lote'),
+        			('R_TYPEO','venta,arriendo,permuta'),
+        			('R_VALUE','0-999999999999999'),
+        			('R_AREA','0-1000000'),
+        			('R_ROOMS','0-10000'),
+        			('R_AGE','0-1000'),
+        			('R_TOILET','0-100000000000'),
+        			('R_TEL1','1111111-999999999999'),
+        			('R_TEL2','1111111-999999999999');";
 					$db = JFactory::getDbo();
 					$db->setQuery($query);
 					$ex=$db->execute();
 					$msg=$db->getErrorMsg();
 					if (!$ex) {	echo $msg; echo "<br>";} 
+					
+					$query2 ="INSERT INTO `#__geoisymbols` (PATH , SYMVALUE) VALUES";
+					$query2 = $query2 ."
+					('media/com_geoi/images/building.png','apartamento'),
+        			('media/com_geoi/images/home.png','casa'),
+        			('media/com_geoi/images/shop.png','local'),
+        			('media/com_geoi/images/land.png','lote'),
+        			('media/com_geoi/images/home2.png','apartaestudio'),
+        			('media/com_geoi/images/home3.png','habitacion'),
+        			('media/com_geoi/images/modify_edit.png','modify'),
+        			('media/com_geoi/images/delete_edit.png','delete'),
+        			('media/com_geoi/images/save.png','save'),
+					('media/com_geoi/images/favicon.png','favicon'),
+        			('media/com_geoi/images/green_home.png','editsymbol'),
+        			('media/com_geoi/images/search_home.png','search'),
+        			('media/com_geoi/images/lgarrow.png','prevpic'),
+        			('media/com_geoi/images/rgarrow.png','nextpic'),
+        			('media/com_geoi/images/unknown.png','unknown');";
+					$db->setQuery($query2);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					if (!$ex) {	echo $msg; echo "<br>";}
+					
 					$parent->getParent()->setRedirectURL('index.php?option=com_geoi');
         }
  
@@ -63,12 +88,13 @@ class com_GeoiInstallerScript
          *
          * @return void
          */
+		 /*
         function uninstall($parent) 
         {
                 // $parent is the class calling this method
                 echo '<p>' . JText::_('COM_HELLOWORLD_UNINSTALL_TEXT') . '</p>';
         }
- 
+		*/
         /**
          * method to update the component
          *

@@ -166,7 +166,7 @@ class GeoiModelGeoi extends JModel
 			//return $results;
         }
 		
-		private function GetParam($param) 
+		public function GetParam($param) 
         {
 			$selconf ="SELECT VAL FROM `#__geoiconf` WHERE PARAM ='".$param."' ";
 			$db = JFactory::getDbo();
@@ -178,7 +178,7 @@ class GeoiModelGeoi extends JModel
 			foreach ($results[0] as $res){return $res;}
         }
         
-         private function GetParamName($param) 
+         public function GetParamName($param) 
         {
 			$selconf ="SELECT PARAM FROM `#__geoiconf` WHERE VAL ='".$param."' ";
 			$db = JFactory::getDbo();
@@ -188,6 +188,19 @@ class GeoiModelGeoi extends JModel
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			foreach ($results as $res){return $res;}
+        }
+        
+        public function GetIDOwner($fid)
+        {
+        	$selconf ="SELECT USERNAME FROM `#__geoiofertas` WHERE oid =".$fid.";";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($selconf);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>";}
+        	foreach ($results as $res){
+        		foreach ($res as $r) return $r;}
         }
         
         public function GetAttributesbyID($table,$idlist){
@@ -216,18 +229,29 @@ class GeoiModelGeoi extends JModel
         	return json_encode($results);
         }
         
+        public function GetRestrictions(){
+        	$qu="SELECT SUBSTRING( PARAM, 3 ) PARAM, VAL FROM `#__geoiconf` WHERE PARAM LIKE 'R_%' ORDER BY PARAM ASC;";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($qu);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
+        	print_r(json_encode($results));
+        }
+        
         public function GetMapParameters(){
         	$parameters = Array();
         	$parameters['EPSG_DATA']=$this->GetParam('EPSG_DATA');
         	$parameters['EPSG_DISP']=$this->GetParam('EPSG_DISP');
         	$parameters['BOUNDS']=$this->GetParam('BOUNDS');
-        	$parameters['MINSCALE']=$this->GetParam('MINSCALE');
+        	$parameters['MAXRESOLUTION']=$this->GetParam('MAXRESOLUTION');
         	
         	$parameters['SYMBOLOGY_FIELD']=$this->GetParam('SYMBOLOGY_FIELD');
         	
         	$parameters['SYMBOLOGY_VALUES']=Array();
         	//SELECT DISTINCT LOWER(TYPEO) FROM `#__geoiofertas`;
-        	$st="SELECT DISTINCT LOWER(".$parameters['SYMBOLOGY_FIELD']." ) SYMBOLOGY_VALUES FROM `#__geoiofertas` WHERE CHAR_LENGTH(TRIM(".$parameters['SYMBOLOGY_FIELD']."))>0 ORDER BY 1 ASC";
+        	$st="SELECT DISTINCT LOWER(".$parameters['SYMBOLOGY_FIELD']." ) SYMBOLOGY_VALUES FROM `#__geoiofertas` WHERE CHAR_LENGTH(TRIM(".$parameters['SYMBOLOGY_FIELD']."))>0 AND  ".$parameters['SYMBOLOGY_FIELD']." NOT REGEXP '^[0-9]+$' ORDER BY 1 ASC";
         	$db = JFactory::getDbo();
         	$db->setQuery($st);
         	$ex=$db->execute();
@@ -242,20 +266,21 @@ class GeoiModelGeoi extends JModel
         		$cont++;
         	}
         	$parameters['ICON']=Array();
-        	$ts="SELECT VAL FROM `#__geoiconf` WHERE PARAM LIKE 'ICON_%' ORDER BY PARAM ASC";
+        	$ts="SELECT PATH, SYMVALUE FROM `#__geoisymbols` ORDER BY 2 ASC";
         	$db->setQuery($ts);
         	$ex=$db->execute();
         	$results = $db->loadObjectList();
         	$msg=$db->getErrorMsg();
         	if (!$ex) {	echo $msg; echo "<br>"; return $msg;}
         	$cont=0;
-        	
+        	$parameters['ICON']=$results;
+        	/*
         	foreach($results as $res){
-        		foreach ($res as $r){
+        		//foreach ($res as $r){
         			$parameters['ICON'][$cont]=$r;
-        		}
+        		//}
         		$cont++;
-        	}
+        	}*/
         	
         	
         	
@@ -269,7 +294,18 @@ class GeoiModelGeoi extends JModel
         
         public function GetSearchParameters(){
         	////SELECT VAL FROM geoi.`#__geoiconf` WHERE PARAM = 'SEARCH_FIELDS' 
-        	$search_fields=$this-> GetParam('SEARCH_FIELDS'); 	
+        	//$query="SELECT SUBSTRING( PARAM, 4 ) NAME, VAL ALIAS FROM `#__geoiconf` WHERE PARAM LIKE 'N\_%';";
+        	$query="SELECT group_concat( concat(SUBSTRING( PARAM, 4 ),':', VAL) SEPARATOR ',') vals FROM `#__geoiconf` WHERE PARAM LIKE 'SF\_%'";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	foreach ($results[0] as $res){$search_fields=$res;break;}
+        	//return $results ;
+        	
+        	//$search_fields=$this-> GetParam('SEARCH_FIELDS'); 	
         	$search_fields=explode(",",$search_fields);
         	///$cont=count($search_fields);
         	$i=0;
@@ -307,10 +343,10 @@ class GeoiModelGeoi extends JModel
         	//$selconf ="SELECT VAL FROM `#__geoiconf` WHERE PARAM ='".$param."' ";
         	switch ($opt){
         		case 0:
-	        		$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM `#__geoiofertas` WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+	        		$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM `#__geoiofertas` WHERE CHAR_LENGTH(TRIM(".$field."))>0 AND  ".$field." NOT REGEXP '^[0-9]+$'  ORDER BY 1 ASC";
 	        		break;
         		case 1:
-        			$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM `#__geoipol".$poltable."` WHERE CHAR_LENGTH(TRIM(".$field."))>0 ORDER BY 1 ASC";
+        			$query="SELECT DISTINCT LOWER( ".$field .") CATEGORIES FROM `#__geoipol".$poltable."` WHERE CHAR_LENGTH(TRIM(".$field."))>0 AND ".$field." NOT REGEXP '^[0-9]+$' ORDER BY 1 ASC";
         			break;
         		default:
         			echo JText::_('COM_GEOI_OPT_ERR');
@@ -425,6 +461,186 @@ class GeoiModelGeoi extends JModel
         	}
         }
         
+        public function DeletePointsO($deloids){
+        	//$query="DELETE FROM `#__geoiofertas`  WHERE oid IN ( ".$deloids.");";
+        	$db = JFactory::getDbo();
+        	$query = $db->getQuery(true);
+        	$conditions="oid IN ( ".$deloids.")";
+        	$query->delete('#__geoiofertas');
+			$query->where($conditions);
+        	$db->setQuery($query);
+        	//$ex=$db->execute();
+        	$results = $db->query();
+        	$msg=$db->getErrorMsg();
+        	if($msg!="") echo json_encode($msg);
+        	
+	         	
+        	$query2 = $db->getQuery(true);
+        	$conditions2="FID IN ( ".$deloids.")";
+        	$query2->delete('#__geoipictures');
+			$query2->where($conditions2);
+        	$db->setQuery($query2);
+        	$results = $db->query();
+        	$msg=$db->getErrorMsg();
+        	echo json_encode($msg);
+        	
+	        foreach (glob(JPATH_ROOT.DS.'media'.DS.'com_geoi'.DS.'images'.DS."FID".$deloids."*") as $filename) {
+		    			unlink($filename);
+				}
+        	
+        	//if($results!=null) print_r(json_encode( $results)) ;
+        }
+        
+        public function UpdatePointsO($updatedata,$user){
+        	////muyyyy demorado
+			$fields = array();
+            foreach($updatedata as $updates){
+            	//$fieldt= $this->GetFieldType($updates[0]);
+            	//echo $fieldt;
+            	if($updates[0]=="oid")
+        				$oidupdate=$updates[1];
+        		elseif($updates[0]=="geom") array_push($fields , $updates[0]."= GeomFromText('".$updates[1]."')") ;
+        		//elseif($fieldt=='char') array_push($fields , $updates[0]."='".$updates[1]."'"); 
+        		elseif ($updates[0]=="TYPEP") array_push($fields , $updates[0]."='".$updates[1]."'");
+        		elseif ($updates[0]=="TYPEO") array_push($fields , $updates[0]."='".$updates[1]."'");
+        		else{
+        		if($updates[1]==""||$updates[1]<0) $updates[1]=0;
+        		 array_push($fields , $updates[0]."=".$updates[1]); 
+        		}
+        	}/*
+			$conditions = array(
+			    "oid IN ( ".$oidupdate.")"			    
+			);*/
+        	$fieldss=implode(",",$fields);
+			$db = JFactory::getDbo();
+			$query ="UPDATE `#__geoiofertas` SET ".$fieldss;
+			$query =$query." WHERE oid = ".$oidupdate;
+			//$query = $db->getQuery(true);
+			//$query->update($db->quoteName('#__geoiofertas'))->set($fields)->where($conditions);
+			//echo $query->__toString();
+			$db->setQuery($query);
+			$result = $db->query();
+			$msg=$db->getErrorMsg();
+        	echo json_encode($msg);
+        	//if($results!=null)	print_r(json_encode( $results)) ;///*/
+        }
+        
+        public function InsertPointsO($insertdata,$user){
+			$fields = array();
+			$values = array();
+            foreach($insertdata as $updates){
+            	if($updates[0]=="oid") $oidupdate=$updates[1];
+            	elseif($updates[0]=="geom"){ array_push($fields , $updates[0]) ;array_push($values,"GeomFromText('".$updates[1]."')");}
+	       		elseif ($updates[0]=="TYPEP"){ array_push($fields , $updates[0]);if($updates[1]=="") array_push($values,"'0'");else array_push($values,"'".$updates[1]."'");}
+        		elseif ($updates[0]=="TYPEO"){ array_push($fields , $updates[0]);if($updates[1]=="") array_push($values,"'0'");else array_push($values,"'".$updates[1]."'");}
+        		else{ array_push($fields , $updates[0]);if($updates[1]==""||$updates[1]<0) array_push($values,0);else{ $updates[1]=(float)$updates[1];array_push($values,"'".$updates[1]."'");}; }
+        	}
+        	array_push($fields , "USERNAME");
+        	array_push($values,"'".$user->username."'");
+        	array_push($fields , "USERID");
+        	array_push($values,$user->id);
+        	array_push($fields , "EMAIL");
+        	array_push($values,"'".$user->email."'");
+        	$fieldss=implode(",",$fields);
+        	$valuess =implode(",",$values);
+			$db = JFactory::getDbo();
+			$query ="INSERT INTO `#__geoiofertas` ( ".$fieldss.") VALUES ( ".$valuess .")";
+			//echo $query ;
+			$db->setQuery($query);
+			$result = $db->query();
+			$msg=$db->getErrorMsg();
+        	if($msg!="")	echo json_encode($msg);
+        	
+        	$query2="SELECT MAX(oid) oid FROM `#__geoiofertas`";
+        	$db2 = JFactory::getDbo();
+        	$db2->setQuery($query2);
+        	$ex=$db2->execute();
+        	$results2 = $db2->loadObjectList();
+        	print_r(json_encode($results2));
+        	if($msg!="")	echo json_encode($msg);
+        	//print_r($result);
+        }
+        
+        public function GetPhotos($fidphoto){
+        	$db = JFactory::getDbo();
+        	$query = "SELECT pid picid, PATH picpath FROM `#__geoipictures` WHERE FID=".$fidphoto.";";
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if($msg!="") echo json_encode($msg);
+        	print_r(json_encode($results));
+        }
+        
+        public function DeletePictures($fidphoto){
+        	$db = JFactory::getDbo();
+        	//$query = "DELETE FROM `#__geoipictures` WHERE FID=".$fidphoto.";";
+        	//$db->setQuery($query);
+        	$query = $db->getQuery(true);
+        	$conditions="FID =".$fidphoto;
+        	$query->delete('#__geoipictures');
+        	$query->where($conditions);
+        	$db->setQuery($query);
+        	$result = $db->query();
+        	$msg=$db->getErrorMsg();
+        	echo json_encode($msg);
+        	foreach (glob(JPATH_ROOT.DS.'media'.DS.'com_geoi'.DS.'images'.DS."FID".$fidphoto."*") as $filename) {
+        		unlink($filename);
+        	}
+        }
+        
+        public function GetFavicon(){
+        	$db = JFactory::getDbo();
+        	$query = "SELECT PATH FROM `#__geoisymbols` WHERE SYMVALUE='favicon';";
+        	$db->setQuery($query);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if($msg!="") echo json_encode($msg);
+        	foreach ($results[0] as $res){return $res;}
+        }
+        
+        private function GetFieldType($fieldname){
+        	//$query="SELECT DATA_TYPE FROM information_schema.columns WHERE TABLE_NAME='#__geoiofertas' AND COLUMN_NAME='".$fieldname."';";
+        	$db = JFactory::getDbo();
+        	$query = $db->getQuery(true);
+        	$query->select('DATA_TYPE');
+        	$query->from("information_schema.columns");
+        	$conditions = array(
+				//"TABLE_NAME=`#__geoiofertas`",
+				"COLUMN_NAME='".$fieldname."'"        	
+			);
+        	$query->where($conditions );
+        	$ex=$db->execute();
+        	$db->setQuery($query);
+        	//echo $query->__toString();
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
+        	foreach ($results as $res){
+        		foreach ($res as $r){
+        			return $r;
+        		}
+        	}
+        	//print_r($results);
+        	//if($results!=null) return ( $results) ;
+        }
+        
+        public function UploadImages($picarray){
+        	$insert="INSERT INTO  `#__geoipictures` (PATH, FID) VALUES ";
+        	foreach($picarray as $pics){
+        		$insert=$insert."('".$pics['path']."',".$pics['fid'].")";
+        		if($pics!=end($picarray)) $insert=$insert.",";
+        	}
+        	$db = JFactory::getDbo();
+        	$db->setQuery($insert);
+        	//$ex=$db->execute();
+        	$results = $db->query();
+        	$msg=$db->getErrorMsg();
+        	if ($msg!="") {	echo json_encode($msg); echo "<br>"; return "ERROR:".$msg;}
+        	print_r(json_encode($results));
+        }
         public function SearchPoints($array_search,$pcol){
         	$db = JFactory::getDbo();
         	$where=Array();
@@ -435,7 +651,7 @@ class GeoiModelGeoi extends JModel
         	$colspol= array("NAME","AsText(geom) geom");
         	$colo=$this->GetColArray();
         	if ($pcol==true){
-        	$cols=array_merge($colsi,$colo);
+        		$cols=array_merge($colsi,$colo);
         	}else {$cols=$colsi;}
         	foreach($array_search as $arra){
         		if ($arra[1]=="CAT"){
@@ -477,29 +693,35 @@ class GeoiModelGeoi extends JModel
         			$geompol['NAME'] ="Drawn";
         			array_push($where_pol_draw,$geompol);
         			//retornar la gemetria, no hacer busqueda
+        		}elseif ($arra[1]=="USER"){
+        			$userwhere="";
+        			$userwhere="USERNAME='".$arra[2][1]."'";
+        			array_push($where,$userwhere);
         		}else{return FALSE;}
         	}
-       	
+        
         	$tbl="`#__geoiofertas`";
         	$st= $db->getQuery(true);
         	$st
         	->select($cols)
-        	->from($tbl);
+        	->from($tbl)
+        	->order('VALUE ASC');
         	if(count($where)>0){   $st->where($where);}
         	$db->setQuery($st);
         	$ex=$db->execute();
+        	//echo $st->__toString();
         	$results = $db->loadObjectList();
         	$msg=$db->getErrorMsg();
         	if (!$ex) {	echo $msg; echo "<br>"; return "ERROR:".$msg;}
-        	
+        	 
         	foreach($results as $res){
         		$res=(array)$res;
         		//POL SERARCH
         		$respol=0;
-	        	if(count($where_pol_draw)>0){   $respol=$where_pol_draw;}
-	        	if(count($where_pol_name)>0){   $respol=$where_pol_name[0];}
-	        	if($respol!=0){
-	        		$inters=0;
+        		if(count($where_pol_draw)>0){   $respol=$where_pol_draw;}
+        		if(count($where_pol_name)>0){   $respol=$where_pol_name[0];}
+        		if($respol!=0){
+        			$inters=0;
         			foreach ($respol as $pol){
         				$pol=(array)$pol;
         				$point=$this->WKT2String($res['geom']);
@@ -508,12 +730,12 @@ class GeoiModelGeoi extends JModel
         				//echo "\n\n";
         				if($this->pointInPolygon($point, $polygon)==1){	array_push($filter,$res);$inters++;}
         			}
-	        	}
-	        	else {array_push($filter,$res);}
+        		}
+        		else {array_push($filter,$res);}
         		//print_r($res);
         		//$res['geom']
         	}
-        	
+        	 
         	//print_r(json_encode($results));
         	//$results2["SEARCH"]=$results;
         	//if(count($where_pol_draw)>0){   $results2["DRAWPOL"]=$where_pol_draw;}
@@ -587,7 +809,4 @@ class GeoiModelGeoi extends JModel
         	$coordinates = explode(" ", $pointString);
         	return array("x" => $coordinates[0], "y" => $coordinates[1]);
         }
-        
 }
-
-

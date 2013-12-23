@@ -8,36 +8,19 @@ jimport('joomla.application.component.view');
 /**
  * HelloWorlds View
  */
-class geoiViewgeoi extends JView
+class geoiViewConfig extends JView
 {
-        /**
-         * HelloWorlds view display method
-         * @return void
-         */
+        //public $epsgdisp;
+       // public $epsgdata;
         function display($tpl = null) 
         {
-                // Get data from the model
-                //$items = $this->get('Items');
-                //$pagination = $this->get('Pagination');
-                //$this->msg = $this->get('Msg');
-				///$this->creartabla();
-				//$model      = $this->getModel();
-				//$model->creartabla();
-				//$this->msg = $this->get('Msg');
-				//$this->msg2 = $this->get('Msg2');
-				//echo $model->msg2;
-				//var_dump($abc);
-                // Check for errors.
+        	//$epsgdisp=$this->epsgdisp;
+        	//$epsgdata=$this->epsgdata;
                 if (count($errors = $this->get('Errors'))) 
                 {
                         JError::raiseError(500, implode('<br />', $errors));
                         return false;
                 }
-                // Assign data to the view
-                //$this->items = $items;
-                //$this->pagination = $pagination;
- 
-                // Display the template
                 parent::display($tpl);
         }
 }

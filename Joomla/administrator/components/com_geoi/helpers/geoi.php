@@ -13,18 +13,19 @@ abstract class GeoiHelper
     public static function addSubmenu($selected=null)
     {
         //$option = 'com_geoi';
+        
         JSubMenuHelper::addEntry(
-            Jtext::_('COM_GEOI_MLOAD'),
-            'index.php?option=com_geoi&task=load',
+            Jtext::_('COM_GEOI_MHOME'),
+            'index.php?option=com_geoi',
             $selected=='load'
         );
         JSubMenuHelper::addEntry(
-            Jtext::_('COM_GEOI_MREPORT'),
-            'index.php?option=com_geoi&task=report',
+            Jtext::_('COM_GEOI_MLOAD'),
+            'index.php?option=com_geoi&task=load',
             $selected=='report'
         );
         JSubMenuHelper::addEntry(
-            Jtext::_('COM_GEOI_MCONFIG'),
+            utf8_encode ( Jtext::_('COM_GEOI_MCONFIG')),
             'index.php?option=com_geoi&task=config',
             $selected=='config'
         );

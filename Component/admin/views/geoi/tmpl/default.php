@@ -6,7 +6,7 @@ defined('_JEXEC') or die('Restricted Access');
 JHtml::_('behavior.tooltip');
 ?>
 
-<?php echo Jtext::_('COM_GEOI_WELCOME'); echo "<br>";?>
+<h1><?php echo Jtext::_('COM_GEOI_WELCOME'); echo "<br>";?></h1>
 <br><br>
 <a href="<?php echo JURI::root()."index.php?option=com_geoi"?>"><?php echo JTEXT::_('COM_GEOI_SHOW_MAP_FRONTEND');?></a>
 <br>

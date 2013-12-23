@@ -103,7 +103,7 @@ class GeoiModelGeoi extends JModel
         }
 		
 		protected function normalizestring ($cadena){
-				$originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿRr';
+				$originales = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rr';
 				$modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
 				$cadena = utf8_decode($cadena);
 				$cadena = strtr($cadena, utf8_decode($originales), $modificadas);
@@ -391,15 +391,16 @@ class GeoiModelGeoi extends JModel
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			
 			//$addcol ="ALTER TABLE `#__geoiofertas` ADD IDPOL".$numpola." int(11);";
-			$addcol="CREATE TABLE `#__geoiopol".$numpola."` (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, idpol int(11) NOT NULL, idofe int(11) NOT NULL)ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
-			$db = JFactory::getDbo();
-			$db->setQuery($addcol);
-			$ex=$db->execute();
-			$msg=$db->getErrorMsg();
-			if (!$ex) {	echo $msg; echo "<br>";} 	
+			//$addcol="CREATE TABLE `#__geoiopol".$numpola."` (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, idpol int(11) NOT NULL, idofe int(11) NOT NULL)ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+			//$db = JFactory::getDbo();
+			//$db->setQuery($addcol);
+			//$ex=$db->execute();
+			//$msg=$db->getErrorMsg();
+			//if (!$ex) {	echo $msg; echo "<br>";} 	
         }
 		
 		protected function getPolArray($idpol){
+			
 			$pol="SELECT AsText(geom) geom, oid FROM `#__geoipol".$idpol."`;";
 			//$ofe="SELECT AsText(geom), oid FROM `#__geoiofertas`";
 			$db = JFactory::getDbo();
@@ -410,6 +411,156 @@ class GeoiModelGeoi extends JModel
 			if (!$ex) {	echo $msg; echo "<br>";} 
 			return $results;
 		}
+		
+		public function DeletePolygon($poln){
+			$polcount=$this->GetParam("NUMPOL");
+			$polnconf= $this->GetParamName($poln);
+			$polnconf="geoipol".$polnconf[strlen($polnconf)-1];
+			$drop="DROP TABLE IF EXISTS `#__".$polnconf."`";
+			//$pol="SELECT AsText(geom) geom, oid FROM `#__geoipol".$idpol."`;";
+			//$ofe="SELECT AsText(geom), oid FROM `#__geoiofertas`";
+			$db = JFactory::getDbo();
+			$db->setQuery($drop);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo Jtext::_('COM_GEOI_DELETEDPOL').": ".$poln."<br>";	}
+			
+			$delete="DELETE FROM `#__geoiconf` WHERE VAL ='".$poln."';";
+			$db->setQuery($delete);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_DELETEDCONF')).": ".utf8_encode($poln)."<br>";	}
+			
+			$update="UPDATE `#__geoiconf` SET VAL ='".($polcount-1)."' WHERE PARAM = 'NUMPOL';";
+			$db->setQuery($update);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo Jtext::_('COM_GEOI_UPDATEPOLC').": ".($polcount-1)."<br>";	}
+			
+		}
+		
+		public function DeleteO($fid){
+			$delete="DELETE FROM `#__geoiofertas` WHERE oid =".$fid.";";
+			$db = JFactory::getDbo();
+			$db->setQuery($delete);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_DELETEO')).utf8_encode($fid)."<br>";	}
+			
+		}
+		
+		public function TruncateO(){
+			$truncate="TRUNCATE TABLE `#__geoiofertas` ;";
+			$db = JFactory::getDbo();
+			$db->setQuery($truncate);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_TRUNCATED'))."<br>";	}
+			foreach (glob(JPATH_ROOT.DS.'media'.DS.'com_geoi'.DS.'images'.DS."FID*") as $filename) {
+				unlink($filename);
+			}
+				
+		}
+		
+		public function SetParameter($param, $value){
+			$update="UPDATE `#__geoiconf` SET VAL ='".$value."' WHERE PARAM='".utf8_encode($param)."';";
+			$db = JFactory::getDbo();
+			$db->setQuery($update);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_SETVALUE_DONE')).$param." a ".$value."<br>";	}
+		
+		}
+		
+		public function GetSymbols(){
+			$update="SELECT id, PATH, SYMVALUE FROM `#__geoisymbols` WHERE SYMVALUE NOT IN ('modify','delete','save','search','prevpic','nextpic') ;";
+			$db = JFactory::getDbo();
+			$db->setQuery($update);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			$arrSymbols=array();
+			foreach($results as $res){
+				//foreach ($res as $r)
+					array_push($arrSymbols,$res);
+			}
+			return 	$arrSymbols;
+		}
+		
+		public function GetFieldsO(){
+			$fields="SHOW COLUMNS FROM `#__geoiofertas` WHERE FIELD NOT IN ('oid','geom','username','userid');";
+			$db = JFactory::getDbo();
+			$db->setQuery($fields);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			$fiedsO=array();
+			foreach($results as $res){
+				array_push( $fiedsO , $res);
+			}
+			$fiedsOO=array();
+			//get_object_vars($res)
+			foreach ($fiedsO as $f){
+				$g=get_object_vars($f);
+				array_push( $fiedsOO ,$g['Field']);
+			}
+			return 	$fiedsOO;
+		}
+		public function SetSymbol($id,$value,$path){
+			if($path=="")
+				$update="UPDATE `#__geoisymbols` SET SYMVALUE ='".strtolower (utf8_encode($value))."' WHERE id='".$id."';";
+			else 				
+				$update="UPDATE `#__geoisymbols` SET SYMVALUE ='".strtolower (utf8_encode($value))."',PATH='".utf8_encode($path)."' WHERE id='".$id."';";
+								
+			$db = JFactory::getDbo();
+			$db->setQuery($update);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_SETVALUE_DONE')).$value." id ".$id."<br>";	}
+		}
+		
+		public function AddSymbol($value,$path){
+			if($path=="")
+				$update="INSERT INTO `#__geoisymbols` (SYMVALUE)  VALUES ('".strtolower (utf8_encode($value))."');";
+			else
+				$update="INSERT INTO `#__geoisymbols` (SYMVALUE, PATH)  VALUES ('".strtolower (utf8_encode($value))."','".$path."');";		
+			$db = JFactory::getDbo();
+			$db->setQuery($update);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_ADDVALUE_DONE'))." ".$value." path: ".$path."<br>";	}
+		}
+		
+		public function DelSymbol($pid){
+			$delete="DELETE FROM `#__geoisymbols` WHERE id=".$pid.";";
+			$db = JFactory::getDbo();
+			$db->setQuery($delete);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_SYMBOL_DELETED'))." ".$pid."<br>";	}
+			
+		}
+		
 		
 		public function Intersects($pol){
 			$nampol=strrev ($this->GetParamName($pol));
@@ -422,23 +573,10 @@ class GeoiModelGeoi extends JModel
 			$msg=$db->getErrorMsg();
 			$points = $db->loadObjectList();
 			if (!$ex) {	echo $msg; echo "<br>";}
-			//$numpol=$this->GetParam('NUMPOL');
-			
-			//print_r($polArray);
-			//for ($i=1;i<$npol+1;$i++){
-				//print_r($this->getPolArray(1));
-				//print_r($this->getPolArray(2));
-			//}
+
 			
 		}
         
-        public function getMsg() 
-        {
-                if (!isset($this->msg)) 
-                {
-                        $this->msg = 'Hello World!';
-                }
-                return $this->msg;
-        }
+
         
 }

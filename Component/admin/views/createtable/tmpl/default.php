@@ -24,57 +24,57 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TYPEP')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_TYPEP'))?></textarea>
 </td>
 <td>
 	<select name="TYPEP">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TYPEO')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_TYPEO'))?></textarea>
 </td>
 <td>
 	<select name="TYPEO">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_VALUE')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_VALUE'))?></textarea>
 </td>
 <td>
 	<select name="VALUE">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_AREA')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_AREA'))?></textarea>
 </td>
 <td>
 	<select name="area">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_ROOMS')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_ROOMS'))?></textarea>
 </td>
 <td>
 	<select name="ROOMS">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -82,12 +82,12 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TOILET')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_TOILET'))?></textarea>
 </td>
 <td>
 	<select name="toilet">
 		<option value="0"></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
@@ -95,35 +95,35 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_AGE')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_AGE'))?></textarea>
 </td>
 <td>
 	<select name="AGE">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TEL1')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_TEL1'))?></textarea>
 </td>
 <td>
 	<select name="tel1">
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>
 
 <tr>
 <td>
-	<?php echo JText::_('COM_GEOI_FRMSAVE_TEL2')?></textarea>
+	<?php echo utf8_encode(JText::_('COM_GEOI_FRMSAVE_TEL2'))?></textarea>
 </td>
 <td>
 	<select name="tel2">
 		<option value=""></option>
-		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.$sch['name'] .' ('.$sch['type'].')</option>';}?>
+		<?php foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}?>
 	</select>
 </td>
 </tr>

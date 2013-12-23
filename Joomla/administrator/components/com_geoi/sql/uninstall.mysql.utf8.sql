@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS `#__geoiofertas`;
 DROP TABLE IF EXISTS `#__geoiconf`;
+DROP TABLE IF EXISTS `#__geoisymbols`;
+DROP TABLE IF EXISTS `#__geoipictures`;
 DROP TABLE IF EXISTS `#__geoipol1`;
 DROP TABLE IF EXISTS `#__geoipol2`;
 DROP TABLE IF EXISTS `#__geoipol3`;
@@ -11,9 +13,3 @@ DROP TABLE IF EXISTS `#__geoipol8`;
 DROP TABLE IF EXISTS `#__geoipol9`;
 DROP TABLE IF EXISTS `#__geoipol10`;
 DROP TABLE IF EXISTS `#__geoipol11`;
-DROP TABLE IF EXISTS `#__geoiopol1`;
-DROP TABLE IF EXISTS `#__geoiopol2`;
-DROP TABLE IF EXISTS `#__geoiopol3`;
-DROP TABLE IF EXISTS `#__geoiopol4`;
-DROP TABLE IF EXISTS `#__geoiopol5`;
-DROP TABLE IF EXISTS `#__geoiopol6`;
