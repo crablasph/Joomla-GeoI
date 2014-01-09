@@ -375,13 +375,22 @@ function toggleDraw() {
 
 function validateData(){
 	var valcont=0;
-	//console.log(restrictions[0]);
+	//console.log(restrictions);
 	for (i=0;i<restrictions.length; i++ ){
-		var lin=restrictions[i].VAL.search("-");
-		var comma=restrictions[i].VAL.search(",");
-		var valdata=document.getElementById("input"+restrictions[i].PARAM).value;
-		var eledata=document.getElementById("input"+restrictions[i].PARAM);
-		eledata.style.borderColor="white";
+		//console.log(i,restrictions[i]);
+		if(restrictions[i]!=""){
+			var lin=restrictions[i].VAL.search("-");
+			var comma=restrictions[i].VAL.search(",");
+			var valdata=document.getElementById("input"+restrictions[i].PARAM).value;
+			var eledata=document.getElementById("input"+restrictions[i].PARAM);
+			eledata.style.borderColor="white";
+		}
+		else {
+			var lin = 0;
+			var comma = 0;
+			var valdata = 0;
+		}
+		
 		//console.log(restrictions[i].PARAM,lin,comma);
 		if(lin==-1){
 			var splitc=restrictions[i].VAL.split(",");
@@ -602,6 +611,7 @@ function getForm(prop, ids){
 		 var savid = document.getElementById('SaveData').getAttribute("sfeatureid");
 		 var udata =[]; 
 		 //var kcont=0;
+		 //console.log(parameters.FIELDS_FORM);
 		 for(var i=0;i<parameters.FIELDS_FORM.length;i++){
 			if(parameters.FIELDS_FORM[i].NAME!='EMAIL'&&parameters.FIELDS_FORM[i].NAME!='USERNAME'){
 				var arrd=[];
@@ -614,6 +624,7 @@ function getForm(prop, ids){
 		 var fdata=selectSearchOIDinCluster(savid, drawLayer);
 		 var geomdata=fdata.geometry.toString();
 		 udata.push(['geom',geomdata]);
+		 //console.log(udata);
 		 ///nan son los insertados con puntico
 		 if (isNaN(savid)){
 			 //console.log('nan',savid);

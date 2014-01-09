@@ -206,6 +206,8 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 <h2><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_ATTRIBUTES'));?></h2>
 <hr>
 <br>
+<?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD0'));?>
+<br>
 <?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD1'));?>
 <br>
 <?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD2'));?>
@@ -213,7 +215,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 <?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD3'));?>
 <br>
 <?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD4'));?>
-<br>
+<br><br>
 <table>
 	<thead>
 		<tr>

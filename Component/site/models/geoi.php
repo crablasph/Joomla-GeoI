@@ -533,7 +533,10 @@ class GeoiModelGeoi extends JModel
             	elseif($updates[0]=="geom"){ array_push($fields , $updates[0]) ;array_push($values,"GeomFromText('".$updates[1]."')");}
 	       		elseif ($updates[0]=="TYPEP"){ array_push($fields , $updates[0]);if($updates[1]=="") array_push($values,"'0'");else array_push($values,"'".$updates[1]."'");}
         		elseif ($updates[0]=="TYPEO"){ array_push($fields , $updates[0]);if($updates[1]=="") array_push($values,"'0'");else array_push($values,"'".$updates[1]."'");}
-        		else{ array_push($fields , $updates[0]);if($updates[1]==""||$updates[1]<0) array_push($values,0);else{ $updates[1]=(float)$updates[1];array_push($values,"'".$updates[1]."'");}; }
+        		else{ array_push($fields , $updates[0]);
+        			if($updates[1]==""||$updates[1]<0) array_push($values,0);
+        			else{ $updates[1]=$updates[1];array_push($values,"'".$updates[1]."'");};
+        		 }
         	}
         	array_push($fields , "USERNAME");
         	array_push($values,"'".$user->username."'");
