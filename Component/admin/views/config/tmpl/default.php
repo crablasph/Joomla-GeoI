@@ -23,7 +23,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 	<form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_TITLE'));?></b></td>
 			<td><input type="text" name="TITLE" value="<?php echo $this->title;?>"></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 
@@ -31,35 +31,35 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 	<form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_LYRN'));?></b></td>
 			<td><input type="text" name="LYR_NAME" value="<?php echo $this->lname;?>"></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 <tr>
 	<form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_CLUSTERD'));?></b></td>
 			<td><input type="number" name="CLUSTER_DISTANCE" value="<?php echo (int)$this->clusterd;?>"></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 <tr>
 	<form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_CLUSTERT'));?></b></td>
 			<td><input type="number" name="CLUSTER_THRESHOLD" value="<?php echo (int)$this->clustert;?>"></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 <tr>
 	<form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_ULIMITIMAGE'));?></b></td>
 			<td><input type="number" name="ULIMIT_IMAGES" value="<?php echo (int)$this->ulimage;?>"></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 <tr>
 	<form action=<?php echo $uploadurl; ?> method="post"enctype="multipart/form-data">
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_ULIMITSHAPE'));?></b></td>
 			<td><input type="number" name="ULIMIT_SHAPE" value="<?php echo (int)$this->ulshape;?>"></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 </table>
@@ -73,7 +73,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				<option <?php if($this->epsgdata=="4326") echo "selected" ;?>>4326</option>
 				<option <?php if($this->epsgdata=="3857") echo "selected" ;?>>3857</option>
 			</select></td>
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 <tr>
@@ -83,7 +83,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				<option <?php if($this->epsgdisp=="4326") echo "selected" ;?>>4326</option>
 				<option <?php if($this->epsgdisp=="3857") echo "selected" ;?>>3857</option>
 			</select></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 <tr>
@@ -91,7 +91,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_MAXRESOLUTION')." (".$this->maxresolution.")");?></b></td>
 			<td><input type="number" name="MAXRESOLUTION" id="MAXRESOLUTION" value="<?php echo (int)$this->maxresolution ?>">
 			</input></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 
@@ -100,7 +100,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 		<td><b><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_BOUNDS'));?></b></td>
 			<td><input type="text" name="BOUNDS" id="BOUNDS" value="<?php echo $this->bounds ?>">
 			</input></td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 </table>
@@ -128,7 +128,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				?>
 				</select>
 			</td>		
-		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>"></td>
+		<td><input type="submit"   value="<?php echo Jtext::_('COM_GEOI_CHANGE_PARAMETER');?>"></td>
 	</form>
 </tr>
 </table>
@@ -206,6 +206,14 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 <h2><?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_ATTRIBUTES'));?></h2>
 <hr>
 <br>
+<?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD1'));?>
+<br>
+<?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD2'));?>
+<br>
+<?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD3'));?>
+<br>
+<?php echo utf8_encode(Jtext::_('COM_GEOI_PARAMETER_NOTEFIELD4'));?>
+<br>
 <table>
 	<thead>
 		<tr>
@@ -224,25 +232,26 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				echo '<tr>';
 				echo '<td>';
 				echo '<label>'.$field['name'].'</label>';
+				echo '<input type="hidden" name="namefield" value="'.$field['name'].'"></input>';
 				echo '</td>';
 				echo '<td>';
 				echo '<input type="text" name="alias" value="'.$field['alias'].'"></input>';
 				echo '</td>';
 				echo '<td>';
-				echo '<select name="type">';
+				echo '<select name="type" onchange=>';
 					if($field['type']=='CAT'){
-						echo '<option></option>';
-						echo '<option selected>CAT</option>';
-						echo '<option>INT</option>';
+						echo '<option value=""></option>';
+						echo '<option value="CAT" selected="selected">'.utf8_encode(Jtext::_('COM_GEOI_FIELD_CAT')).'</option>';
+						echo '<option value="INTE">'.utf8_encode(Jtext::_('COM_GEOI_FIELD_INT')).'</option>';
 						}
 					else if($field['type']=='INT'){
-						echo '<option></option>';
-						echo '<option>CAT</option>';
-						echo '<option selected>INT</option>';
+						echo '<option value=""></option>';
+						echo '<option value="CAT">'.utf8_encode(Jtext::_('COM_GEOI_FIELD_CAT')).'</option>';
+						echo '<option value="INTE" selected="selected">'.utf8_encode(Jtext::_('COM_GEOI_FIELD_INT')).'</option>';
 					}else {
-						echo '<option selected></option>';
-						echo '<option>CAT</option>';
-						echo '<option>INT</option>';
+						echo '<option value="" selected="selected"></option>';
+						echo '<option value="CAT">'.utf8_encode(Jtext::_('COM_GEOI_FIELD_CAT')).'</option>';
+						echo '<option value="INTE">'.utf8_encode(Jtext::_('COM_GEOI_FIELD_INT')).'</option>';
 					}
 
 				//$field['type']
@@ -259,6 +268,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				echo '</form>';
 				//echo '<tr>';
 				echo '<form method="post"enctype="multipart/form-data" action='.$deletefield.'>';
+				echo '<input type="hidden" name="namefield" value="'.$field['name'].'"></input>';
 				echo '<td>';
 				if($field['name']!='TYPEP'&&$field['name']!='TYPEO'&&$field['name']!='VALUE')
 					echo '<input type="submit" value="'.utf8_encode(Jtext::_('COM_GEOI_SYMBOL_DELETE')).'"></input>';
@@ -279,16 +289,16 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 <b><?php echo utf8_encode(Jtext::_('COM_GEOI_FIELD_NEW'));?></b>
 <form action=<?php echo $addfield; ?> method="post"enctype="multipart/form-data">
 <table>
-		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_NAME'));?></td><td><input type="text" name="NAME" ></input></td></tr>	
-		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_ALIAS'));?></td><td><input type="text" name="ALIAS" ></input></td></tr>		
+		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_NAME'));?></td><td><input type="text" name="fieldname" ></input></td></tr>	
+		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_ALIAS'));?></td><td><input type="text" name="alias" ></input></td></tr>		
 		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_TYPE'));?></td>
-			<td><select>
+			<td><select name="type">
 			<option></option>
-			<option>CAT</option>
-			<option>INT</option>
+			<option VALUE="CAT"><?php echo utf8_encode(Jtext::_('COM_GEOI_FIELD_CAT'));?></option>
+			<option VALUE="INTE"><?php echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INT'));?></option>
 			</select></td></tr>
-			
-		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_REST'));?></td><td><input type="text" name="RESTRICTION" ></input></td></tr>
+		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_LENGTH'));?></td><td><input type="number" name="length" ></td></tr>
+		<tr><td><?php echo  utf8_encode(Jtext::_('COM_GEOI_FIELD_REST'));?></td><td><input type="text" name="restrictions" ></input></td></tr>
 			
 </table>			
 		<input type="submit"   value="<?php echo Jtext::_('COM_GEOI_FIELD_NEWSEND');?>">

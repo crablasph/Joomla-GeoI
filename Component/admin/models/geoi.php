@@ -561,6 +561,199 @@ class GeoiModelGeoi extends JModel
 			
 		}
 		
+		public function DeleteField($namefield){
+			
+			$delete="DELETE FROM `#__geoiconf` WHERE PARAM LIKE '%".$namefield."';";
+			$db = JFactory::getDbo();
+			$db->setQuery($delete);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_DELETEDP'))." ".$namefield."<br>";	}
+			
+			$deletef="ALTER TABLE `#__geoiofertas` DROP ".$namefield.";";
+			$db->setQuery($deletef);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_DELETED'))." ".$namefield."<br>";	}
+				
+			
+		}
+		
+		public function UpdateField($namefield,$alias,$type,$restriction){
+			//echo $namefield."<br>".$alias."<br>".$type."<br>".$restriction."<br>";
+			//$delete="DELETE FROM `#__geoisymbols` WHERE id=".$pid.";";
+			//$ualias="UPDATE `#__geoiconf` SET `VAL`='".$alias."' WHERE PARAM='N\_".$namefield."';";
+			
+			//print_r("1.".$this->GetParam('N_'.$namefield));
+			//print_r("2.".$this->GetParam('SF_'.$namefield));
+			//print_r("3.".$this->GetParam('R_'.$namefield));
+						
+			$db = JFactory::getDbo();
+			if($this->GetParam('N_'.$namefield)==""){
+					$ialias=$db->getQuery(true);
+					$columns = array('VAL','PARAM');
+					$values=array("'".$alias."'","'N_".$namefield."'");
+					$ialias
+							->insert($db->quoteName("#__geoiconf"))
+							->columns($db->quoteName($columns))
+							->values(implode(",",$values));
+					$db->setQuery($ialias);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					echo $msg;
+					if (!$ex) {	echo $msg; echo "<br>";}
+					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INSERTED'))." ".$namefield." alias ".$alias."<br>";	}
+			}else{
+					$ualias=$db->getQuery(true);
+					$columns = array($db->quoteName('VAL')."='".$alias."'");
+					$where = "PARAM='N_".$namefield."'";
+					$ualias
+							->update($db->quoteName("#__geoiconf"))
+							->set($columns)
+							->where($where);
+					$db->setQuery($ualias);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					echo $msg;
+					if (!$ex) {	echo $msg; echo "<br>";}
+					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_MODIFIED'))." ".$namefield." alias ".$alias."<br>";	}
+			}	
+			
+			if($this->GetParam('SF_'.$namefield)==""){
+					$itype=$db->getQuery(true);
+					$columns = array('VAL','PARAM');
+					$values2=array("'".$type."'","'SF_".$namefield."'");
+					$itype
+					->insert($db->quoteName("#__geoiconf"))
+					->columns($db->quoteName($columns))
+					->values(implode(',', $values2));
+					$db->setQuery($itype);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					echo $msg;
+					if (!$ex) {	echo $msg; echo "<br>";}
+					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INSERTED'))." ".$namefield." tipo ".$type."<br>";	}
+			}else{
+					$utype=$db->getQuery(true);
+					$columns2 = array($db->quoteName('VAL')."='".$type."'");
+					$where2 = "PARAM='SF_".$namefield."'";
+					$utype
+					->update($db->quoteName("#__geoiconf"))
+					->set($columns2)
+					->where($where2);
+					$db->setQuery($utype);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					echo $msg;
+					if (!$ex) {	echo $msg; echo "<br>";}
+					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_MODIFIED'))." ".$namefield." tipo ".$type."<br>";	}
+			}
+			
+			if($this->GetParam('R_'.$namefield)==""){
+					$irestriction=$db->getQuery(true);
+					$columns4 = array('VAL','PARAM');
+					$values3=array("'".$restriction."'","'R_".$namefield."'");
+					$irestriction
+					->insert($db->quoteName("#__geoiconf"))
+					->columns($columns4)
+					->values(implode(',',$values3));
+					$db->setQuery($irestriction);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					echo $msg;
+					if (!$ex) {	echo $msg; echo "<br>";}
+					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INSERTED'))." ".$namefield." alias ".$restriction."<br>";	}
+			}else{
+					$urestriction=$db->getQuery(true);
+					$columns3 = array($db->quoteName('VAL')."='".$restriction."'");
+					$where3 = "PARAM='R_".$namefield."'";
+					$urestriction
+					->update($db->quoteName("#__geoiconf"))
+					->set($columns3)
+					->where($where3);
+					$db->setQuery($urestriction);
+					$ex=$db->execute();
+					$msg=$db->getErrorMsg();
+					echo $msg;
+					if (!$ex) {	echo $msg; echo "<br>";}
+					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_MODIFIED'))." ".$namefield." restriccion ".$restriction."<br>";	}
+			}
+		}
+		
+		public function AddField($namefield,$alias,$type,$restriction,$length){
+			//echo $namefield."<br>".$alias."<br>".$type."<br>".$restriction."<br>";
+			
+			/*$fieldtype="";
+			if($type=="CAT"){
+				$fieldtype="VARCHAR(60)"
+			}elseif($type=="CAT"){
+				
+			}else{
+				
+			}
+			*/
+			$namefield = str_replace(' ', '', $namefield);
+			$db = JFactory::getDbo();
+						
+			$addf="ALTER TABLE `#__geoiofertas` ADD ".$namefield." VARCHAR(".$length.");";
+			$db->setQuery($addf);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			//$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_ADDED'))." ".$namefield."<br>";	}
+				
+			
+			$ialias=$db->getQuery(true);
+			$columns = array('VAL','PARAM');
+			$values=array("'".$alias."'","'N_".$namefield."'");
+			$ialias
+			->insert($db->quoteName("#__geoiconf"))
+			->columns($db->quoteName($columns))
+			->values(implode(",",$values));
+			$db->setQuery($ialias);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			echo $msg;
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INSERTED'))." ".$namefield." alias ".$alias."<br>";	}
+				
+			
+			$itype=$db->getQuery(true);
+			$columns = array('VAL','PARAM');
+			$values2=array("'".$type."'","'SF_".$namefield."'");
+			$itype
+			->insert($db->quoteName("#__geoiconf"))
+			->columns($db->quoteName($columns))
+			->values(implode(',', $values2));
+			$db->setQuery($itype);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			echo $msg;
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INSERTED'))." ".$namefield." tipo ".$type."<br>";	}
+				
+			
+			$irestriction=$db->getQuery(true);
+			$columns4 = array('VAL','PARAM');
+			$values3=array("'".$restriction."'","'R_".$namefield."'");
+			$irestriction
+			->insert($db->quoteName("#__geoiconf"))
+			->columns($columns4)
+			->values(implode(',',$values3));
+			$db->setQuery($irestriction);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			echo $msg;
+			if (!$ex) {	echo $msg; echo "<br>";}
+			else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_INSERTED'))." ".$namefield." alias ".$restriction."<br>";	}
+				
+			
+		}
 		
 		public function Intersects($pol){
 			$nampol=strrev ($this->GetParamName($pol));

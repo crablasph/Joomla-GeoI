@@ -230,7 +230,7 @@ class GeoiModelGeoi extends JModel
         }
         
         public function GetRestrictions(){
-        	$qu="SELECT SUBSTRING( PARAM, 3 ) PARAM, VAL FROM `#__geoiconf` WHERE PARAM LIKE 'R_%' ORDER BY PARAM ASC;";
+        	$qu="SELECT SUBSTRING( PARAM, 3 ) PARAM, VAL FROM `#__geoiconf` WHERE PARAM LIKE 'R_%' AND VAL !='' ORDER BY PARAM ASC;";
         	$db = JFactory::getDbo();
         	$db->setQuery($qu);
         	$ex=$db->execute();
@@ -295,7 +295,7 @@ class GeoiModelGeoi extends JModel
         public function GetSearchParameters(){
         	////SELECT VAL FROM geoi.`#__geoiconf` WHERE PARAM = 'SEARCH_FIELDS' 
         	//$query="SELECT SUBSTRING( PARAM, 4 ) NAME, VAL ALIAS FROM `#__geoiconf` WHERE PARAM LIKE 'N\_%';";
-        	$query="SELECT group_concat( concat(SUBSTRING( PARAM, 4 ),':', VAL) SEPARATOR ',') vals FROM `#__geoiconf` WHERE PARAM LIKE 'SF\_%'";
+        	$query="SELECT group_concat( concat(SUBSTRING( PARAM, 4 ),':', VAL) SEPARATOR ',') vals FROM `#__geoiconf` WHERE PARAM LIKE 'SF\_%' AND VAL!=''";
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();
@@ -416,7 +416,7 @@ class GeoiModelGeoi extends JModel
         }
         
         private function GetFields(){
-        	$query="SELECT SUBSTRING( PARAM, 3 ) NAME, VAL ALIAS FROM `#__geoiconf` WHERE PARAM LIKE 'N\_%';";
+        	$query="SELECT SUBSTRING( PARAM, 3 ) NAME, VAL ALIAS FROM `#__geoiconf` WHERE PARAM LIKE 'N\_%' AND VAL!='';";
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();

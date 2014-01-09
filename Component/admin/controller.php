@@ -421,5 +421,81 @@ class GeoiController extends JController
 			
 		}
 		
+		function UpdateField(){
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_SETFIELD_TEXT'));
+			GeoiHelper::addSubmenu('task');
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model=$this->getModel();
+			if(isset($post_array['alias'])
+				&&isset($post_array['namefield'])
+				&&isset($post_array['type'])
+				&&isset($post_array['restriction'])){
+				//echo $post_array['type']."<br><br>";
+				switch ($post_array['type']){
+					case "": 
+						$model->UpdateField($post_array['namefield'],$post_array['alias'],"",$post_array['restriction']);
+						break;
+					case "CAT": if(strrpos($post_array['restriction'],",")==false&&$post_array['restriction']!="")
+									echo Jtext::_('COM_GEOI_SETFIELD_ERR1');
+								else
+									$model->UpdateField($post_array['namefield'],$post_array['alias'],$post_array['type'],$post_array['restriction']);
+						break;
+					case "INTE": if(strrpos($post_array['restriction'],"-")==false&&$post_array['restriction']!="")
+									echo Jtext::_('COM_GEOI_SETFIELD_ERR1');
+								else
+									$model->UpdateField($post_array['namefield'],$post_array['alias'],"INT",$post_array['restriction']);
+						break;
+				}
+				
+			}
+				
+		}
+		
+		function DeleteField(){
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_SETFIELD_TEXT'));
+			GeoiHelper::addSubmenu('task');
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model=$this->getModel();
+			if(isset($post_array['namefield'])){
+				$model->DeleteField($post_array['namefield']);
+			}
+			
+		}
+		
+		function AddField(){
+			JToolBarHelper::Title(Jtext::_('COM_GEOI_ADDFIELD_TEXT'));
+			GeoiHelper::addSubmenu('task');
+			$input = JFactory::getApplication()->input;
+			$post_array = $input->getArray($_POST);
+			$model=$this->getModel();
+			//print_r($post_array);
+			if(isset($post_array['fieldname'])
+				&&isset($post_array['alias'])
+				&&isset($post_array['type'])
+				&&isset($post_array['restrictions'])
+				&&isset($post_array['length'])
+				&&is_numeric($post_array['length'])){
+				//echo $post_array['fieldname']."<br>".$post_array['alias']."<br>".$post_array['type']."<br>".$post_array['restrictions']."<br>";
+				//$model->AddField($post_array['fieldname'],$post_array['alias'],$post_array['type'],$post_array['restrictions']);
+				switch ($post_array['type']){
+					case "":
+						$model->AddField($post_array['fieldname'],$post_array['alias'],"",$post_array['restrictions'],$post_array['length']);
+						break;
+					case "CAT": if(strrpos($post_array['restrictions'],",")==false&&$post_array['restrictions']!="")
+						echo Jtext::_('COM_GEOI_SETFIELD_ERR1');
+					else
+						$model->AddField($post_array['fieldname'],$post_array['alias'],$post_array['type'],$post_array['restrictions'],$post_array['length']);
+					break;
+					case "INTE": if(strrpos($post_array['restrictions'],"-")==false&&$post_array['restrictions']!="")
+						echo Jtext::_('COM_GEOI_SETFIELD_ERR1');
+					else
+						$model->AddField($post_array['fieldname'],$post_array['alias'],"INT",$post_array['restrictions'],$post_array['length']);
+					break;
+				}
+				
+			}else echo Jtext::_('COM_GEOI_ADDFIELD_VER');
+		}
 			
 }
