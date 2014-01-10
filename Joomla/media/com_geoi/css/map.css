@@ -17,7 +17,7 @@ dt[id^="feature"]:hover{
 	z-index:2000;
 	background-color:#909090;
 }
-#TaskBar {		opacity:0.7;
+#TaskBar {		
                 position: absolute;
                 top: 0em;
                 left: 3.5em;
@@ -36,7 +36,7 @@ dt[id^="feature"]:hover{
 #div_popup, #movecontrols{
 	font-family: sans-serif;
     font-weight: bold;
-    color: #707070;
+    color: #000000;
     font-size: 12px;
     float: right; 
     right: 0px;
@@ -166,7 +166,7 @@ input[type="text"]{
 
 
 .BasicWindow {
-				opacity:0.7;
+				
                 position: absolute;
                 top: 3em;
                 left: 3.5em;
@@ -190,13 +190,13 @@ input[type="text"]{
 	z-index:5000;
 }
  #movecontrols{
- opacity:0.7;
+ 
     position: absolute;
     z-index: 20000;
     padding: 0 0.5em 0.5em 0.5em;
  }
 #div_popup{
-	opacity:0.7;
+	
     position: absolute;
     z-index: 20000;
     background-color: #94a1a8;
@@ -222,7 +222,7 @@ input[type="text"]{
 #OpenLayers_Control_LayerSwitcher_12_layersDiv  label{
 	font-family: sans-serif;
     font-weight: bold;
-    color: #707070;
+    color: #000000;
     font-size: 12px;
 }
 .BasicWindow:hover, #div_popup:hover{
@@ -282,7 +282,7 @@ content:"<br>";
 .LabelWindow{
 	font-family: sans-serif;
     font-weight: bold;
-    color: #707070;
+    color: #000000;
     font-size: 12px;
     float:left;
     

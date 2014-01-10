@@ -41,7 +41,7 @@ $( ".SubTitleWindow" ).click(function() {
 	if(opens=='closed'){
 		$( this ).css("right","0px");
 		$( this ).css("float","right");
-		$( this ).css("color","#707070");
+		$( this ).css("color","#000000");
 		$( this ).attr('title',arrayText[7]);
 		$('#'+id_nextdiv).slideToggle();
 		document.getElementById(idelemento).setAttribute('open','open');
@@ -136,7 +136,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 	 	var selectStyle = new OpenLayers.Style({pointRadius: "20"});
 	 
 	 	//ADD SEARCH DRAW POLYGON
-	     pollayer = new OpenLayers.Layer.Vector( "PolygonSearch" );
+	     pollayer = new OpenLayers.Layer.Vector( "PolygonSearch" ,{projection:parameters.EPSG_DISP});
 	     map.addLayer(pollayer);
 	     //var container = document.getElementById("SearchPolDiv");
 	     poldrawsearchcontrol = new OpenLayers.Control.DrawFeature( pollayer , OpenLayers.Handler.Polygon );
@@ -224,6 +224,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 		var stylegeojson = new OpenLayers.StyleMap({'default': defaultStyle,'select': selectStyle});
 		
 		vector_layer = new OpenLayers.Layer.Vector(parameters.LYR_NAME, {
+			"projection":parameters.EPSG_DISP,
 			"strategies": [strategy] ,
 			"styleMap":stylegeojson,
 			"maxResolution":parameters.MAXRESOLUTION,
@@ -275,6 +276,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 		 strategydraw.threshold =parameters.CLUSTER_THRESHOLD;
 	     drawLayer = new OpenLayers.Layer.Vector( arrayText[15], 
 	    		 {
+	    	 projection:parameters.EPSG_DISP,
 	    	 strategies: [strategydraw],
 	    	 styleMap:drawPointStyleMap
 	    	 });
@@ -312,6 +314,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 	    /////ADD DRAW POLYGON LAYER 
        	
        	pointSearch_layer=new OpenLayers.Layer.Vector( arrayText[16],{
+       							projection:parameters.EPSG_DISP,
        							strategies: [strategysearch] ,
        							styleMap:StyleMapSearch,
        							projection: new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA)
