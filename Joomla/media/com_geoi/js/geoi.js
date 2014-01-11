@@ -453,11 +453,35 @@ function insertPoint2Layer(pto) {
 	point = new OpenLayers.Feature.Vector(pto);
 	point.attributes.oid="'"+createUUID()+"'";
 	clonedfeatures.push(point);
-	drawLayer.addFeatures(clonedfeatures);
+	if(parameters.EPSG_DATA!="3857"){	
+		nfeatures=transformPointLayer(clonedfeatures);
+		drawLayer.addFeatures(nfeatures);
+	}
+	else drawLayer.addFeatures(clonedfeatures);
 	drawLayer.redraw();
 	pointDrawControl.deactivate();
 	getForm('', point.attributes.oid);
 } 
+
+function transformPointLayer(player){
+	//console.log(player);
+	nlayer=[];
+	var proj=new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA);
+	var nativeproj=new OpenLayers.Projection("EPSG:3857");
+	//EPSG:900913
+	//console.log(proj);
+	for(i=0;i<player.length;i++){
+		var geom=player[i].geometry.clone();
+		geom.transform(proj,nativeproj);
+		//console.log(geom);
+		fv=new OpenLayers.Feature.Vector(geom,player[i].data);
+		nlayer.push(fv);
+	}
+	//console.log(nlayer);
+	 return nlayer;
+    //polybound.features[0].geometry.transform(new OpenLayers.Projection("EPSG:3413"),new OpenLayers.Projection("EPSG:4326"));
+
+}
 
 function getIconPath(name){
 	for(i=0;i<parameters.ICON.length;i++){
@@ -1141,14 +1165,20 @@ function getPhotos(idfeature){
 		return  req;
 	 }
 
+function transformPolygon(extent){
+	if(parameters.EPSG_DATA!="3857"){	
+		var proj=new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA);
+		var nativeproj=new OpenLayers.Projection("EPSG:3857");
+		var cextent = extent.clone();
+		cextent.transform(nativeproj,proj);
+	}else cextent=extent;
+	
+	return cextent;
+}
 function getGeojson(){
-	var extent = map.getExtent();
-	if(parameters.EPSG_DATA!="3857"){
-		var proj = new OpenLayers.Projection("EPSG:3857");
-		var proj2 = new OpenLayers.Projection("EPSG:4326");
-		extent = extent.transform(proj, proj2);
-	}
+	var extent = transformPolygon(map.getExtent());
 	//console.log(extent);
+	
 	 var type =parameters.SYMBOLOGY_FIELD;
 	 var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=geojson&type='+type+'&bbox='+extent.toGeometry();
 	 request.push($.parseJSON($.ajax({
@@ -1161,7 +1191,7 @@ function getGeojson(){
 	}
 
 function getAttributesbyID(idList){
-	 var extent = map.getExtent();
+	 var extent = transformPolygon(map.getExtent());
 	 var url =document.getElementById ("baseURL").href+'index.php?option=com_geoi&task=geojson&task=GetAttributes';
 	 var dataids="idlist="+idList;
 	 var req;
@@ -1218,7 +1248,11 @@ function reDrawGeojson() {
 					var geojson_read=geojson_format.read(featurecollection);
 					map.controls[0].deactivate();
 					vector_layer.removeAllFeatures();
-					vector_layer.addFeatures(geojson_read);
+					if(parameters.EPSG_DATA!="3857"){	
+						nfeatures=transformPointLayer(geojson_read);
+						vector_layer.addFeatures(nfeatures);
+					}
+					else vector_layer.addFeatures(geojson_read);
 					map.controls[0].activate();
 					//console.log(vector_layer.events);
                 }
@@ -1295,15 +1329,10 @@ function SearchPoints(arr,userid){
 						search_data[i][1]="POLDRAW";
 						geom_search=pollayer.features;
 						for(j=0;j<geom_search.length;j++){
-							var geom_box= geom_search[j];
-							if(parameters.EPSG_DATA!="3857"){
-								var proj = new OpenLayers.Projection("EPSG:3857");
-								var proj2 = new OpenLayers.Projection("EPSG:4326");
-								//extent = extent.transform(proj, proj2);
-								//geom_box = geom_box.geometry.clone();
-								geom_box.geometry.transform(proj, proj2);
-							}
-							geom_string=geom_string+geom_box.geometry;
+							//var extent = transformPolygon(map.getExtent());
+							var geom_box= transformPolygon(geom_search[j].geometry);
+							//console.log(geom_box);
+							geom_string=geom_string+geom_box;
 							if(j!=Number(geom_search.length-1)){geom_string=geom_string+",";}}
 						search_data[i][2]=geom_string;
 					}
@@ -1335,15 +1364,9 @@ function SearchPoints(arr,userid){
 		tmp_arr.push("POLDRAW");
 		geom_search=pollayer.features;
 		for(j=0;j<geom_search.length;j++){
-			var geom_box= geom_search[j];
-			if(parameters.EPSG_DATA!="3857"){
-				var proj = new OpenLayers.Projection("EPSG:3857");
-				var proj2 = new OpenLayers.Projection("EPSG:4326");
-				//extent = extent.transform(proj, proj2);
-				//geom_box = geom_box.geometry.clone();
-				geom_box.geometry.transform(proj, proj2);
-			}
-			geom_string=geom_string+geom_box.geometry;
+			var geom_box= transformPolygon(geom_search[j].geometry);
+			//console.log(geom_box);
+			geom_string=geom_string+geom_box;
 			if(j!=Number(geom_search.length-1)){geom_string=geom_string+",";}}
 		tmp_arr.push(geom_string);
 		search_data.push(tmp_arr);
@@ -1416,7 +1439,11 @@ function loadFindPoints(req)
 	var selico=document.getElementById("SearchPolygon").getAttribute("selected");
 	if(selico=="true"){polButtonClick();}
 	select.activate();
-	pointSearch_layer.addFeatures(vector_search);
+	if(parameters.EPSG_DATA!="3857"){	
+		nfeatures=transformPointLayer(vector_search);
+		pointSearch_layer.addFeatures(nfeatures);
+	}
+	else pointSearch_layer.addFeatures(vector_search);
 	openPopUp(oids)
 	pointSearch_layer.redraw();
 
@@ -1440,7 +1467,11 @@ function loadUserPoints(req){
 			}
 	}
 	if(select){select.activate();}
-	drawLayer.addFeatures(vector_search);
+	if(parameters.EPSG_DATA!="3857"){	
+		nfeatures=transformPointLayer(vector_search);
+		drawLayer.addFeatures(nfeatures);
+	}
+	else drawLayer.addFeatures(vector_search);
 }
 
 function clone(obj) {
