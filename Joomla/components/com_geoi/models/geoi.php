@@ -310,6 +310,7 @@ class GeoiModelGeoi extends JModel
         	$search_fields=explode(",",$search_fields);
         	///$cont=count($search_fields);
         	$i=0;
+        	//print_r($search_fields);
         	foreach ($search_fields as $search){
         		$arrexploded=explode(":",$search_fields[$i]);
         		$search_fields[$i]=Array();
@@ -339,6 +340,7 @@ class GeoiModelGeoi extends JModel
 		        		$i++;
         		}
         	}
+        	//print_r($search_fields);
         	return $search_fields;
         }
         
@@ -398,7 +400,7 @@ class GeoiModelGeoi extends JModel
         }
         
         private function GetColString($field){
-        	$query="SELECT VAL FROM `#__geoiconf` WHERE SUBSTRING( PARAM, 3 )='".$field."';";
+        	$query="SELECT VAL FROM `#__geoiconf` WHERE SUBSTRING( PARAM, 3 )='".$field."' AND VAL!='' AND PARAM LIKE 'N%';";
         	$db = JFactory::getDbo();
         	$db->setQuery($query);
         	$ex=$db->execute();
