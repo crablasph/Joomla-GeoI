@@ -151,7 +151,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				echo '<form method="post"enctype="multipart/form-data" action='.$uploadsymbol.'>';
 				echo '<tr>';
 				echo '<td>';
-				if($symarr["SYMVALUE"]=='editsymbol'||$symarr["SYMVALUE"]=='favicon')
+				if($symarr["SYMVALUE"]=='editsymbol'||$symarr["SYMVALUE"]=='favicon'||$symarr["SYMVALUE"]=='unknown')
 					echo '<label>'.$symarr["SYMVALUE"].'</label>';
 				else
 					echo '<input type="text" name="SYMVALUE" value="'.$symarr["SYMVALUE"].'" ></input>';
@@ -171,7 +171,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				
 				echo '<form method="post"enctype="multipart/form-data" action='.$deletesymbol.'>';
 				echo '<td>';
-				if($symarr["SYMVALUE"]!='editsymbol'&&$symarr["SYMVALUE"]!='favicon')
+				if($symarr["SYMVALUE"]!='editsymbol'&&$symarr["SYMVALUE"]!='favicon'&&$symarr["SYMVALUE"]!='unknown')
 						echo '<input type="submit" value="'.utf8_encode(Jtext::_('COM_GEOI_SYMBOL_DELETE')).'" ></input>';
 				echo '<input type="hidden" value="'.$symarr["id"].'" name="id" value="'.$symarr["id"].'">';
 				echo '</td>';
@@ -229,6 +229,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 	</thead>
 	<tbody>
 		<?php 
+		//print_r($this->fieldsatt);
 			foreach ($this->fieldsatt as $field){
 				echo '<form method="post"enctype="multipart/form-data" action='.$updatefield.'>';
 				echo '<tr>';
@@ -260,7 +261,7 @@ $uploadurl= $uploadurl."?option=com_geoi&task=SetParameter";
 				echo '</select>';
 				echo '</td>';
 				echo '<td>';
-				echo '<input type="text" name="restriction" value="'.utf8_encode($field['restriction']).'"></input>';
+				echo '<input type="text" name="restriction" value="'.$field['restriction'].'"></input>';
 				echo '</td>';
 				echo '<td>';
 				echo '<input type="submit" value="'.utf8_encode(Jtext::_('COM_GEOI_SYMBOL_MODIFY')).'"></input>';

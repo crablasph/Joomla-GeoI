@@ -17,6 +17,28 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <br>
 
 <form action=<?php echo $savedataurl; ?> method="post"enctype="multipart/form-data">
+	<table border="1">
+		<?php 
+			foreach($this->FieldsArray as $fields){
+			
+				echo "<tr><td>";
+				echo $fields[0]." ".$fields[1];
+				echo "</td><td>";
+				echo '<select name="'.$fields[0].'">';
+				if($fields[0]!="TYPEP"&&$fields[0]!="TYPEO"&&$fields[0]!="VALUE"&&$fields[0]!="TEL1") 
+					echo "<option></option>";
+					foreach($this->Schema as $sch){echo '<option value="'.$sch['index'].'">'.utf8_encode($sch['name']) .' ('.$sch['type'].')</option>';}
+				echo "</select></td></tr>";
+
+			}	
+		?>
+	</table>
+<input type="hidden" name="Shapeloc" value="<?php echo $this->ShapeLoc;?>">
+<input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
+</form>
+<br>
+<!-- 
+<form action=<?php echo $savedataurl; ?> method="post"enctype="multipart/form-data">
 
 
 
@@ -133,7 +155,7 @@ $savedataurl= $savedataurl."?option=com_geoi&task=savedata";
 <input type="hidden" name="Shapeloc" value="<?php echo $this->ShapeLoc;?>">
 <input type="submit" name="submit" value="<?php echo Jtext::_('COM_GEOI_UPLOADFORM_SEND');?>">
 </form>
-
+esto es un comentario-->
 
 
 

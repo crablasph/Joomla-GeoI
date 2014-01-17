@@ -147,6 +147,7 @@ class GeoiModelGeoi extends JModel
 					$colname = $cc['name'];
 					$fs = $rec->getString($colname);
 					//$coll =$coll. '"'.$fs.'"';
+					/*
 					if($this->SaveArray['TYPEP']==$cont1){$FeatureArray['TYPEP']=$fs;}
 					if($this->SaveArray['TYPEO']==$cont1){$FeatureArray['TYPEO']=$fs;}
 					if($this->SaveArray['VALUE']==$cont1){$FeatureArray['VALUE']=$fs;}
@@ -156,7 +157,14 @@ class GeoiModelGeoi extends JModel
 					if($this->SaveArray['AGE']==$cont1){$FeatureArray['AGE']=$fs;}
 					if($this->SaveArray['tel1']==$cont1){$FeatureArray['tel1']=$fs;}
 					if($this->SaveArray['tel2']==$cont1){$FeatureArray['tel2']=$fs;}
-					$cont1 ++;
+					*/
+					foreach($this->SaveArray as $keys=>$value){
+						if($this->SaveArray[$keys]==$cont1&&$this->SaveArray[$keys]!=""){
+							$FeatureArray[$keys]=$fs;
+							//echo $keys." ".$this->SaveArray[$keys]."<br>";
+						}
+					}
+						$cont1 ++;
 				}
 				$FeatureArray['username']=$this->SaveArray['username'];
 				$FeatureArray['userid']=$this->SaveArray['userid'];
@@ -208,7 +216,10 @@ class GeoiModelGeoi extends JModel
 	        }
         
         public function SaveData() 
-        {
+        {	
+        	//echo "<br>XXXXXXX:<br><br>";
+        	//print_r($this->SaveArray);
+        	
 			$this->DropIndexes();
 			$this->getShapefileArray();
 			$values=" VALUES ";
@@ -225,16 +236,29 @@ class GeoiModelGeoi extends JModel
 					$values=$values."'".utf8_encode($shparr['username'])."' ";
 					if(is_numeric($this->SaveArray['ROOMS'])){$insert=$insert.", ROOMS ";if(is_numeric($shparr['ROOMS'])){$values=$values.", ".$shparr['ROOMS'];}else{$values=$values.", ''";}}
 					if(is_numeric($this->SaveArray['AGE'])){$insert=$insert.", AGE ";if(is_numeric($shparr['AGE'])){$values=$values.", ".$shparr['AGE'];}else{$values=$values.", ''";}}
-					if(is_numeric($this->SaveArray['toilet'])){$insert=$insert.", TOILET ";if(is_numeric($shparr['toilet'])){$values=$values.", ".$shparr['toilet'];}else{$values=$values.", ''";}}
-					if(is_numeric($this->SaveArray['area'])){$insert=$insert.", AREA ";if(is_numeric($shparr['area'])){$values=$values.", ".$shparr['area'];}else{$values=$values.", ''";}}
-					if(is_numeric($this->SaveArray['tel1'])){$insert=$insert.", TEL1 ";if(is_numeric($shparr['tel1'])){$values=$values.", ".$shparr['tel1'];}else{$values=$values.", ''";}}
-					if(is_numeric($this->SaveArray['tel2'])){$insert=$insert.", TEL2 ";if(is_numeric($shparr['tel2'])){$values=$values.", ".$shparr['tel2'];}else{$values=$values.", ''";}}
+					if(is_numeric($this->SaveArray['TOILET'])){$insert=$insert.", TOILET ";if(is_numeric($shparr['TOILET'])){$values=$values.", ".$shparr['TOILET'];}else{$values=$values.", ''";}}
+					if(is_numeric($this->SaveArray['AREA'])){$insert=$insert.", AREA ";if(is_numeric($shparr['AREA'])){$values=$values.", ".$shparr['AREA'];}else{$values=$values.", ''";}}
+					if(is_numeric($this->SaveArray['TEL1'])){$insert=$insert.", TEL1 ";if(is_numeric($shparr['TEL1'])){$values=$values.", ".$shparr['TEL1'];}else{$values=$values.", ''";}}
+					//if(is_numeric($this->SaveArray['TEL2'])){$insert=$insert.", TEL2 ";if(is_numeric($shparr['tel2'])){$values=$values.", ".$shparr['tel2'];}else{$values=$values.", ''";}}
+					
+					foreach($this->SaveArray as $keys=>$value){
+						if($keys!="TYPEP"&&$keys!="TYPEO"&&$keys!="VALUE"&&$keys!="VALUE"
+							&&$keys!="email"&&$keys!="userid"&&$keys!="username"
+							&&$keys!="geom"&&$keys!="ROOMS"&&$keys!="AGE"&&$keys!="TOILET"
+							&&$keys!="AREA"&&$keys!="TEL1"&&isset($shparr[$keys])){
+								$insert=$insert.", ".$keys;
+								$values=$values.", '".$shparr[$keys]."'";
+						}
+					}
+					
 					$values = $values.")" ;
 					if($shparr != end($this->ShapefileArray)){$values = $values." , " ;}
 					$insert=$insert.")".$values;
 			}
 			$insert=$insert.";";
 			//echo $insert."<br><br><br><br>";
+			
+			//
 			//try {
 					$db = JFactory::getDbo();
 					$db->setQuery($insert);
@@ -245,7 +269,9 @@ class GeoiModelGeoi extends JModel
 			//if (!$ex) {	throw new Exception($msg); } 
 			if (!$ex) {	echo $msg; } 
 			else {echo '<br><b>'.Jtext::_('COM_GEOI_OLOADED').count($this->ShapefileArray).' <b>';}
+			
 			$this->CreateIndexes();
+			
         }
 		
 		public function SaveDataPol() 
@@ -337,6 +363,20 @@ class GeoiModelGeoi extends JModel
 			
         }
 		
+        private function ParamExist($param)
+        {
+        	$selconf ="SELECT PARAM FROM `#__geoiconf` WHERE PARAM ='".$param."' ";
+        	$db = JFactory::getDbo();
+        	$db->setQuery($selconf);
+        	$ex=$db->execute();
+        	$results = $db->loadObjectList();
+        	$msg=$db->getErrorMsg();
+        	if (!$ex) {	echo $msg; echo "<br>";}
+        	if(empty($results)){return false;}
+        	else return true;
+        	//foreach ($results[0] as $res){return $res;}
+        }
+        
         public function GetParam($param) 
         {
 			$selconf ="SELECT VAL FROM `#__geoiconf` WHERE PARAM ='".$param."' ";
@@ -346,7 +386,7 @@ class GeoiModelGeoi extends JModel
 			$results = $db->loadObjectList();
 			$msg=$db->getErrorMsg();
 			if (!$ex) {	echo $msg; echo "<br>";} 
-			if(empty($results)){return "";}
+			if(empty($results)){return false;}
 			foreach ($results[0] as $res){return $res;}
         }
         
@@ -366,6 +406,16 @@ class GeoiModelGeoi extends JModel
         public function CreatePol($nom) 
         {
 			$numpol=$this->GetParam('NUMPOL');
+			//$numpola=$numpol+1;
+        	$numpola=0;
+			for ($i=1;$i<=10000;$i++){
+				//echo $i;
+				//echo "<----";
+				//echo $this->GetParam("POL".$i);
+				//echo "---->";
+				if($this->GetParam("POL".$i)!=false) {$numpol=$i;$numpol=(int) $numpol;};
+			}
+			//echo $numpol;
 			$numpola=$numpol+1;
 			
 			$selconf ="INSERT INTO `#__geoiconf` (PARAM, VAL) VALUES ( 'POL".$numpola."' , '".$nom."' );";
@@ -520,6 +570,31 @@ class GeoiModelGeoi extends JModel
 			}
 			return 	$fiedsOO;
 		}
+		public function GetFieldsNType(){
+			$fields="SHOW COLUMNS FROM `#__geoiofertas` WHERE FIELD NOT IN ('oid','geom','username','userid','email');";
+			$db = JFactory::getDbo();
+			$db->setQuery($fields);
+			$ex=$db->execute();
+			$msg=$db->getErrorMsg();
+			$results = $db->loadObjectList();
+			if (!$ex) {	echo $msg; echo "<br>";}
+			$fiedsO=array();
+			foreach($results as $res){
+				array_push( $fiedsO , $res);
+			}
+			$fiedsOO=array();
+			//print_r($fiedsO);
+			//get_object_vars($res)
+			
+			foreach ($fiedsO as $f){
+				$g=get_object_vars($f);
+				$ft=array($g['Field'],$g['Type']);
+				array_push( $fiedsOO ,$ft);
+			}
+			return 	$fiedsOO;
+			
+		}
+		
 		public function SetSymbol($id,$value,$path){
 			if($path=="")
 				$update="UPDATE `#__geoisymbols` SET SYMVALUE ='".strtolower (utf8_encode($value))."' WHERE id='".$id."';";
@@ -593,7 +668,7 @@ class GeoiModelGeoi extends JModel
 			//print_r("3.".$this->GetParam('R_'.$namefield));
 						
 			$db = JFactory::getDbo();
-			if($this->GetParam('N_'.$namefield)==""){
+			if($this->ParamExist('N_'.$namefield)==false){
 					$ialias=$db->getQuery(true);
 					$columns = array('VAL','PARAM');
 					$values=array("'".$alias."'","'N_".$namefield."'");
@@ -623,7 +698,7 @@ class GeoiModelGeoi extends JModel
 					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_MODIFIED'))." ".$namefield." alias ".$alias."<br>";	}
 			}	
 			
-			if($this->GetParam('SF_'.$namefield)==""){
+			if($this->ParamExist('SF_'.$namefield)==false){
 					$itype=$db->getQuery(true);
 					$columns = array('VAL','PARAM');
 					$values2=array("'".$type."'","'SF_".$namefield."'");
@@ -653,7 +728,7 @@ class GeoiModelGeoi extends JModel
 					else{echo utf8_encode(Jtext::_('COM_GEOI_FIELD_MODIFIED'))." ".$namefield." tipo ".$type."<br>";	}
 			}
 			
-			if($this->GetParam('R_'.$namefield)==""){
+			if($this->ParamExist('R_'.$namefield)==false){
 					$irestriction=$db->getQuery(true);
 					$columns4 = array('VAL','PARAM');
 					$values3=array("'".$restriction."'","'R_".$namefield."'");

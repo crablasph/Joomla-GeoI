@@ -40,15 +40,16 @@ class GeoiController extends JController
 			GeoiHelper::addSubmenu('task');
 			$model=$this->getModel();
 			//$input = JFactory::getApplication()->input;
-			
 			$view = $this->getView('Load','html');
 			$view->epsg=$model->GetParam('EPSG_DATA');
             $view->numpol=$model->GetParam('NUMPOL');
             $view->polnom=Array();
             if($view->numpol > 0) {
-					for ($i = 1; $i <= $view->numpol ; $i++) {
+					for ($i = 1; $i <= 1000 ; $i++) {
 						$pol='POL'.$i;
-						$view->polnom[$i]=$model->GetParam($pol);
+						if($model->GetParam($pol)!="")
+							array_push($view->polnom,$model->GetParam($pol));
+						//$view->polnom[$i]=$model->GetParam($pol);
 									}
 					}
 			$view->display();
@@ -86,7 +87,9 @@ class GeoiController extends JController
 			$view->symbolfield=$model->GetParam('SYMBOLOGY_FIELD');
 			$view->symbols=$model->GetSymbols();
 			$view->fields=$model->GetFieldsO();
+			//print_r($view->fields);
 			$fieldsatt=array();
+			//echo $model->GetParam('SF_prueba2');
 			foreach ($view->fields as $fields){
 				$arrfields=array();
 				$arrfields['name']=$fields;
@@ -94,6 +97,8 @@ class GeoiController extends JController
 				$arrfields['type']=$model->GetParam('SF_'.$fields);
 				$arrfields['restriction']=$model->GetParam('R_'.$fields);
 				array_push($fieldsatt,$arrfields);
+				//print_r($arrfields);
+				//print_r("<br>");
 				
 			}
 			$view->fieldsatt=$fieldsatt;
@@ -180,6 +185,7 @@ class GeoiController extends JController
 												$view = $this->getView('createtable','html');
 												$view->Schema = $model->getShapeFileSchemaArray();
 												$view->ShapeLoc=$model->BaseShapefileName;
+												$view->FieldsArray=$model->GetFieldsNType();
 												$view->display();
 												}
 										  else {echo JText::_('COM_GEOI_ERRPOINT');}
@@ -190,6 +196,7 @@ class GeoiController extends JController
 												$view = $this->getView('createtable','html');
 												$view->Schema = $model->getShapeFileSchemaArray();
 												$view->ShapeLoc=$model->BaseShapefileName;
+												$nompol = str_replace(' ', '', $nompol);
 												if($nompol==""){echo JText::_('COM_GEOI_ERRPOLN');break;}
 												$view->nompol=$nompol;
 												$view->cpol=0;
@@ -209,6 +216,7 @@ class GeoiController extends JController
 												//$pnom=strtolower($pnom);
 												if($pnom!=""){echo JText::_('COM_GEOI_ERRPOLN');break;}
 												if($nompol==""){echo JText::_('COM_GEOI_ERRPOLN');break;}
+												$nompol = str_replace(' ', '', $nompol);
 												$view->nompol=$nompol;
 												$view->cpol=1;
 												//$model->CreatePol($nompol);
@@ -250,16 +258,28 @@ class GeoiController extends JController
 				  
 				  //echo "<br>********<br>";
 					$post_array = $input->getArray($_POST);
+					//print_r($post_array);
+					/*
 					$model->SaveArray['TYPEP']=$post_array['TYPEP'];
 					$model->SaveArray['TYPEO']=$post_array['TYPEO'];
 					$model->SaveArray['VALUE']=$post_array['VALUE'];
-					$model->SaveArray['area']=$post_array['area'];
+					$model->SaveArray['AREA']=$post_array['AREA'];
 					$model->SaveArray['ROOMS']=$post_array['ROOMS'];
-					$model->SaveArray['toilet']=$post_array['toilet'];
+					$model->SaveArray['TOILET']=$post_array['TOILET'];
 					$model->SaveArray['AGE']=$post_array['AGE'];
-					$model->SaveArray['tel1']=$post_array['tel1'];
-					$model->SaveArray['tel2']=$post_array['tel2'];
+					$model->SaveArray['TEL1']=$post_array['TEL1'];
+					//$model->SaveArray['tel2']=$post_array['tel2'];
+					*/
 					//$arrsave['Shapeloc']=$post_array['Shapeloc'];
+					
+					foreach($post_array as $keys=>$posta){
+						//$keys=key($posta);
+						if($keys!="Shapeloc"
+							&&$keys!="submit"
+							&&$keys!="option")
+							$model->SaveArray[$keys]=$post_array[$keys];
+					}
+					
 					$model->SaveArray['username']=$username;
 					$model->SaveArray['email']=$email;
 					$model->SaveArray['userid']=$id;
