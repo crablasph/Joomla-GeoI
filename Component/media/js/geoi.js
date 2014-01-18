@@ -276,7 +276,7 @@ var map, vector_layer, select, popup, pollayer, poldrawsearchcontrol, pointSearc
 		 strategydraw.threshold =parameters.CLUSTER_THRESHOLD;
 	     drawLayer = new OpenLayers.Layer.Vector( arrayText[15], 
 	    		 {
-	    	 projection:parameters.EPSG_DISP,
+	    	 //projection:parameters.EPSG_DISP,
 	    	 strategies: [strategydraw],
 	    	 styleMap:drawPointStyleMap
 	    	 });
@@ -453,34 +453,63 @@ function insertPoint2Layer(pto) {
 	point = new OpenLayers.Feature.Vector(pto);
 	point.attributes.oid="'"+createUUID()+"'";
 	clonedfeatures.push(point);
-	if(parameters.EPSG_DATA!="3857"){	
+	/*if(parameters.EPSG_DATA!="3857"){	
 		nfeatures=transformPointLayer(clonedfeatures);
 		drawLayer.addFeatures(nfeatures);
 	}
-	else drawLayer.addFeatures(clonedfeatures);
+	else*/ drawLayer.addFeatures(clonedfeatures);
 	drawLayer.redraw();
 	pointDrawControl.deactivate();
 	getForm('', point.attributes.oid);
 } 
 
-function transformPointLayer(player){
+function transformPointLayer(player,opt){
 	//console.log(player);
+	//opt 0 directa
+	//opt 1 inversa
 	nlayer=[];
 	var proj=new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA);
 	var nativeproj=new OpenLayers.Projection("EPSG:3857");
 	//EPSG:900913
-	//console.log(proj);
-	for(i=0;i<player.length;i++){
-		var geom=player[i].geometry.clone();
-		geom.transform(proj,nativeproj);
-		//console.log(geom);
-		fv=new OpenLayers.Feature.Vector(geom,player[i].data);
-		nlayer.push(fv);
+	//console.log(player.length);
+	if(opt==0||!opt){
+			if(!player.length&&player.length!=0){
+				var geom=player.geometry.clone();
+				geom.transform(proj,nativeproj);
+				//console.log(geom);
+				return new OpenLayers.Feature.Vector(geom,player.data);
+			}
+			
+			for(i=0;i<player.length;i++){
+				var geom=player[i].geometry.clone();
+				geom.transform(proj,nativeproj);
+				//console.log(geom);
+				fv=new OpenLayers.Feature.Vector(geom,player[i].data);
+				nlayer.push(fv);
+			}
+			//console.log(nlayer);
+			//return 0;
+			 return nlayer;
+		    //polybound.features[0].geometry.transform(new OpenLayers.Projection("EPSG:3413"),new OpenLayers.Projection("EPSG:4326"));
+	}else if(opt==1){
+		if(!player.length&&player.length!=0){
+			var geom=player.geometry.clone();
+			geom.transform(nativeproj,proj);
+			//console.log(geom);
+			return new OpenLayers.Feature.Vector(geom,player.data);
+		}
+		
+		for(i=0;i<player.length;i++){
+			var geom=player[i].geometry.clone();
+			geom.transform(nativeproj,proj);
+			//console.log(geom);
+			fv=new OpenLayers.Feature.Vector(geom,player[i].data);
+			nlayer.push(fv);
+		}
+		//console.log(nlayer);
+		//return 0;
+		 return nlayer;
 	}
-	//console.log(nlayer);
-	 return nlayer;
-    //polybound.features[0].geometry.transform(new OpenLayers.Projection("EPSG:3413"),new OpenLayers.Projection("EPSG:4326"));
-
 }
 
 function getIconPath(name){
@@ -648,8 +677,15 @@ function getForm(prop, ids){
 			}
 		 }
 		 udata.push(['oid',savid]);
+		 //console.log(savid, drawLayer);
 		 var fdata=selectSearchOIDinCluster(savid, drawLayer);
-		 var geomdata=fdata.geometry.toString();
+		 if(parameters.EPSG_DATA!="3857"){
+			nfeatures=transformPointLayer(fdata,1);
+			//console.log(nfeatures,fdata);
+			var geomdata=nfeatures.geometry.toString();
+		}
+		else var geomdata=fdata.geometry.toString();
+		 //var geomdata=fdata.geometry.toString();
 		 udata.push(['geom',geomdata]);
 		 //console.log(udata);
 		 ///nan son los insertados con puntico
@@ -1419,9 +1455,7 @@ function loadFindPoints(req)
 	pointDrawControl.deactivate();
 	
 	////ADD MAP LAYER , GEOMETRY PROPERTIES
-	var WKT_format = new OpenLayers.Format.WKT({
-			  'internalProjection': new OpenLayers.Projection("EPSG:900913"),
-			  'externalProjection': new OpenLayers.Projection("EPSG:"+parameters.EPSG_DATA)});
+	var WKT_format = new OpenLayers.Format.WKT();
 	pointSearch_layer.removeAllFeatures();
 	pointSearch_layer.visibility=true;
 	///
@@ -1467,6 +1501,7 @@ function loadUserPoints(req){
 			}
 	}
 	if(select){select.activate();}
+	//console.log(vector_search);
 	if(parameters.EPSG_DATA!="3857"){	
 		nfeatures=transformPointLayer(vector_search);
 		drawLayer.addFeatures(nfeatures);
